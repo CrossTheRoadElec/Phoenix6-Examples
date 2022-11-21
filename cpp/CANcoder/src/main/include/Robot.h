@@ -5,8 +5,12 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include <frc/Timer.h>
+#include <ctre/phoenixpro/CANCoder.hpp>
 
 class Robot : public frc::TimedRobot {
+  ctre::phoenixpro::hardware::CANCoder cc{1, "rio"};
+  units::time::second_t currentTime = frc::Timer::GetFPGATimestamp();
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
