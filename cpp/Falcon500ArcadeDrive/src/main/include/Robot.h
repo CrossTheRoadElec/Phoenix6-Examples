@@ -5,8 +5,19 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include <frc/XboxController.h>
+#include <ctre/phoenixpro/TalonFX.hpp>
 
 class Robot : public frc::TimedRobot {
+  ctre::phoenixpro::hardware::TalonFX leftLeader{1, "rio"};
+  ctre::phoenixpro::hardware::TalonFX leftFollower{2, "rio"};
+  ctre::phoenixpro::hardware::TalonFX rightLeader{3, "rio"};
+  ctre::phoenixpro::hardware::TalonFX rightFollower{4, "rio"};
+
+  ctre::phoenixpro::controls::DutyCycleOut leftOut{0}; // Initialize output to 0%
+  ctre::phoenixpro::controls::DutyCycleOut rightOut{0}; // Initialize output to 0%
+
+  frc::XboxController joystick{0};
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
