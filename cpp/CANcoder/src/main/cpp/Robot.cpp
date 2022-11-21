@@ -5,9 +5,18 @@
 #include <iostream>
 #include "Robot.h"
 
+using namespace ctre::phoenixpro;
+
 static constexpr units::time::second_t print_period = 500_ms;
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+  // Configure CANcoder
+  configs::CANCoderConfiguration toApply{};
+
+  /* User can change the configs if they want, or leave it empty for factory-default */
+
+  cc.GetConfigurator().Apply(toApply);
+}
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
   if (frc::Timer::GetFPGATimestamp() - currentTime > print_period)
