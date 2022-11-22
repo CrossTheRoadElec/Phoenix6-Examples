@@ -9,7 +9,7 @@
 #include <ctre/phoenixpro/Pigeon2.hpp>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenixpro::hardware::Pigeon2 pidgey{1, "fred"};
+  ctre::phoenixpro::hardware::Pigeon2 pidgey{1, "rio"};
   units::time::second_t currentTime = frc::Timer::GetFPGATimestamp();
  public:
   void RobotInit() override;

@@ -27,9 +27,10 @@ void Robot::RobotPeriodic() {
   {
     currentTime += print_period;
     /**
-     * GetPosition automatically calls Refresh(), no need to manually refresh
+     * GetPosition automatically calls Refresh(), no need to manually refresh.
+     * 
      * StatusSignalValues also have the "ostream <<" operator implemented, to provide
-     * a useful print of the signal
+     * a useful print of the signal.
      */
     auto pos = cancoder.GetPosition();
     std::cout << "Position is " << pos << " with " << pos.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
@@ -68,8 +69,8 @@ void Robot::TeleopInit() {
   /**
    * When we teleop init, set the position of the Pigeon2 and wait for the setter to take affect.
    */
-  cancoder.SetPosition(0.4_tr, 100_ms); // Set our position to .4 rotations and wait up to half a second for the setter to take affect
-  cancoder.GetPosition().WaitForUpdate(100_ms); // And wait up to half a second for the position to take affect
+  cancoder.SetPosition(0.4_tr, 100_ms); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
+  cancoder.GetPosition().WaitForUpdate(100_ms); // And wait up to 100 ms for the position to take affect
   std::cout << "Set the position to 0.4 rotations, we are currently at " << cancoder.GetPosition() << std::endl;
 }
 void Robot::TeleopPeriodic() {}

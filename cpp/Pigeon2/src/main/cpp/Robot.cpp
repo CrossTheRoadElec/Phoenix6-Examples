@@ -27,7 +27,8 @@ void Robot::RobotPeriodic() {
   {
     currentTime += print_period;
     /**
-     * GetYaw automatically calls Refresh(), no need to manually refresh
+     * GetYaw automatically calls Refresh(), no need to manually refresh.
+     *
      * StatusSignalValues also have the "ostream <<" operator implemented, to provide
      * a useful print of the signal
      */
