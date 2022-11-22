@@ -15,7 +15,7 @@ void Robot::RobotInit() {
 
   /* User can change the configs if they want, or leave it empty for factory-default */
 
-  cc.GetConfigurator().Apply(toApply);
+  cancoder.GetConfigurator().Apply(toApply);
 }
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
@@ -27,15 +27,23 @@ void Robot::RobotPeriodic() {
      * StatusSignalValues also have the "ostream <<" operator implemented, to provide
      * a useful print of the signal
      */
-    auto pos = cc.GetPosition();
-    std::cout << "Position is " << pos << " with " << pos.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl; 
+    auto pos = cancoder.GetPosition();
+    std::cout << "Position is " << pos << " with " << pos.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
     /**
      * Get the velocity StatusSignalValue to check other components of the signal
      */
-    auto vel = cc.GetVelocity();
+    auto vel = cancoder.GetVelocity();
     /* This time wait for the signal to reduce latency */
     vel.WaitForUpdate(print_period); // Wait up to our period
-    std::cout << "Velocity is " << vel << " with " << vel.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl; 
+    /**
+     * This uses the explicit GetValue and GetUnits functions to print, even though it's not
+     * necessary for the ostream print
+     */
+    std::cout << "Velocity is " <<
+                  vel.GetValue() << " " <<
+                  vel.GetUnits() << " with " <<
+                  vel.GetTimestamp().GetLatency().value() << " seconds of latency" <<
+                  std::endl;
     std::cout << std::endl;
   }
 }
