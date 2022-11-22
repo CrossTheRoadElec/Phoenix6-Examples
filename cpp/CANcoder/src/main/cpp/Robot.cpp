@@ -16,6 +16,10 @@ void Robot::RobotInit() {
   /* User can change the configs if they want, or leave it empty for factory-default */
 
   cancoder.GetConfigurator().Apply(toApply);
+
+  /* Speed up signals to an appropriate rate */
+  cancoder.GetPosition().SetUpdateFrequency(100_Hz);
+  cancoder.GetVelocity().SetUpdateFrequency(100_Hz);
 }
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
@@ -30,7 +34,7 @@ void Robot::RobotPeriodic() {
     auto pos = cancoder.GetPosition();
     std::cout << "Position is " << pos << " with " << pos.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
     /**
-     * Get the velocity StatusSignalValue to check other components of the signal
+     * Get the velocity StatusSignalValue
      */
     auto vel = cancoder.GetVelocity();
     /* This time wait for the signal to reduce latency */
@@ -44,6 +48,15 @@ void Robot::RobotPeriodic() {
                   vel.GetUnits() << " with " <<
                   vel.GetTimestamp().GetLatency().value() << " seconds of latency" <<
                   std::endl;
+    /**
+     * Notice when running this example that the second print's latency is always shorter than the first print's latency.
+     * This is because we explicitly wait for the signal using the WaitForUpdate() method instead of using the Refresh()
+     * method, which only gets the last cached value (similar to how Phoenix v5 works).
+     * This can be used to make sure we synchronously update our control loop from the CAN bus, reducing any latency or jitter in
+     * CAN bus measurements.
+     * When the device is on a CANivore, the reported latency is very close to the true latency of the sensor, as the CANivore
+     * timestamps when it receives the frame. This can be further used for latency compensation.
+     */
     std::cout << std::endl;
   }
 }
@@ -51,7 +64,14 @@ void Robot::RobotPeriodic() {
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+  /**
+   * When we teleop init, set the position of the Pigeon2 and wait for the setter to take affect.
+   */
+  cancoder.SetPosition(0.4_tr, 100_ms); // Set our position to .4 rotations and wait up to half a second for the setter to take affect
+  cancoder.GetPosition().WaitForUpdate(100_ms); // And wait up to half a second for the position to take affect
+  std::cout << "Set the position to 0.4 rotations, we are currently at " << cancoder.GetPosition() << std::endl;
+}
 void Robot::TeleopPeriodic() {}
 
 void Robot::DisabledInit() {}

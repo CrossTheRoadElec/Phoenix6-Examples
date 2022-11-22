@@ -5,8 +5,12 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include <frc/Timer.h>
+#include <ctre/phoenixpro/Pigeon2.hpp>
 
 class Robot : public frc::TimedRobot {
+  ctre::phoenixpro::hardware::Pigeon2 pidgey{1, "fred"};
+  units::time::second_t currentTime = frc::Timer::GetFPGATimestamp();
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
