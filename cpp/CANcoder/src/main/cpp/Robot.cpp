@@ -11,7 +11,7 @@ static constexpr units::time::second_t print_period = 500_ms;
 
 void Robot::RobotInit() {
   // Configure CANcoder
-  configs::CANCoderConfiguration toApply{};
+  configs::CANcoderConfiguration toApply{};
 
   /* User can change the configs if they want, or leave it empty for factory-default */
 

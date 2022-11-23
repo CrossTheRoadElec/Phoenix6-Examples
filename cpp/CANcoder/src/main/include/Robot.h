@@ -6,10 +6,10 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Timer.h>
-#include <ctre/phoenixpro/CANCoder.hpp>
+#include <ctre/phoenixpro/CANcoder.hpp>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenixpro::hardware::CANCoder cancoder{1, "rio"};
+  ctre::phoenixpro::hardware::CANcoder cancoder{1, "rio"};
   units::time::second_t currentTime = frc::Timer::GetFPGATimestamp();
  public:
   void RobotInit() override;

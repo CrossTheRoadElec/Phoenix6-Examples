@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenixpro.configs.CANCoderConfiguration;
-import com.ctre.phoenixpro.hardware.CANCoder;
+import com.ctre.phoenixpro.configs.CANcoderConfiguration;
+import com.ctre.phoenixpro.hardware.CANcoder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends TimedRobot {
   final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  CANCoder cancoder = new CANCoder(1, "rio");
+  CANcoder CANcoder = new CANcoder(1, "rio");
   double currentTime = Timer.getFPGATimestamp();
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -28,15 +28,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     /* Configure CANcoder */
-    CANCoderConfiguration toApply = new CANCoderConfiguration();
+    CANcoderConfiguration toApply = new CANcoderConfiguration();
 
     /* User can change the configs if they want, or leave it empty for factory-default */
 
-    cancoder.getConfigurator().apply(toApply);
+    CANcoder.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
-    cancoder.getPosition().setUpdateFrequency(100);
-    cancoder.getVelocity().setUpdateFrequency(100);
+    CANcoder.getPosition().setUpdateFrequency(100);
+    CANcoder.getVelocity().setUpdateFrequency(100);
   }
 
   @Override
@@ -51,12 +51,12 @@ public class Robot extends TimedRobot {
        * StatusSignalValues also have the toString method implemented, to provide
        * a useful print of the signal.
        */
-      var pos = cancoder.getPosition();
+      var pos = CANcoder.getPosition();
       System.out.println("Position is " + pos.toString() + " with " + pos.getTimestamp().getLatency() + " seconds of latency");
       /**
        * Get the velocity StatusSignalValue
        */
-      var vel = cancoder.getVelocity();
+      var vel = CANcoder.getVelocity();
       /* This time wait for the signal to reduce latency */
       vel.waitForUpdate(PRINT_PERIOD); // Wait up to our period
       /**
@@ -91,9 +91,9 @@ public class Robot extends TimedRobot {
     /**
      * When we teleop init, set the position of the Pigeon2 and wait for the setter to take affect.
      */
-    cancoder.setPosition(0.4, 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
-    cancoder.getPosition().waitForUpdate(0.1); // And wait up to 100 ms for the position to take affect
-    System.out.println("Set the position to 0.4 rotations, we are currently at " + cancoder.getPosition()); // Use java's implicit toString operator
+    CANcoder.setPosition(0.4, 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
+    CANcoder.getPosition().waitForUpdate(0.1); // And wait up to 100 ms for the position to take affect
+    System.out.println("Set the position to 0.4 rotations, we are currently at " + CANcoder.getPosition()); // Use java's implicit toString operator
   }
 
   @Override

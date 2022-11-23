@@ -18,6 +18,7 @@ public class DriveStraightCommand extends CommandBase {
         m_driveStraightThread = new DriveStraightThread(drivebase.getYaw(), (val) -> correctiveDrive(val));
         m_drivebase = drivebase;
         addRequirements(drivebase);
+        m_driveStraightThread.start();
     }
 
     private void correctiveDrive(double correction)
@@ -31,7 +32,7 @@ public class DriveStraightCommand extends CommandBase {
      * react immediately to new data, instead of reacting to potentially
      * old data
      */
-    private class DriveStraightThread implements Runnable {
+    private class DriveStraightThread extends Thread {
         final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
         boolean m_calculateCorrective = false;
         StatusSignalValue<Double> yawGetter;
