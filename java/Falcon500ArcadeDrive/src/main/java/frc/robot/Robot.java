@@ -37,14 +37,17 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     /* Configure the devices */
-    var appliedConfiguration = new TalonFXConfiguration();
+    var leftConfiguration = new TalonFXConfiguration();
+    var rightConfiguration = new TalonFXConfiguration();
 
-    /* User can optionally chagne the configs or leave it alone to perform a factory default */
+    /* User can optionally change the configs or leave it alone to perform a factory default */
+    leftConfiguration.MotorOutput.Inverted = false;
+    rightConfiguration.MotorOutput.Inverted = true;
 
-    leftLeader.getConfigurator().apply(appliedConfiguration);
-    leftFollower.getConfigurator().apply(appliedConfiguration);
-    rightLeader.getConfigurator().apply(appliedConfiguration);
-    rightFollower.getConfigurator().apply(appliedConfiguration);
+    leftLeader.getConfigurator().apply(leftConfiguration);
+    leftFollower.getConfigurator().apply(leftConfiguration);
+    rightLeader.getConfigurator().apply(rightConfiguration);
+    rightFollower.getConfigurator().apply(rightConfiguration);
 
     /* Set up followers to follow leaders */
     leftFollower.setControl(new Follower(leftLeader.getDeviceID(), false));
@@ -66,7 +69,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     /* Get forward and rotational throttle from joystick */
-    double fwd = joystick.getLeftY();
+    /* invert the joystick Y because forward Y is negative */
+    double fwd = -joystick.getLeftY();
     double rot = joystick.getRightX();
     /* Set output to control frames */
     leftOut.output = fwd + rot;

@@ -27,12 +27,13 @@ public class RobotContainer {
 
   private final XboxController m_joystick = new XboxController(0);
 
+  /* invert the joystick Y because forward Y is negative */
   private final Command m_teleopDrive = new RunCommand(() -> {
-      m_driveSubsystem.arcadeDrive(m_joystick.getLeftY(), m_joystick.getRightX());
+      m_driveSubsystem.arcadeDrive(-m_joystick.getLeftY(), m_joystick.getRightX());
     },
     m_driveSubsystem);
 
-  private final Command m_driveStraight = new DriveStraightCommand(m_driveSubsystem, m_joystick::getLeftY);
+  private final Command m_driveStraight = new DriveStraightCommand(m_driveSubsystem, () -> -m_joystick.getLeftY());
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

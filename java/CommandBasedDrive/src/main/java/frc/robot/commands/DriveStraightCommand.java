@@ -37,7 +37,7 @@ public class DriveStraightCommand extends CommandBase {
      */
     private void driveStraightExecution() {
         /* Get our current yaw and find the error from the yaw we want to hold */
-        double err = m_holdYaw - m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
+        final double err = m_holdYaw - m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
         /* Simple P-loop, where 100 degrees off corresponds to 100% output */
         double correction = err * 0.01;
         /* And apply it to the arcade drive */

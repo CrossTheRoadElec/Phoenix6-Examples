@@ -41,10 +41,15 @@ public:
 
 private:
     /**
-     * Initialize TalonFX device from the configurator object
+     * Initialize a left drive TalonFX device from the configurator object
      * \param cfg Configurator of the TalonFX device
      */
-    void InitializeTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg);
+    void InitializeLeftDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg);
+    /**
+     * Initialize a right drive TalonFX device from the configurator object
+     * \param cfg Configurator of the TalonFX device
+     */
+    void InitializeRightDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg);
     /**
      * Initialize Pigeon2 device from the configurator object
      * \param cfg Configurator of the Pigeon2 device

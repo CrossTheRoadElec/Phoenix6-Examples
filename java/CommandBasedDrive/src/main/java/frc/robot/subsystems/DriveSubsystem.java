@@ -26,10 +26,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveSubsystem() {
         /* Initialize all the devices */
-        initializeTalonFX(m_leftLeader.getConfigurator());
-        initializeTalonFX(m_leftFollower.getConfigurator());
-        initializeTalonFX(m_rightLeader.getConfigurator());
-        initializeTalonFX(m_rightFollower.getConfigurator());
+        initializeLeftDriveTalonFX(m_leftLeader.getConfigurator());
+        initializeLeftDriveTalonFX(m_leftFollower.getConfigurator());
+        initializeRightDriveTalonFX(m_rightLeader.getConfigurator());
+        initializeRightDriveTalonFX(m_rightFollower.getConfigurator());
         initializePigeon2(m_pigeon2.getConfigurator());
 
         /* Set followers to follow leader */
@@ -75,13 +75,30 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Initialize TalonFX device from the configurator object
+     * Initialize a left drive TalonFX device from the configurator object
      * @param cfg Configurator of the TalonFX device
      */
-    private void initializeTalonFX(TalonFXConfigurator cfg) {
+    private void initializeLeftDriveTalonFX(TalonFXConfigurator cfg) {
         var toApply = new TalonFXConfiguration();
 
         /* User can change configs if they want, or leave this blank for factory-default */
+        toApply.MotorOutput.Inverted = false;
+
+        cfg.apply(toApply);
+
+        /* And initialize position to 0 */
+        cfg.setRotorPosition(0);
+    }
+
+    /**
+     * Initialize a right drive TalonFX device from the configurator object
+     * @param cfg Configurator of the TalonFX device
+     */
+    private void initializeRightDriveTalonFX(TalonFXConfigurator cfg) {
+        var toApply = new TalonFXConfiguration();
+
+        /* User can change configs if they want, or leave this blank for factory-default */
+        toApply.MotorOutput.Inverted = true;
 
         cfg.apply(toApply);
 

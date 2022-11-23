@@ -32,12 +32,13 @@ private:
 
   frc2::RunCommand m_teleopDrive{[this]()
                                  {
-                                   m_driveSubsystem.ArcadeDrive(m_joystick.GetLeftY(), m_joystick.GetRightX());
+                                   /* invert the joystick Y because forward Y is negative */
+                                   m_driveSubsystem.ArcadeDrive(-m_joystick.GetLeftY(), m_joystick.GetRightX());
                                  },
                                  {&m_driveSubsystem}};
   DriveStraightCommand m_driveStraightCommand{m_driveSubsystem,
                                               [this]()
-                                              { return m_joystick.GetLeftY(); }};
+                                              { return -m_joystick.GetLeftY(); }};
 
   void ConfigureButtonBindings();
 };

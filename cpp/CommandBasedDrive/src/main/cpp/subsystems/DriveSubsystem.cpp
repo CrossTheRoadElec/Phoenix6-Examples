@@ -9,10 +9,10 @@ using namespace ctre::phoenixpro;
 DriveSubsystem::DriveSubsystem()
 {
     /* Initialize all the devices */
-    InitializeTalonFX(m_leftLeader.GetConfigurator());
-    InitializeTalonFX(m_leftFollower.GetConfigurator());
-    InitializeTalonFX(m_rightLeader.GetConfigurator());
-    InitializeTalonFX(m_rightFollower.GetConfigurator());
+    InitializeLeftDriveTalonFX(m_leftLeader.GetConfigurator());
+    InitializeLeftDriveTalonFX(m_leftFollower.GetConfigurator());
+    InitializeRightDriveTalonFX(m_rightLeader.GetConfigurator());
+    InitializeRightDriveTalonFX(m_rightFollower.GetConfigurator());
     InitializePigeon2(m_pigeon2.GetConfigurator());
 
     /* Set followers to follow leader */
@@ -38,11 +38,24 @@ void DriveSubsystem::ArcadeDrive(double fwd, double rot)
     m_rightLeader.SetControl(m_rightOut);
 }
 
-void DriveSubsystem::InitializeTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator& cfg)
+void DriveSubsystem::InitializeLeftDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator& cfg)
 {
     configs::TalonFXConfiguration toApply{};
 
     /* User can change configs if they want, or leave this blank for factory-default */
+    toApply.MotorOutput.Inverted = false;
+
+    cfg.Apply(toApply);
+
+    /* And initialize position to 0 */
+    cfg.SetRotorPosition(0_tr);
+}
+void DriveSubsystem::InitializeRightDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator& cfg)
+{
+    configs::TalonFXConfiguration toApply{};
+
+    /* User can change configs if they want, or leave this blank for factory-default */
+    toApply.MotorOutput.Inverted = true;
 
     cfg.Apply(toApply);
 

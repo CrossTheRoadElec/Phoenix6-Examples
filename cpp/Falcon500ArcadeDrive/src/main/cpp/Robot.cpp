@@ -8,14 +8,17 @@ using namespace ctre::phoenixpro;
 
 void Robot::RobotInit() {
   /* Configure devices */
-  configs::TalonFXConfiguration appliedConfiguration{};
+  configs::TalonFXConfiguration leftConfiguration{};
+  configs::TalonFXConfiguration rightConfiguration{};
 
   /* User can optionally change the configs, or leave it alone to perform a factory default */
+  leftConfiguration.MotorOutput.Inverted = false;
+  rightConfiguration.MotorOutput.Inverted = true;
 
-  leftLeader.GetConfigurator().Apply(appliedConfiguration);
-  leftFollower.GetConfigurator().Apply(appliedConfiguration);
-  rightLeader.GetConfigurator().Apply(appliedConfiguration);
-  rightFollower.GetConfigurator().Apply(appliedConfiguration);
+  leftLeader.GetConfigurator().Apply(leftConfiguration);
+  leftFollower.GetConfigurator().Apply(leftConfiguration);
+  rightLeader.GetConfigurator().Apply(rightConfiguration);
+  rightFollower.GetConfigurator().Apply(rightConfiguration);
 
   /* Set up followers to follow leaders */
   leftFollower.SetControl(controls::Follower{leftLeader.GetDeviceID(), false});
@@ -29,7 +32,8 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   /* Get forward and rotational throttle from joystick */
-  double fwd = joystick.GetLeftY();
+  /* invert the joystick Y because forward Y is negative */
+  double fwd = -joystick.GetLeftY();
   double rot = joystick.GetRightX();
   /* Set output to control frames */
   leftOut.output = fwd + rot;
