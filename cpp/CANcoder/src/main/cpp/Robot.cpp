@@ -31,13 +31,13 @@ void Robot::RobotPeriodic() {
      * StatusSignalValues also have the "ostream <<" operator implemented, to provide
      * a useful print of the signal.
      */
-    auto pos = cancoder.GetPosition();
+    auto &pos = cancoder.GetPosition();
     std::cout << "Position is " << pos << " with " << pos.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
 
     /**
      * Get the velocity StatusSignalValue
      */
-    auto vel = cancoder.GetVelocity();
+    auto &vel = cancoder.GetVelocity();
     /* This time wait for the signal to reduce latency */
     vel.WaitForUpdate(print_period); // Wait up to our period
     /**

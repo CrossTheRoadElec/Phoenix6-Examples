@@ -31,13 +31,13 @@ void Robot::RobotPeriodic() {
      * StatusSignalValues also have the "ostream <<" operator implemented, to provide
      * a useful print of the signal
      */
-    auto yaw = pidgey.GetYaw();
+    auto &yaw = pidgey.GetYaw();
     std::cout << "Yaw is " << yaw << " with " << yaw.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
 
     /**
      * Get the Gravity Vector Z component StatusSignalValue
      */
-    auto gravityZ = pidgey.GetGravityVectorZ();
+    auto &gravityZ = pidgey.GetGravityVectorZ();
     /* This time wait for the signal to reduce latency */
     gravityZ.WaitForUpdate(print_period); // Wait up to our period
     /**
