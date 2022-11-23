@@ -16,7 +16,7 @@
  * they are needed.
  */
 
-constexpr char CANBUS_NAME[]{"1"};
+constexpr char CANBUS_NAME[]{"rio"};
 
 /* Talon FX Device IDs */
 constexpr int LEFT_LEADER_ID{1};
