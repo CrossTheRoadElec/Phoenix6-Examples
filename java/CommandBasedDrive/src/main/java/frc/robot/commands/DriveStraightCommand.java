@@ -1,30 +1,19 @@
 package frc.robot.commands;
 
-import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenixpro.StatusSignalValue;
 
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveStraightCommand extends CommandBase {
+    final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
     DoubleSupplier m_throttle;
-    DriveStraightThread m_driveStraightThread;
     DriveSubsystem m_drivebase;
-
-    public DriveStraightCommand(DriveSubsystem drivebase, DoubleSupplier throttle) {
-        m_throttle = throttle;
-        m_driveStraightThread = new DriveStraightThread(drivebase.getYaw(), (val) -> correctiveDrive(val));
-        m_drivebase = drivebase;
-        addRequirements(drivebase);
-        m_driveStraightThread.start();
-    }
-
-    private void correctiveDrive(double correction)
-    {
-        m_drivebase.arcadeDrive(m_throttle.getAsDouble(), correction);
-    }
+    StatusSignalValue<Double> m_yawGetter;
+    double m_holdYaw = 0;
 
     /**
      * We do the calculation and updates in a separate thread to make use
@@ -32,44 +21,37 @@ public class DriveStraightCommand extends CommandBase {
      * react immediately to new data, instead of reacting to potentially
      * old data
      */
-    private class DriveStraightThread extends Thread {
-        final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
-        boolean m_calculateCorrective = false;
-        StatusSignalValue<Double> yawGetter;
-        Consumer<Double> correctiveOut;
+    Notifier m_driveStraightThread;
 
-        public DriveStraightThread(StatusSignalValue<Double> yawGetter, Consumer<Double> correctiveOut) {
-            this.yawGetter = yawGetter;
-            this.correctiveOut = correctiveOut;
-        }
+    public DriveStraightCommand(DriveSubsystem drivebase, DoubleSupplier throttle) {
+        m_throttle = throttle;
+        m_drivebase = drivebase;
+        m_yawGetter = m_drivebase.getYaw();
+        m_driveStraightThread = new Notifier(()->driveStraightExecution());
+        addRequirements(drivebase);
+    }
 
-        public void beginCorrective() {
-            m_calculateCorrective = true;
-        }
-
-        public void endCorrective() {
-            m_calculateCorrective = false;
-        }
-
-        @Override
-        public void run() {
-            double holdYaw = 0;
-            while (true) {
-                holdYaw = yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
-                while (m_calculateCorrective) {
-                    double err = holdYaw - yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
-                    /* Simple P-loop, where 100degrees off corresponds to 100% output */
-                    correctiveOut.accept(err * 0.01);
-                }
-            }
-        }
+    /**
+     * This is the threaded context method that gets called as fast as possible.
+     * The timing is determined by how fast the Pigeon2 reports its yaw, up to MAX_UPDATE_PERIOD
+     */
+    private void driveStraightExecution()
+    {
+        /* Get our current yaw and find the error from the yaw we want to hold */
+        double err = m_holdYaw - m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
+        /* Simple P-loop, where 100degrees off corresponds to 100% output */
+        double correction = err * 0.01;
+        /* And apply it to the arcade drive */
+        m_drivebase.arcadeDrive(m_throttle.getAsDouble(), correction);
     }
 
     @Override
     public void initialize()
     {
-        /* On initialize, begin the corrective calculation */
-        m_driveStraightThread.beginCorrective();
+        /* On initialize, latch the current yaw and begin correction */
+        m_holdYaw = m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
+        /* Update as fast as possible, the waitForUpdate will manage the loop period */
+        m_driveStraightThread.startPeriodic(0);
     }
 
     /* No need for an execute, as our thread will execute automatically */
@@ -77,7 +59,8 @@ public class DriveStraightCommand extends CommandBase {
     @Override
     public void end(boolean isInterrupted)
     {
-        m_driveStraightThread.endCorrective();
+        /* Stop the notifier */
+        m_driveStraightThread.stop();
     }
 
 }
