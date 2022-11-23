@@ -17,10 +17,11 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-  final double PRINT_PERIOD = 0.5; // Update every 500 ms
+  private final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  Pigeon2 pidgey = new Pigeon2(1, "rio");
-  double currentTime = Timer.getFPGATimestamp();
+  private final Pigeon2 pidgey = new Pigeon2(1, "rio");
+  private double currentTime = Timer.getFPGATimestamp();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,7 +29,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     /* Configure Pigeon2 */
-    Pigeon2Configuration toApply = new Pigeon2Configuration();
+    var toApply = new Pigeon2Configuration();
 
     /* User can change the configs if they want, or leave it empty for factory-default */
 
@@ -41,8 +42,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    if(Timer.getFPGATimestamp() - currentTime > PRINT_PERIOD)
-    {
+    if (Timer.getFPGATimestamp() - currentTime > PRINT_PERIOD) {
       currentTime += PRINT_PERIOD;
 
       /**
@@ -53,6 +53,7 @@ public class Robot extends TimedRobot {
        */
       var yaw = pidgey.getYaw();
       System.out.println("Yaw is " + yaw.toString() + " with " + yaw.getTimestamp().getLatency() + " seconds of latency");
+
       /**
        * Get the gravity vector Z component StatusSignalValue
        */
@@ -76,7 +77,7 @@ public class Robot extends TimedRobot {
        * When the device is on a CANivore, the reported latency is very close to the true latency of the sensor, as the CANivore
        * timestamps when it receives the frame. This can be further used for latency compensation.
        */
-      System.out.println("");
+      System.out.println();
     }
   }
 

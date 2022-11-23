@@ -19,16 +19,17 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  final String CANBUS_NAME = "rio";
-  TalonFX leftLeader = new TalonFX(1, CANBUS_NAME);
-  TalonFX leftFollower = new TalonFX(2, CANBUS_NAME);
-  TalonFX rightLeader = new TalonFX(3, CANBUS_NAME);
-  TalonFX rightFollower = new TalonFX(4, CANBUS_NAME);
+  private final String CANBUS_NAME = "rio";
+  private final TalonFX leftLeader = new TalonFX(1, CANBUS_NAME);
+  private final TalonFX leftFollower = new TalonFX(2, CANBUS_NAME);
+  private final TalonFX rightLeader = new TalonFX(3, CANBUS_NAME);
+  private final TalonFX rightFollower = new TalonFX(4, CANBUS_NAME);
 
-  DutyCycleOut leftOut = new DutyCycleOut(0);
-  DutyCycleOut rightOut = new DutyCycleOut(0);
+  private final DutyCycleOut leftOut = new DutyCycleOut(0);
+  private final DutyCycleOut rightOut = new DutyCycleOut(0);
 
-  XboxController joystick = new XboxController(0);
+  private final XboxController joystick = new XboxController(0);
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,7 +37,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     /* Configure the devices */
-    TalonFXConfiguration appliedConfiguration = new TalonFXConfiguration();
+    var appliedConfiguration = new TalonFXConfiguration();
 
     /* User can optionally chagne the configs or leave it alone to perform a factory default */
 
@@ -64,12 +65,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    /* Get throttle and wheel from joystick */
-    double throttle = joystick.getLeftY();
-    double wheel = joystick.getRightX();
+    /* Get forward and rotational throttle from joystick */
+    double fwd = joystick.getLeftY();
+    double rot = joystick.getRightX();
     /* Set output to control frames */
-    leftOut.output = throttle + wheel;
-    rightOut.output = throttle - wheel;
+    leftOut.output = fwd + rot;
+    rightOut.output = fwd - rot;
     /* And set them to the motors */
     leftLeader.setControl(leftOut);
     rightLeader.setControl(rightOut);

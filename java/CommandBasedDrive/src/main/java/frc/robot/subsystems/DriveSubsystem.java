@@ -14,17 +14,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
 public class DriveSubsystem extends SubsystemBase {
-    TalonFX m_leftLeader = new TalonFX(LEFT_LEADER_ID, CANBUS_NAME);
-    TalonFX m_leftFollower = new TalonFX(LEFT_FOLLOWER_ID, CANBUS_NAME);
-    TalonFX m_rightLeader = new TalonFX(RIGHT_LEADER_ID, CANBUS_NAME);
-    TalonFX m_rightFollower = new TalonFX(RIGHT_FOLLOWER_ID, CANBUS_NAME);
+    private final TalonFX m_leftLeader = new TalonFX(LEFT_LEADER_ID, CANBUS_NAME);
+    private final TalonFX m_leftFollower = new TalonFX(LEFT_FOLLOWER_ID, CANBUS_NAME);
+    private final TalonFX m_rightLeader = new TalonFX(RIGHT_LEADER_ID, CANBUS_NAME);
+    private final TalonFX m_rightFollower = new TalonFX(RIGHT_FOLLOWER_ID, CANBUS_NAME);
 
-    DutyCycleOut m_leftOut = new DutyCycleOut(0); // Initialize with 0% output
-    DutyCycleOut m_rightOut = new DutyCycleOut(0); // Initialize with 0% output
+    private final DutyCycleOut m_leftOut = new DutyCycleOut(0); // Initialize with 0% output
+    private final DutyCycleOut m_rightOut = new DutyCycleOut(0); // Initialize with 0% output
 
-    Pigeon2 m_pigeon2 = new Pigeon2(PIGEON2_ID, CANBUS_NAME);
+    private final Pigeon2 m_pigeon2 = new Pigeon2(PIGEON2_ID, CANBUS_NAME);
 
     public DriveSubsystem() {
+        /* Initialize all the devices */
         initializeTalonFX(m_leftLeader.getConfigurator());
         initializeTalonFX(m_leftFollower.getConfigurator());
         initializeTalonFX(m_rightLeader.getConfigurator());
@@ -52,28 +53,24 @@ public class DriveSubsystem extends SubsystemBase {
      * <b>This must be called periodically</b> or else the control frames will not get sent
      * out, resulting in the TalonFXs disabling
      * 
-     * @param throttle Forward/Reverse output
-     * @param wheel Left/Right output
+     * @param fwd Forward/Reverse output
+     * @param rot Left/Right output
      */
-    public void arcadeDrive(double throttle, double wheel)
-    {
-        m_leftOut.output = throttle + wheel;
-        m_rightOut.output = throttle - wheel;
+    public void arcadeDrive(double fwd, double rot) {
+        m_leftOut.output = fwd + rot;
+        m_rightOut.output = fwd - rot;
 
         m_leftLeader.setControl(m_leftOut);
         m_rightLeader.setControl(m_rightOut);
     }
 
-    public StatusSignalValue<Double> getYaw()
-    {
+    public StatusSignalValue<Double> getYaw() {
         return m_pigeon2.getYaw();
     }
-    public StatusSignalValue<Double> getLeftPos()
-    {
+    public StatusSignalValue<Double> getLeftPos() {
         return m_leftLeader.getPosition();
     }
-    public StatusSignalValue<Double> getRightPos()
-    {
+    public StatusSignalValue<Double> getRightPos() {
         return m_rightLeader.getPosition();
     }
 
@@ -81,9 +78,8 @@ public class DriveSubsystem extends SubsystemBase {
      * Initialize TalonFX device from the configurator object
      * @param cfg Configurator of the TalonFX device
      */
-    private void initializeTalonFX(TalonFXConfigurator cfg)
-    {
-        TalonFXConfiguration toApply = new TalonFXConfiguration();
+    private void initializeTalonFX(TalonFXConfigurator cfg) {
+        var toApply = new TalonFXConfiguration();
 
         /* User can change configs if they want, or leave this blank for factory-default */
 
@@ -97,9 +93,8 @@ public class DriveSubsystem extends SubsystemBase {
      * Initialize Pigeon2 device from the configurator object
      * @param cfg Configurator of the Pigeon2 device
      */
-    private void initializePigeon2(Pigeon2Configurator cfg)
-    {
-        Pigeon2Configuration toApply = new Pigeon2Configuration();
+    private void initializePigeon2(Pigeon2Configurator cfg) {
+        var toApply = new Pigeon2Configuration();
 
         /* User can change configs if they want, or leave this blank for factory-default */
 
