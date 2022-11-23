@@ -3,19 +3,27 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "RobotContainer.h"
+#include <frc2/command/button/Trigger.h>
 
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
+RobotContainer::RobotContainer()
+{
   // Initialize all of your commands and subsystems here
+  m_driveSubsystem.SetDefaultCommand(m_teleopDrive);
 
   // Configure the button bindings
   ConfigureButtonBindings();
 }
 
-void RobotContainer::ConfigureButtonBindings() {
+void RobotContainer::ConfigureButtonBindings()
+{
   // Configure your button bindings here
+  frc2::Trigger{[this]()
+                { return m_joystick.GetLeftBumper(); }}
+      .WhileTrue(&m_driveStraightCommand);
 }
 
-frc2::Command* RobotContainer::GetAutonomousCommand() {
+frc2::Command *RobotContainer::GetAutonomousCommand()
+{
   // An example command will be run in autonomous
-  return &m_autonomousCommand;
+  return nullptr;
 }

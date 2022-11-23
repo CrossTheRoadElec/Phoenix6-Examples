@@ -5,9 +5,10 @@
 #pragma once
 
 #include <frc2/command/Command.h>
-
-#include "commands/ExampleCommand.h"
-#include "subsystems/ExampleSubsystem.h"
+#include <frc2/command/RunCommand.h>
+#include <frc/XboxController.h>
+#include "subsystems/DriveSubsystem.h"
+#include "commands/DriveStraightCommand.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -16,16 +17,27 @@
  * scheduler calls).  Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
  */
-class RobotContainer {
- public:
+class RobotContainer
+{
+public:
   RobotContainer();
 
-  frc2::Command* GetAutonomousCommand();
+  frc2::Command *GetAutonomousCommand();
 
- private:
+private:
   // The robot's subsystems and commands are defined here...
-  ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
+  frc::XboxController m_joystick{0};
+
+  DriveSubsystem m_driveSubsystem{};
+
+  frc2::RunCommand m_teleopDrive{[this]()
+                                 {
+                                   m_driveSubsystem.ArcadeDrive(m_joystick.GetLeftY(), m_joystick.GetRightX());
+                                 },
+                                 {&m_driveSubsystem}};
+  DriveStraightCommand m_driveStraightCommand{m_driveSubsystem,
+                                              [this]()
+                                              { return m_joystick.GetLeftY(); }};
 
   void ConfigureButtonBindings();
 };
