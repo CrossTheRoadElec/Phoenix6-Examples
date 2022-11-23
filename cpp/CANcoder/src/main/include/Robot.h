@@ -9,8 +9,10 @@
 #include <ctre/phoenixpro/CANcoder.hpp>
 
 class Robot : public frc::TimedRobot {
+ private:
   ctre::phoenixpro::hardware::CANcoder cancoder{1, "rio"};
-  units::time::second_t currentTime = frc::Timer::GetFPGATimestamp();
+  units::time::second_t currentTime{frc::Timer::GetFPGATimestamp()};
+
  public:
   void RobotInit() override;
   void RobotPeriodic() override;

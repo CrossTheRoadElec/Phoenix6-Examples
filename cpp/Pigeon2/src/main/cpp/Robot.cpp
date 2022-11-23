@@ -7,10 +7,10 @@
 
 using namespace ctre::phoenixpro;
 
-static constexpr units::time::second_t print_period = 500_ms;
+constexpr units::time::second_t print_period{500_ms};
 
 void Robot::RobotInit() {
-  // Configure Pigeon2
+  /* Configure Pigeon2 */
   configs::Pigeon2Configuration toApply{};
 
   /* User can change the configs if they want, or leave it empty for factory-default */
@@ -23,8 +23,7 @@ void Robot::RobotInit() {
 }
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
-  if (frc::Timer::GetFPGATimestamp() - currentTime > print_period)
-  {
+  if (frc::Timer::GetFPGATimestamp() - currentTime > print_period) {
     currentTime += print_period;
     /**
      * GetYaw automatically calls Refresh(), no need to manually refresh.
@@ -34,6 +33,7 @@ void Robot::RobotPeriodic() {
      */
     auto yaw = pidgey.GetYaw();
     std::cout << "Yaw is " << yaw << " with " << yaw.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
+
     /**
      * Get the Gravity Vector Z component StatusSignalValue
      */

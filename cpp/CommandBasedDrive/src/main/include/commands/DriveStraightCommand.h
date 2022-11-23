@@ -10,24 +10,18 @@
 #include <frc/Notifier.h>
 #include <units/time.h>
 
-/**
- * An example command that uses an example subsystem.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
 class DriveStraightCommand
     : public frc2::CommandHelper<frc2::CommandBase, DriveStraightCommand> {
 private:
-    const units::time::second_t MAX_UPDATE_PERIOD = 0.050_s;
+    static constexpr units::time::second_t MAX_UPDATE_PERIOD{0.050_s};
+
 public:
     /**
      * Creates a new ExampleCommand.
      *
      * @param subsystem The subsystem used by this command.
      */
-    explicit DriveStraightCommand(DriveSubsystem& subsystem, std::function<double ()> throttle);
+    explicit DriveStraightCommand(DriveSubsystem &subsystem, std::function<double()> throttle);
 
     void Initialize() override;
     void End(bool isInterrupted) override;
@@ -35,9 +29,9 @@ public:
 private:
     void DriveStraightExecution();
 
-    DriveSubsystem& m_driveSubsystem;
-    std::function<double ()> m_throttle;
-    ctre::phoenixpro::StatusSignalValue<double, units::angle::degree_t>& m_yawGetter;
+    DriveSubsystem &m_driveSubsystem;
+    std::function<double()> m_throttle;
+    ctre::phoenixpro::StatusSignalValue<double, units::angle::degree_t> &m_yawGetter;
     units::angle::degree_t m_holdYaw;
     frc::Notifier m_driveStraightThread;
 };

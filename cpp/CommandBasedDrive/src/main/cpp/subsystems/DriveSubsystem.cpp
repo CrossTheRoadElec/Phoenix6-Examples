@@ -6,8 +6,9 @@
 
 using namespace ctre::phoenixpro;
 
-DriveSubsystem::DriveSubsystem() {
-    // Implementation of subsystem constructor goes here.
+DriveSubsystem::DriveSubsystem()
+{
+    /* Initialize all the devices */
     InitializeTalonFX(m_leftLeader.GetConfigurator());
     InitializeTalonFX(m_leftFollower.GetConfigurator());
     InitializeTalonFX(m_rightLeader.GetConfigurator());
@@ -29,10 +30,10 @@ DriveSubsystem::DriveSubsystem() {
     m_rightOut.UpdateFreqHz = 0_Hz;
 }
 
-void DriveSubsystem::ArcadeDrive(double throttle, double wheel)
+void DriveSubsystem::ArcadeDrive(double fwd, double rot)
 {
-    m_leftOut.output = throttle + wheel;
-    m_rightOut.output = throttle - wheel;
+    m_leftOut.output = fwd + rot;
+    m_rightOut.output = fwd - rot;
     m_leftLeader.SetControl(m_leftOut);
     m_rightLeader.SetControl(m_rightOut);
 }

@@ -28,12 +28,12 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
-  /* Get throttle and wheel from joystick */
-  double throttle = joystick.GetLeftY();
-  double wheel = joystick.GetRightX();
+  /* Get forward and rotational throttle from joystick */
+  double fwd = joystick.GetLeftY();
+  double rot = joystick.GetRightX();
   /* Set output to control frames */
-  leftOut.output = throttle + wheel;
-  rightOut.output = throttle - wheel;
+  leftOut.output = fwd + rot;
+  rightOut.output = fwd - rot;
   /* And set them to the motors */
   leftLeader.SetControl(leftOut);
   rightLeader.SetControl(rightOut);

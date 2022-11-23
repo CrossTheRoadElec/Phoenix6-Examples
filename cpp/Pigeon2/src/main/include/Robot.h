@@ -9,8 +9,10 @@
 #include <ctre/phoenixpro/Pigeon2.hpp>
 
 class Robot : public frc::TimedRobot {
+ private:
   ctre::phoenixpro::hardware::Pigeon2 pidgey{1, "rio"};
-  units::time::second_t currentTime = frc::Timer::GetFPGATimestamp();
+  units::time::second_t currentTime{frc::Timer::GetFPGATimestamp()};
+
  public:
   void RobotInit() override;
   void RobotPeriodic() override;

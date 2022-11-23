@@ -16,22 +16,38 @@ private:
     ctre::phoenixpro::hardware::TalonFX m_rightLeader{RIGHT_LEADER_ID, CANBUS_NAME};
     ctre::phoenixpro::hardware::TalonFX m_rightFollower{RIGHT_FOLLOWER_ID, CANBUS_NAME};
 
-    ctre::phoenixpro::controls::DutyCycleOut m_leftOut{0}; // Initialize with 0% output
+    ctre::phoenixpro::controls::DutyCycleOut m_leftOut{0};  // Initialize with 0% output
     ctre::phoenixpro::controls::DutyCycleOut m_rightOut{0}; // Initialize with 0% output
 
     ctre::phoenixpro::hardware::Pigeon2 m_pigeon2{PIGEON2_ID, CANBUS_NAME};
- public:
+
+public:
     DriveSubsystem();
-    
-    void ArcadeDrive(double throttle, double wheel);
-    auto& GetYaw() { return m_pigeon2.GetYaw(); }
-    auto& GetLeftPos() { return m_leftLeader.GetPosition(); }
-    auto& GetRightPos() { return m_rightLeader.GetPosition(); }
 
- private:
-    // Components (e.g. motor controllers and sensors) should generally be
-    // declared private and exposed only through public methods.
+    /**
+     * Drive the robot using an arcade drive format.
+     *
+     * This must be called periodically or else the control frames will not get sent
+     * out, resulting in the TalonFXs disabling
+     * 
+     * \param fwd Forward/Reverse output
+     * \param rot Left/Right output
+     */
+    void ArcadeDrive(double fwd, double rot);
 
-    void InitializeTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator& cfg);
-    void InitializePigeon2(ctre::phoenixpro::configs::Pigeon2Configurator& cfg);
+    auto &GetYaw() { return m_pigeon2.GetYaw(); }
+    auto &GetLeftPos() { return m_leftLeader.GetPosition(); }
+    auto &GetRightPos() { return m_rightLeader.GetPosition(); }
+
+private:
+    /**
+     * Initialize TalonFX device from the configurator object
+     * \param cfg Configurator of the TalonFX device
+     */
+    void InitializeTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg);
+    /**
+     * Initialize Pigeon2 device from the configurator object
+     * \param cfg Configurator of the Pigeon2 device
+     */
+    void InitializePigeon2(ctre::phoenixpro::configs::Pigeon2Configurator &cfg);
 };
