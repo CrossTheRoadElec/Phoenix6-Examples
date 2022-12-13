@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     rightLeader.setSafetyEnabled(true);
 
     /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if(Utils.isSimulation()){
+    if (Utils.isSimulation()){
       leftOut.EnableFOC = false;
       rightOut.EnableFOC = false;
     }
@@ -87,8 +87,7 @@ public class Robot extends TimedRobot {
     leftOut.Output = fwd + rot;
     rightOut.Output = fwd - rot;
     /* And set them to the motors */
-    if(!joystick.getAButton())
-    {
+    if (!joystick.getAButton()) {
       leftLeader.setControl(leftOut);
       rightLeader.setControl(rightOut);
     }

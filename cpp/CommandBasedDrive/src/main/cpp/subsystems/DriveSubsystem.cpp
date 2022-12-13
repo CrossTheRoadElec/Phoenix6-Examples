@@ -2,8 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "ctre/phoenixpro/Utils.hpp"
 #include "subsystems/DriveSubsystem.h"
+#include "ctre/phoenixpro/Utils.hpp"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/RobotController.h>
 
@@ -33,11 +33,22 @@ DriveSubsystem::DriveSubsystem()
     m_rightOut.UpdateFreqHz = 0_Hz;
     
     /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if(ctre::phoenixpro::IsSimulation())
+    if (ctre::phoenixpro::IsSimulation())
     {
         m_leftOut.EnableFOC = false;
         m_rightOut.EnableFOC = false;
     }
+
+    /*
+     * Set the orientation of the simulated TalonFX devices relative to the robot chassis.
+     * WPILib expects +V to be forward. Specify orientations to match that behavior.
+     */
+    /* left TalonFXs are CCW+ */
+    m_leftSimState.orientation = sim::ChassisReference::CounterClockwise_Positive;
+    m_leftFollowerSimState.orientation = sim::ChassisReference::CounterClockwise_Positive;
+    /* right TalonFXs are CW+ */
+    m_rightSimState.orientation = sim::ChassisReference::Clockwise_Positive;
+    m_rightFollowerSimState.orientation = sim::ChassisReference::Clockwise_Positive;
 
     /* Publish field pose data to read back from */
     frc::SmartDashboard::PutData("Field", &m_field);
@@ -102,7 +113,7 @@ void DriveSubsystem::Periodic()
 
 void DriveSubsystem::SimulationPeriodic()
 {
-    /* Pass the robot battery voltage to the simulated Talon SRXs */
+    /* Pass the robot battery voltage to the simulated devices */
     m_leftSimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
     m_rightSimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
     m_leftFollowerSimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
@@ -110,21 +121,17 @@ void DriveSubsystem::SimulationPeriodic()
     m_pigeon2SimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
 
     /*
-     * CTRE simulation is low-level, so SimCollection inputs
-     * and outputs are not affected by SetInverted(). Only
-     * the regular user-level API calls are affected.
+     * CTRE simulation is low-level, so SimState inputs
+     * and outputs are not affected by user-level inversion.
+     * However, inputs and outputs *are* affected by the mechanical
+     * orientation of the device relative to the robot chassis,
+     * as specified by the `orientation` field.
      *
-     * WPILib expects +V to be forward.
-     * Positive motor output lead voltage is ccw. We observe
-     * on our physical robot that this is reverse for the
-     * right motor, so negate it.
-     *
-     * We are hard-coding the negation of the values instead of
-     * using getInverted() so we can catch a possible bug in the
-     * robot code where the wrong value is passed to setInverted().
+     * WPILib expects +V to be forward. We have already configured
+     * our orientations to match this behavior.
      */
     m_driveSim.SetInputs(m_leftSimState.GetMotorVoltage(),
-                         -m_rightSimState.GetMotorVoltage());
+                         m_rightSimState.GetMotorVoltage());
 
     /*
      * Advance the model by 20 ms. Note that if you are running this
@@ -133,52 +140,38 @@ void DriveSubsystem::SimulationPeriodic()
      */
     m_driveSim.Update(20_ms);
 
-    /*
-     * Update all of our sensors.
-     *
-     * Since WPILib's simulation class is assuming +V is forward,
-     * but -V is forward for the right motor, we need to negate the
-     * position reported by the simulation class. Basically, we
-     * negated the input, so we need to negate the output.
-     *
-     * We also observe on our physical robot that a positive voltage
-     * across the output leads results in a positive sensor velocity
-     * for both the left and right motors, so we do not need to negate
-     * the output any further.
-     * If we had observed that a positive voltage results in a negative
-     * sensor velocity, we would need to negate the output once more.
-     */
+    /* Update all of our sensors. */
     m_leftSimState.SetRawRotorPosition(
-        metersToRotations(
-            m_driveSim.GetLeftPosition()));
+        metersToRotations(m_driveSim.GetLeftPosition())
+    );
     m_leftSimState.SetRotorVelocity(
-        metersToRotationsVel(
-            m_driveSim.GetLeftVelocity()));
+        metersToRotationsVel(m_driveSim.GetLeftVelocity())
+    );
     m_rightSimState.SetRawRotorPosition(
-        metersToRotations(
-            -m_driveSim.GetRightPosition()));
+        metersToRotations(m_driveSim.GetRightPosition())
+    );
     m_rightSimState.SetRotorVelocity(
-        metersToRotationsVel(
-            -m_driveSim.GetRightVelocity()));
+        metersToRotationsVel(m_driveSim.GetRightVelocity())
+    );
     m_leftFollowerSimState.SetRawRotorPosition(
-        metersToRotations(
-            m_driveSim.GetLeftPosition()));
+        metersToRotations(m_driveSim.GetLeftPosition())
+    );
     m_leftFollowerSimState.SetRotorVelocity(
-        metersToRotationsVel(
-            m_driveSim.GetLeftVelocity()));
+        metersToRotationsVel(m_driveSim.GetLeftVelocity())
+    );
     m_rightFollowerSimState.SetRawRotorPosition(
-        metersToRotations(
-            -m_driveSim.GetRightPosition()));
+        metersToRotations(m_driveSim.GetRightPosition())
+    );
     m_rightFollowerSimState.SetRotorVelocity(
-        metersToRotationsVel(
-            -m_driveSim.GetRightVelocity()));
+        metersToRotationsVel(m_driveSim.GetRightVelocity())
+    );
     m_pigeon2SimState.SetRawYaw(m_driveSim.GetHeading().Degrees());
 }
 
 units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
 {
     /* Get circumference of wheel */
-    auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
     /* Every rotation of the wheel travels this many inches */
     /* Now apply gear ratio to input rotations */
     auto gearedRotations = rotations / kGearRatio;
@@ -189,9 +182,9 @@ units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
 units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
 {
     /* Get circumference of wheel */
-    auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
     /* Every rotation of the wheel travels this many inches */
-    /* Now apply wheel rotations to inptu meters */
+    /* Now apply wheel rotations to input meters */
     auto wheelRotations = meters / circumference;
     /* And multiply by gear ratio to get rotor rotations */
     return wheelRotations * kGearRatio;
@@ -200,7 +193,7 @@ units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
 units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per_second_t rotations)
 {
     /* Get circumference of wheel */
-    auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
     /* Every rotation of the wheel travels this many inches */
     /* Now apply gear ratio to input rotations */
     auto gearedRotations = rotations / kGearRatio;
@@ -211,9 +204,9 @@ units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per
 units::turns_per_second_t DriveSubsystem::metersToRotationsVel(units::meters_per_second_t meters)
 {
     /* Get circumference of wheel */
-    auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
     /* Every rotation of the wheel travels this many inches */
-    /* Now apply wheel rotations to inptu meters */
+    /* Now apply wheel rotations to input meters */
     auto wheelRotations = meters / circumference;
     /* And multiply by gear ratio to get rotor rotations */
     return wheelRotations * kGearRatio;

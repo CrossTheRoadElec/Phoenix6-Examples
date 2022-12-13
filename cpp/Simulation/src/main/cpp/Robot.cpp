@@ -11,24 +11,27 @@ using namespace ctre::phoenixpro;
 
 void Robot::RobotInit()
 {
-  configs::TalonFXConfiguration fxCfg{};
-  fxCfg.MotorOutput.Inverted = spns::InvertedValue::Clockwise_Positive;
   ctre::phoenix::StatusCode returnCode;
-  do
-  {
-      returnCode = leftFx.GetConfigurator().Apply(fxCfg);
-  } while(!returnCode.IsOK());
 
+  configs::TalonFXConfiguration fxCfg{};
   fxCfg.MotorOutput.Inverted = spns::InvertedValue::CounterClockwise_Positive;
   do
   {
-      returnCode = rightFx.GetConfigurator().Apply(fxCfg);
-  } while(!returnCode.IsOK());
+    returnCode = leftFX.GetConfigurator().Apply(fxCfg);
+  }
+  while (!returnCode.IsOK());
+
+  fxCfg.MotorOutput.Inverted = spns::InvertedValue::Clockwise_Positive;
+  do
+  {
+    returnCode = rightFX.GetConfigurator().Apply(fxCfg);
+  }
+  while (!returnCode.IsOK());
 
   configs::CANcoderConfiguration ccCfg{};
-  ccCfg.MagnetSensor.SensorDirection = spns::CANcoder_SensorDirectionValue::Clockwise_Positive;
-  leftSensor.GetConfigurator().Apply(ccCfg);
   ccCfg.MagnetSensor.SensorDirection = spns::CANcoder_SensorDirectionValue::CounterClockwise_Positive;
+  leftSensor.GetConfigurator().Apply(ccCfg);
+  ccCfg.MagnetSensor.SensorDirection = spns::CANcoder_SensorDirectionValue::Clockwise_Positive;
   rightSensor.GetConfigurator().Apply(ccCfg);
 
   configs::Pigeon2Configuration imuCfg{};
@@ -40,13 +43,13 @@ void Robot::RobotInit()
    * they're all on a CANivore
    */
   imu.GetYaw().SetUpdateFrequency(100_Hz);
-  leftFx.GetPosition().SetUpdateFrequency(100_Hz);
-  rightFx.GetPosition().SetUpdateFrequency(100_Hz);
+  leftFX.GetPosition().SetUpdateFrequency(100_Hz);
+  rightFX.GetPosition().SetUpdateFrequency(100_Hz);
 
   /* Publish field pose data to read back from */
   frc::SmartDashboard::PutData("Field", &m_field);
 }
-int printCount = 0;
+
 void Robot::RobotPeriodic()
 {
   /*
@@ -59,17 +62,17 @@ void Robot::RobotPeriodic()
                     rotationsToMeters(rightSensor.GetPosition().GetValue()));
   m_field.SetRobotPose(m_odometry.GetPose());
 
-  if (printCount++ > 50)
+  if (++printCount >= 50)
   {
     printCount = 0;
-    std::cout << "Left FX: " << leftFx.GetPosition() << std::endl;
-    std::cout << "Right FX: " << rightFx.GetPosition() << std::endl;
+    std::cout << "Left FX: " << leftFX.GetPosition() << std::endl;
+    std::cout << "Right FX: " << rightFX.GetPosition() << std::endl;
     std::cout << "Left CANcoder: " << leftSensor.GetPosition() << std::endl;
     std::cout << "Right CANcoder: " << rightSensor.GetPosition() << std::endl;
-    std::cout << "Left Forward limit: " << leftFx.GetForwardLimit() << std::endl;
-    std::cout << "Left Reverse limit: " << leftFx.GetReverseLimit() << std::endl;
-    std::cout << "Right Forward limit: " << rightFx.GetForwardLimit() << std::endl;
-    std::cout << "Right Reverse limit: " << rightFx.GetReverseLimit() << std::endl;
+    std::cout << "Left Forward limit: " << leftFX.GetForwardLimit() << std::endl;
+    std::cout << "Left Reverse limit: " << leftFX.GetReverseLimit() << std::endl;
+    std::cout << "Right Forward limit: " << rightFX.GetForwardLimit() << std::endl;
+    std::cout << "Right Reverse limit: " << rightFX.GetReverseLimit() << std::endl;
     std::cout << "Pigeon2: " << imu.GetYaw() << std::endl;
     std::cout << "" << std::endl;
   }
@@ -81,7 +84,7 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic()
 {
-  drivetrain.CurvatureDrive(-joystick.GetLeftY(), joystick.GetRightX(), joystick.GetRightStickButton());
+  drivetrain.CurvatureDrive(-joystick.GetLeftY(), -joystick.GetRightX(), joystick.GetRightStickButton());
 }
 
 void Robot::DisabledInit() {}
@@ -90,10 +93,22 @@ void Robot::DisabledPeriodic() {}
 void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
 
-void Robot::SimulationInit() {}
+void Robot::SimulationInit()
+{
+  /*
+   * Set the orientation of the simulated devices relative to the robot chassis.
+   * WPILib expects +V to be forward. Specify orientations to match that behavior.
+   */
+  /* left devices are CCW+ */
+  leftSim.orientation = sim::ChassisReference::CounterClockwise_Positive;
+  leftSensSim.orientation = sim::ChassisReference::CounterClockwise_Positive;
+  /* right devices are CW+ */
+  rightSim.orientation = sim::ChassisReference::Clockwise_Positive;
+  rightSensSim.orientation = sim::ChassisReference::Clockwise_Positive;
+}
 void Robot::SimulationPeriodic()
 {
-  /* Pass the robot battery voltage to the simulated Talon SRXs */
+  /* Pass the robot battery voltage to the simulated devices */
   leftSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
   leftSensSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
   rightSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
@@ -101,21 +116,17 @@ void Robot::SimulationPeriodic()
   imuSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
 
   /*
-   * CTRE simulation is low-level, so SimCollection inputs
-   * and outputs are not affected by SetInverted(). Only
-   * the regular user-level API calls are affected.
+   * CTRE simulation is low-level, so SimState inputs
+   * and outputs are not affected by user-level inversion.
+   * However, inputs and outputs *are* affected by the mechanical
+   * orientation of the device relative to the robot chassis,
+   * as specified by the `orientation` field.
    *
-   * WPILib expects +V to be forward.
-   * Positive motor output lead voltage is ccw. We observe
-   * on our physical robot that this is reverse for the
-   * right motor, so negate it.
-   *
-   * We are hard-coding the negation of the values instead of
-   * using getInverted() so we can catch a possible bug in the
-   * robot code where the wrong value is passed to setInverted().
+   * WPILib expects +V to be forward. We have already configured
+   * our orientations to match this behavior.
    */
   m_driveSim.SetInputs(leftSim.GetMotorVoltage(),
-                       -rightSim.GetMotorVoltage());
+                       rightSim.GetMotorVoltage());
 
   /*
    * Advance the model by 20 ms. Note that if you are running this
@@ -124,25 +135,11 @@ void Robot::SimulationPeriodic()
    */
   m_driveSim.Update(20_ms);
 
-  /*
-   * Update all of our sensors.
-   *
-   * Since WPILib's simulation class is assuming +V is forward,
-   * but -V is forward for the right motor, we need to negate the
-   * position reported by the simulation class. Basically, we
-   * negated the input, so we need to negate the output.
-   *
-   * We also observe on our physical robot that a positive voltage
-   * across the output leads results in a positive sensor velocity
-   * for both the left and right motors, so we do not need to negate
-   * the output any further.
-   * If we had observed that a positive voltage results in a negative
-   * sensor velocity, we would need to negate the output once more.
-   */
-  auto leftPos = metersToRotations(m_driveSim.GetLeftPosition());
-  auto leftVel = metersToRotationsVel(m_driveSim.GetLeftVelocity());
-  auto rightPos = metersToRotations(-m_driveSim.GetRightPosition());
-  auto rightVel = metersToRotationsVel(-m_driveSim.GetRightVelocity());
+  /* Update all of our sensors. */
+  auto const leftPos = metersToRotations(m_driveSim.GetLeftPosition());
+  auto const leftVel = metersToRotationsVel(m_driveSim.GetLeftVelocity());
+  auto const rightPos = metersToRotations(m_driveSim.GetRightPosition());
+  auto const rightVel = metersToRotationsVel(m_driveSim.GetRightVelocity());
   leftSensSim.SetRawPosition(leftPos);
   leftSensSim.SetVelocity(leftVel);
   rightSensSim.SetRawPosition(rightPos);
@@ -153,8 +150,8 @@ void Robot::SimulationPeriodic()
   rightSim.SetRotorVelocity(rightVel * kGearRatio);
   imuSim.SetRawYaw(m_driveSim.GetHeading().Degrees());
 
-  /**
-   *  If a bumper is pressed, trigger the forward limit switch to test it,
+  /*
+   * If a bumper is pressed, trigger the forward limit switch to test it,
    * if a trigger is pressed, trigger the reverse limit switch
    */
   leftSim.SetForwardLimit(joystick.GetLeftBumper());
@@ -166,40 +163,38 @@ void Robot::SimulationPeriodic()
 units::meter_t Robot::rotationsToMeters(units::turn_t rotations)
 {
   /* Get circumference of wheel */
-  auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
   /* Every rotation of the wheel travels this many inches */
-  /* Now apply gear ratio to input rotations */
+  /* Now multiply rotations by meters per rotation */
   return rotations * circumference;
 }
 
 units::turn_t Robot::metersToRotations(units::meter_t meters)
 {
   /* Get circumference of wheel */
-  auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
   /* Every rotation of the wheel travels this many inches */
-  /* Now apply wheel rotations to inptu meters */
+  /* Now apply wheel rotations to input meters */
   auto wheelRotations = meters / circumference;
-  /* And multiply by gear ratio to get rotor rotations */
   return wheelRotations;
 }
 
 units::meters_per_second_t Robot::rotationsToMetersVel(units::turns_per_second_t rotations)
 {
   /* Get circumference of wheel */
-  auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
   /* Every rotation of the wheel travels this many inches */
-  /* And multiply geared rotations by meters per rotation */
+  /* Now multiply rotations by meters per rotation */
   return rotations * circumference;
 }
 
 units::turns_per_second_t Robot::metersToRotationsVel(units::meters_per_second_t meters)
 {
   /* Get circumference of wheel */
-  auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
   /* Every rotation of the wheel travels this many inches */
-  /* Now apply wheel rotations to inptu meters */
+  /* Now apply wheel rotations to input meters */
   auto wheelRotations = meters / circumference;
-  /* And multiply by gear ratio to get rotor rotations */
   return wheelRotations;
 }
 

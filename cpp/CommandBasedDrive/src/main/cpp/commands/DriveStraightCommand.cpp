@@ -19,7 +19,7 @@ void DriveStraightCommand::DriveStraightExecution()
 {
     /* Get our current yaw and find the error from the yaw we want to hold */
     const auto err = m_holdYaw - m_yawGetter.WaitForUpdate(MAX_UPDATE_PERIOD).GetValue();
-    /* Simple P-loop, where 100 degrees off corresponds to 100% output */
+    /* Simple P-loop, where 30 degrees off corresponds to 100% output */
     constexpr auto kP{1.0 / 30_deg};
     double correction = err * kP;
     /* And apply it to the arcade drive */

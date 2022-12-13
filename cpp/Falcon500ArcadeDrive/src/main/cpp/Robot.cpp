@@ -21,7 +21,7 @@ void Robot::RobotInit() {
   rightFollower.GetConfigurator().Apply(rightConfiguration);
     
   /* Currently in simulation, we do not support FOC, so disable it while simulating */
-  if(ctre::phoenixpro::IsSimulation())
+  if (ctre::phoenixpro::IsSimulation())
   {
     leftOut.EnableFOC = false;
     rightOut.EnableFOC = false;
@@ -45,7 +45,7 @@ void Robot::TeleopPeriodic() {
   /* Set output to control frames */
   leftOut.Output = fwd + rot;
   rightOut.Output = fwd - rot;
-  if(!joystick.GetAButton())
+  if (!joystick.GetAButton())
   {
     /* And set them to the motors */
     leftLeader.SetControl(leftOut);

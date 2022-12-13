@@ -16,18 +16,19 @@
 #include <units/velocity.h>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenixpro::hardware::TalonFX leftFx{0};
-  ctre::phoenixpro::sim::TalonFXSimState& leftSim = leftFx.GetSimState();
-  ctre::phoenixpro::hardware::TalonFX rightFx{1};
-  ctre::phoenixpro::sim::TalonFXSimState& rightSim = rightFx.GetSimState();
+  ctre::phoenixpro::hardware::TalonFX leftFX{0};
+  ctre::phoenixpro::hardware::TalonFX rightFX{1};
   ctre::phoenixpro::hardware::CANcoder leftSensor{0};
-  ctre::phoenixpro::sim::CANcoderSimState& leftSensSim = leftSensor.GetSimState();
   ctre::phoenixpro::hardware::CANcoder rightSensor{1};
-  ctre::phoenixpro::sim::CANcoderSimState& rightSensSim = rightSensor.GetSimState();
   ctre::phoenixpro::hardware::Pigeon2 imu{0};
-  ctre::phoenixpro::sim::Pigeon2SimState& imuSim = imu.GetSimState();
 
-  frc::DifferentialDrive drivetrain{leftFx, rightFx};
+  ctre::phoenixpro::sim::TalonFXSimState &leftSim = leftFX.GetSimState();
+  ctre::phoenixpro::sim::TalonFXSimState &rightSim = rightFX.GetSimState();
+  ctre::phoenixpro::sim::CANcoderSimState &leftSensSim = leftSensor.GetSimState();
+  ctre::phoenixpro::sim::CANcoderSimState &rightSensSim = rightSensor.GetSimState();
+  ctre::phoenixpro::sim::Pigeon2SimState &imuSim = imu.GetSimState();
+
+  frc::DifferentialDrive drivetrain{leftFX, rightFX};
 
   frc::XboxController joystick{0};
 
@@ -49,13 +50,16 @@ class Robot : public frc::TimedRobot {
     26.5_kg,     // Mass of robot is 26.5 kg
     kWheelRadiusInches,
     0.546_m,     // Distance between wheels is _ meters.
-    };
+  };
 
   frc::Field2d m_field{};
 
   frc::DifferentialDriveOdometry m_odometry{
     imu.GetRotation2d(),
-    0_m, 0_m};
+    0_m, 0_m
+  };
+  
+  int printCount{0};
 
   units::meter_t rotationsToMeters(units::turn_t rotations);
   units::meters_per_second_t rotationsToMetersVel(units::turns_per_second_t rotations);

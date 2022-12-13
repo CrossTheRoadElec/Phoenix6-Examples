@@ -49,13 +49,14 @@ private:
         26.5_kg,     // Mass of robot is 26.5 kg
         kWheelRadiusInches,
         0.546_m,     // Distance between wheels is _ meters.
-        };
+    };
 
     frc::Field2d m_field{};
 
     frc::DifferentialDriveOdometry m_odometry{
         m_pigeon2.GetRotation2d(),
-        0_m, 0_m};
+        0_m, 0_m
+    };
 
     units::meter_t rotationsToMeters(units::turn_t rotations);
     units::meters_per_second_t rotationsToMetersVel(units::turns_per_second_t rotations);

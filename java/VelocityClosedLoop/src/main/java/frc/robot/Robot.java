@@ -20,17 +20,17 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_fx = new TalonFX(0);
+  private final TalonFX m_fx = new TalonFX(0);
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, enable FOC, no feed forward, use slot 0 */
-  VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, true, 0, 0);
+  private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, true, 0, 0);
   /* Start at velocity 0, no feed forward, use slot 1 */
-  VelocityTorqueCurrentFOC m_torqueVelocity = new VelocityTorqueCurrentFOC(0, 0, 1);
+  private final VelocityTorqueCurrentFOC m_torqueVelocity = new VelocityTorqueCurrentFOC(0, 0, 1);
   /* Keep a brake request so we can disable the motor */
-  StaticBrake m_brake = new StaticBrake();
+  private final StaticBrake m_brake = new StaticBrake();
 
-  XboxController m_joystick = new XboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -72,22 +72,19 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double joyValue = m_joystick.getLeftY();
-    if(joyValue > -0.1 && joyValue < 0.1) joyValue = 0;
+    if (joyValue > -0.1 && joyValue < 0.1) joyValue = 0;
 
     double desiredRotationsPerSecond = joyValue * 50; // Go for plus/minus 10 rotations per second
-    if (m_joystick.getLeftBumper())
-    {
+    if (m_joystick.getLeftBumper()) {
       /* Use voltage velocity */
       m_fx.setControl(m_voltageVelocity.withVelocity(desiredRotationsPerSecond));
     }
-    else if (m_joystick.getRightBumper())
-    {
+    else if (m_joystick.getRightBumper()) {
       double friction_torque = (joyValue > 0) ? 1 : -1; // To account for friction, we add this to the arbitrary feed forward
       /* Use torque velocity */
       m_fx.setControl(m_torqueVelocity.withVelocity(desiredRotationsPerSecond).withFeedForward(friction_torque));
     }
-    else
-    {
+    else {
       /* Disable the motor instead */
       m_fx.setControl(m_brake);
     }

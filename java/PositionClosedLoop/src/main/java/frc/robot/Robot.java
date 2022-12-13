@@ -20,17 +20,17 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_fx = new TalonFX(0);
+  private final TalonFX m_fx = new TalonFX(0);
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at position 0, enable FOC, no feed forward, use slot 0 */
-  PositionVoltage m_voltagePosition = new PositionVoltage(0, true, 0, 0);
+  private final PositionVoltage m_voltagePosition = new PositionVoltage(0, true, 0, 0);
   /* Start at position 0, no feed forward, use slot 1 */
-  PositionTorqueCurrentFOC m_torquePosition = new PositionTorqueCurrentFOC(0, 0, 1);
+  private final PositionTorqueCurrentFOC m_torquePosition = new PositionTorqueCurrentFOC(0, 0, 1);
   /* Keep a brake request so we can disable the motor */
-  StaticBrake m_brake = new StaticBrake();
+  private final StaticBrake m_brake = new StaticBrake();
 
-  XboxController m_joystick = new XboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -68,18 +68,15 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double desiredRotations = m_joystick.getLeftY() * 10; // Go for plus/minus 10 rotations
-    if (m_joystick.getLeftBumper())
-    {
+    if (m_joystick.getLeftBumper()) {
       /* Use voltage position */
       m_fx.setControl(m_voltagePosition.withPosition(desiredRotations));
     }
-    else if (m_joystick.getRightBumper())
-    {
+    else if (m_joystick.getRightBumper()) {
       /* Use torque position */
       m_fx.setControl(m_torquePosition.withPosition(desiredRotations));
     }
-    else
-    {
+    else {
       /* Disable the motor instead */
       m_fx.setControl(m_brake);
     }

@@ -11,11 +11,11 @@
 class Robot : public frc::TimedRobot {
   ctre::phoenixpro::hardware::TalonFX m_fx{0};
   ctre::phoenixpro::controls::VelocityVoltage m_voltageVelocity{0_tps, true, 0_V, 0};
-  // ctre::phoenixpro::controls::VelocityTorqueCurrentFOC m_torqueVelocity{0_tps, 0_A, 1};
-  ctre::phoenixpro::controls::VelocityDutyCycle m_dutyCycle{0_tps, true, 0, 1};
+  ctre::phoenixpro::controls::VelocityTorqueCurrentFOC m_torqueVelocity{0_tps, 0_A, 1};
   ctre::phoenixpro::controls::StaticBrake m_brake{};
 
   frc::XboxController m_joystick{0};
+
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
