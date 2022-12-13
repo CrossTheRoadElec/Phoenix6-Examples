@@ -45,7 +45,7 @@ void Robot::RobotPeriodic() {
      * necessary for the ostream print
      */
     std::cout << "Velocity is " <<
-                  vel.GetValue() << " " <<
+                  vel.GetValue().value() << " " <<
                   vel.GetUnits() << " with " <<
                   vel.GetTimestamp().GetLatency().value() << " seconds of latency" <<
                   std::endl;

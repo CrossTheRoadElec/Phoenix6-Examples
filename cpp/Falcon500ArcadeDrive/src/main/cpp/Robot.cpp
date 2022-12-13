@@ -19,6 +19,13 @@ void Robot::RobotInit() {
   leftFollower.GetConfigurator().Apply(leftConfiguration);
   rightLeader.GetConfigurator().Apply(rightConfiguration);
   rightFollower.GetConfigurator().Apply(rightConfiguration);
+    
+  /* Currently in simulation, we do not support FOC, so disable it while simulating */
+  if(ctre::phoenixpro::IsSimulation())
+  {
+    leftOut.EnableFOC = false;
+    rightOut.EnableFOC = false;
+  }
 
   /* Set up followers to follow leaders */
   leftFollower.SetControl(controls::Follower{leftLeader.GetDeviceID(), false});
@@ -36,18 +43,21 @@ void Robot::TeleopPeriodic() {
   double fwd = -joystick.GetLeftY();
   double rot = joystick.GetRightX();
   /* Set output to control frames */
-  leftOut.output = fwd + rot;
-  rightOut.output = fwd - rot;
-  /* And set them to the motors */
-  leftLeader.SetControl(leftOut);
-  rightLeader.SetControl(rightOut);
+  leftOut.Output = fwd + rot;
+  rightOut.Output = fwd - rot;
+  if(!joystick.GetAButton())
+  {
+    /* And set them to the motors */
+    leftLeader.SetControl(leftOut);
+    rightLeader.SetControl(rightOut);
+  }
 }
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {
   /* Zero out controls so we aren't just relying on the enable frame */
-  leftOut.output = 0;
-  rightOut.output = 0;
+  leftOut.Output = 0;
+  rightOut.Output = 0;
   leftLeader.SetControl(leftOut);
   rightLeader.SetControl(rightOut);
 }

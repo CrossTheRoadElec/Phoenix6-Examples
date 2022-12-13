@@ -45,7 +45,7 @@ void Robot::RobotPeriodic() {
      * necessary for the ostream print
      */
     std::cout << "Gravity Vector in the Z direction is " <<
-                  gravityZ.GetValue() << " " <<
+                  gravityZ.GetValue().value() << " " <<
                   gravityZ.GetUnits() << " with " <<
                   gravityZ.GetTimestamp().GetLatency().value() << " seconds of latency" <<
                   std::endl;
