@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final String CANBUS_NAME = "rio";
+  private final String CANBUS_NAME = "";
   private final TalonFX leftLeader = new TalonFX(1, CANBUS_NAME);
   private final TalonFX leftFollower = new TalonFX(2, CANBUS_NAME);
   private final TalonFX rightLeader = new TalonFX(3, CANBUS_NAME);
@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
   private final DutyCycleOut rightOut = new DutyCycleOut(0);
 
   private final XboxController joystick = new XboxController(0);
+
+  private int print_count = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -66,7 +68,16 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    if(print_count++ > 10)
+    {
+      print_count = 0;
+      System.out.println("Left out: " + leftLeader.get());
+      System.out.println("Right out: " + rightLeader.get());
+      System.out.println("Left Pos: " + leftLeader.getPosition());
+      System.out.println("Right Pos: " + rightLeader.getPosition());
+    }
+  }
 
   @Override
   public void autonomousInit() {}
