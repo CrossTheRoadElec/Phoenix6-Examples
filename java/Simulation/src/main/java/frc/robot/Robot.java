@@ -296,11 +296,11 @@ public class Robot extends TimedRobot {
         rightSensSim.setRawPosition(rightPos);
         rightSensSim.setVelocity(rightVel);
 
-        leftSim.setRawRotorPosition(leftPos * this.kGearRatio);
-        leftSim.setRotorVelocity(leftVel * this.kGearRatio);
+        leftSim.setRawRotorPosition(leftPos * kGearRatio);
+        leftSim.setRotorVelocity(leftVel * kGearRatio);
 
-        rightSim.setRawRotorPosition(rightPos * this.kGearRatio);
-        rightSim.setRotorVelocity(rightVel * this.kGearRatio);
+        rightSim.setRawRotorPosition(rightPos * kGearRatio);
+        rightSim.setRotorVelocity(rightVel * kGearRatio);
 
         imuSim.setRawYaw(m_driveSim.getHeading().getDegrees());
 
@@ -351,7 +351,7 @@ public class Robot extends TimedRobot {
 
     private double rotationsToMeters(double rotations) {
         /* Get circumference of wheel */
-        final double circumference = this.kWheelRadiusInches * 2 * Math.PI;
+        final double circumference = kWheelRadiusInches * 2 * Math.PI;
 
         /* Every rotation of the wheel travels this many inches */
         /* So now get the meters traveled per rotation */
@@ -363,7 +363,7 @@ public class Robot extends TimedRobot {
 
     private double metersToRotations(double meters) {
         /* Get circumference of wheel */
-        final double circumference = this.kWheelRadiusInches * 2 * Math.PI;
+        final double circumference = kWheelRadiusInches * 2 * Math.PI;
 
         /* Every rotation of the wheel travels this many inches */
         /* So now get the rotations per meter traveled */
