@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
 
   private final XboxController joystick = new XboxController(0);
 
-  private int print_count = 0;
+  private int printCount = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -69,9 +69,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    if(print_count++ > 10)
-    {
-      print_count = 0;
+    if (++printCount >= 10) {
+      printCount = 0;
       System.out.println("Left out: " + leftLeader.get());
       System.out.println("Right out: " + rightLeader.get());
       System.out.println("Left Pos: " + leftLeader.getPosition());
