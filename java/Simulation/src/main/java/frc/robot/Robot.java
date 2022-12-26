@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenixpro.StatusCode;
 import com.ctre.phoenixpro.configs.CANcoderConfiguration;
 import com.ctre.phoenixpro.configs.Pigeon2Configuration;
 import com.ctre.phoenixpro.configs.TalonFXConfiguration;
@@ -12,12 +11,12 @@ import com.ctre.phoenixpro.controls.Follower;
 import com.ctre.phoenixpro.hardware.CANcoder;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import com.ctre.phoenixpro.hardware.TalonFX;
+import com.ctre.phoenixpro.signals.CANcoder_SensorDirectionValue;
+import com.ctre.phoenixpro.signals.InvertedValue;
 import com.ctre.phoenixpro.sim.CANcoderSimState;
 import com.ctre.phoenixpro.sim.ChassisReference;
 import com.ctre.phoenixpro.sim.Pigeon2SimState;
 import com.ctre.phoenixpro.sim.TalonFXSimState;
-import com.ctre.phoenixpro.spns.CANcoder_SensorDirectionValue;
-import com.ctre.phoenixpro.spns.InvertedValue;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -44,7 +43,7 @@ public class Robot extends TimedRobot {
 
     private final XboxController joystick = new XboxController(0);
 
-    // all CTRE devices are assumed to be on a canivore bus named "mycanivore"
+    // All CTRE devices are assumed to be on a canivore bus named "mycanivore"
     private final TalonFX leftLeader = new TalonFX(1, kCanivoreName);
     private final TalonFX rightLeader = new TalonFX(2, kCanivoreName);
     private final TalonFX leftFollower = new TalonFX(3, kCanivoreName);
@@ -55,7 +54,7 @@ public class Robot extends TimedRobot {
 
     private final Pigeon2 imu = new Pigeon2(0, kCanivoreName);
 
-    // create sim state objects for handling simulation IO
+    // Create sim state objects for handling simulation IO
     private final TalonFXSimState leftSim = leftLeader.getSimState();
     private final TalonFXSimState rightSim = rightLeader.getSimState();
     private final CANcoderSimState leftSensSim = leftSensor.getSimState();
@@ -112,26 +111,24 @@ public class Robot extends TimedRobot {
         TalonFXConfiguration fxCfg = new TalonFXConfiguration();
         fxCfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        // apply and loop in case there is an error
+        // Apply and loop in case there is an error
         for (int i = 0; i < 5; i++) {
             var result = leftLeader.getConfigurator().apply(fxCfg);
 
-            // exit, configs are successfully applied
             if (result.isOK()) {
                 break;
-            } // otherwise retry up to 5 times
+            } // Otherwise retry up to 5 times
         }
 
         fxCfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         
-        // apply and loop in case there is an error
+        // Apply and loop in case there is an error
         for (int i = 0; i < 5; i++) {
             var result = rightLeader.getConfigurator().apply(fxCfg);
 
-            // exit, configs are successfully applied
             if (result.isOK()) {
                 break;
-            } // otherwise retry up to 5 times
+            } // Otherwise retry up to 5 times
         }
 
         CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
@@ -141,7 +138,6 @@ public class Robot extends TimedRobot {
         for (int i = 0; i < 5; i++) {
             var result = leftSensor.getConfigurator().apply(cancoderConfig);
 
-            // exit, configs are successfully applied
             if (result.isOK()) {
                 break;
             } // otherwise retry up to 5 times
@@ -149,26 +145,24 @@ public class Robot extends TimedRobot {
 
         cancoderConfig.MagnetSensor.SensorDirection = CANcoder_SensorDirectionValue.Clockwise_Positive;
 
-        // apply and loop in case there is an error
+        // Apply and loop in case there is an error
         for (int i = 0; i < 5; i++) {
             var result = rightSensor.getConfigurator().apply(cancoderConfig);
 
-            // exit, configs are successfully applied
             if (result.isOK()) {
                 break;
-            } // otherwise retry up to 5 times
+            } // Otherwise retry up to 5 times
         }
 
         var pigeonConfig = new Pigeon2Configuration();
 
-        // apply and loop in case there is an error
+        // Apply and loop in case there is an error
         for (int i = 0; i < 5; i++) {
             var result = imu.getConfigurator().apply(pigeonConfig);
 
-            // exit, configs are successfully applied
             if (result.isOK()) {
                 break;
-            } // otherwise retry up to 5 times
+            } // Otherwise retry up to 5 times
         }
         
         /*
@@ -197,17 +191,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        // update the odometry based on the pigeon 2 rotation and cancoder positions
+        // Update the odometry based on the pigeon 2 rotation and cancoder positions
         m_odometry.update(imu.getRotation2d(),
                 rotationsToMeters(leftSensor.getPosition().getValue()),
                 rotationsToMeters(rightSensor.getPosition().getValue()));
 
-        // update robot pose for visualization
+        // Update robot pose for visualization
         m_field.setRobotPose(m_odometry.getPoseMeters());
 
-        // print sensor values 50 loops
-        // or every ~1 second (20ms loop time)
-        // users can alternatively publish these values to WPILib SmartDashboard
+        // Print sensor values every 50 loops,
+        // this is ~1s assuming 20ms loop times.
+        // Users can alternatively publish these values to WPILib SmartDashboard
         if (printCount >= 50) {
             printCount = 0;
 
@@ -233,14 +227,14 @@ public class Robot extends TimedRobot {
          * and outputs are not affected by user-level inversion.
          * However, inputs and outputs *are* affected by the mechanical
          * orientation of the device relative to the robot chassis,
-         * as specified by the `orientation` field.
+         * as specified by the `Orientation` field.
          *
          */
-        leftSim.orientation = ChassisReference.CounterClockwise_Positive;
-        leftSensSim.orientation = ChassisReference.CounterClockwise_Positive;
+        leftSim.Orientation = ChassisReference.CounterClockwise_Positive;
+        leftSensSim.Orientation = ChassisReference.CounterClockwise_Positive;
         
-        rightSim.orientation = ChassisReference.Clockwise_Positive;
-        rightSensSim.orientation = ChassisReference.Clockwise_Positive;
+        rightSim.Orientation = ChassisReference.Clockwise_Positive;
+        rightSensSim.Orientation = ChassisReference.Clockwise_Positive;
     }
 
     @Override
@@ -303,7 +297,6 @@ public class Robot extends TimedRobot {
         rightSim.setRotorVelocity(rightVel * kGearRatio);
 
         imuSim.setRawYaw(m_driveSim.getHeading().getDegrees());
-
 
         /*
          * If a bumper is pressed, trigger the forward limit switch to test it, 
