@@ -14,24 +14,26 @@ void Robot::RobotInit()
   ctre::phoenix::StatusCode returnCode;
 
   configs::TalonFXConfiguration fxCfg{};
-  fxCfg.MotorOutput.Inverted = spns::InvertedValue::CounterClockwise_Positive;
-  do
+  fxCfg.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
+  int retryCount = 5;
+  for(int i = 0; i < retryCount; ++i)
   {
     returnCode = leftFX.GetConfigurator().Apply(fxCfg);
+    if (returnCode.IsOK()) break;
   }
-  while (!returnCode.IsOK());
 
-  fxCfg.MotorOutput.Inverted = spns::InvertedValue::Clockwise_Positive;
-  do
+  fxCfg.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
+  retryCount = 5;
+  for(int i = 0; i < retryCount; ++i)
   {
     returnCode = rightFX.GetConfigurator().Apply(fxCfg);
+    if (returnCode.IsOK()) break;
   }
-  while (!returnCode.IsOK());
 
   configs::CANcoderConfiguration ccCfg{};
-  ccCfg.MagnetSensor.SensorDirection = spns::CANcoder_SensorDirectionValue::CounterClockwise_Positive;
+  ccCfg.MagnetSensor.SensorDirection = signals::SensorDirectionValue::CounterClockwise_Positive;
   leftSensor.GetConfigurator().Apply(ccCfg);
-  ccCfg.MagnetSensor.SensorDirection = spns::CANcoder_SensorDirectionValue::Clockwise_Positive;
+  ccCfg.MagnetSensor.SensorDirection = signals::SensorDirectionValue::Clockwise_Positive;
   rightSensor.GetConfigurator().Apply(ccCfg);
 
   configs::Pigeon2Configuration imuCfg{};
@@ -100,11 +102,11 @@ void Robot::SimulationInit()
    * WPILib expects +V to be forward. Specify orientations to match that behavior.
    */
   /* left devices are CCW+ */
-  leftSim.orientation = sim::ChassisReference::CounterClockwise_Positive;
-  leftSensSim.orientation = sim::ChassisReference::CounterClockwise_Positive;
+  leftSim.Orientation = sim::ChassisReference::CounterClockwise_Positive;
+  leftSensSim.Orientation = sim::ChassisReference::CounterClockwise_Positive;
   /* right devices are CW+ */
-  rightSim.orientation = sim::ChassisReference::Clockwise_Positive;
-  rightSensSim.orientation = sim::ChassisReference::Clockwise_Positive;
+  rightSim.Orientation = sim::ChassisReference::Clockwise_Positive;
+  rightSensSim.Orientation = sim::ChassisReference::Clockwise_Positive;
 }
 void Robot::SimulationPeriodic()
 {

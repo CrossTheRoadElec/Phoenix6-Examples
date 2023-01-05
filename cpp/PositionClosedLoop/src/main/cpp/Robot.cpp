@@ -11,11 +11,15 @@ void Robot::RobotInit() {
   
   configs.Slot0.kP = 24; // An error of 0.5 rotations results in 12V output
   configs.Slot0.kD = 0.1; // A change of 1 rotation per second results in 0.1 volts output
-  configs.Slot0.PeakOutput = 8; // Peak output of 8 volts
+
+  configs.Voltage.PeakForwardVoltage = 8;  // Peak output of 8 volts
+  configs.Voltage.PeakReverseVoltage = -8; // Peak output of 8 volts
   
   configs.Slot1.kP = 40; // An error of 1 rotations results in 40 amps output
   configs.Slot1.kD = 2; // A change of 1 rotation per second results in 2 amps output
-  configs.Slot1.PeakOutput = 130; // Peak output of 130 amps
+
+  configs.TorqueCurrent.PeakForwardTorqueCurrent = 130;  // Peak output of 130 amps
+  configs.TorqueCurrent.PeakReverseTorqueCurrent = -130; // Peak output of 130 amps
   
   /* Percent supply gains when we get a Slot 2 */
   // configs.Slot1.kP = 1; // An error of 1 rotations results in 100% output

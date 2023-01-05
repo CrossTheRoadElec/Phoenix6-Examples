@@ -10,8 +10,8 @@
 
 class Robot : public frc::TimedRobot {
   ctre::phoenixpro::hardware::TalonFX m_fx{0};
-  ctre::phoenixpro::controls::VelocityVoltage m_voltageVelocity{0_tps, true, 0_V, 0};
-  ctre::phoenixpro::controls::VelocityTorqueCurrentFOC m_torqueVelocity{0_tps, 0_A, 1};
+  ctre::phoenixpro::controls::VelocityVoltage m_voltageVelocity{0_tps, true, 0_V, 0, false};
+  ctre::phoenixpro::controls::VelocityTorqueCurrentFOC m_torqueVelocity{0_tps, 0_A, 1, false};
   ctre::phoenixpro::controls::StaticBrake m_brake{};
 
   frc::XboxController m_joystick{0};

@@ -15,8 +15,8 @@ import com.ctre.phoenixpro.sim.CANcoderSimState;
 import com.ctre.phoenixpro.sim.ChassisReference;
 import com.ctre.phoenixpro.sim.Pigeon2SimState;
 import com.ctre.phoenixpro.sim.TalonFXSimState;
-import com.ctre.phoenixpro.spns.CANcoder_SensorDirectionValue;
-import com.ctre.phoenixpro.spns.InvertedValue;
+import com.ctre.phoenixpro.signals.SensorDirectionValue;
+import com.ctre.phoenixpro.signals.InvertedValue;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -116,9 +116,9 @@ public class Robot extends TimedRobot {
         } while(!returnCode.isOK());
 
         CANcoderConfiguration ccCfg = new CANcoderConfiguration();
-        ccCfg.MagnetSensor.SensorDirection = CANcoder_SensorDirectionValue.CounterClockwise_Positive;
+        ccCfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         leftSensor.getConfigurator().apply(ccCfg);
-        ccCfg.MagnetSensor.SensorDirection = CANcoder_SensorDirectionValue.Clockwise_Positive;
+        ccCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         rightSensor.getConfigurator().apply(ccCfg);
 
         Pigeon2Configuration imuCfg = new Pigeon2Configuration();
@@ -173,11 +173,11 @@ public class Robot extends TimedRobot {
          * WPILib expects +V to be forward. Specify orientations to match that behavior.
          */
         /* left devices are CCW+ */
-        leftSim.orientation = ChassisReference.CounterClockwise_Positive;
-        leftSensSim.orientation = ChassisReference.CounterClockwise_Positive;
+        leftSim.Orientation = ChassisReference.CounterClockwise_Positive;
+        leftSensSim.Orientation = ChassisReference.CounterClockwise_Positive;
         /* right devices are CW+ */
-        rightSim.orientation = ChassisReference.Clockwise_Positive;
-        rightSensSim.orientation = ChassisReference.Clockwise_Positive;
+        rightSim.Orientation = ChassisReference.Clockwise_Positive;
+        rightSensSim.Orientation = ChassisReference.Clockwise_Positive;
     }
 
     @Override

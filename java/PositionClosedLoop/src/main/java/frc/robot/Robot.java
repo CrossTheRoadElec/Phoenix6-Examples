@@ -4,10 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenixpro.StatusCode;
 import com.ctre.phoenixpro.configs.TalonFXConfiguration;
+import com.ctre.phoenixpro.controls.NeutralOut;
 import com.ctre.phoenixpro.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenixpro.controls.PositionVoltage;
-import com.ctre.phoenixpro.controls.StaticBrake;
 import com.ctre.phoenixpro.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -24,11 +25,11 @@ public class Robot extends TimedRobot {
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at position 0, enable FOC, no feed forward, use slot 0 */
-  private final PositionVoltage m_voltagePosition = new PositionVoltage(0, true, 0, 0);
+  private final PositionVoltage m_voltagePosition = new PositionVoltage(0, true, 0, 0, false);
   /* Start at position 0, no feed forward, use slot 1 */
-  private final PositionTorqueCurrentFOC m_torquePosition = new PositionTorqueCurrentFOC(0, 0, 1);
+  private final PositionTorqueCurrentFOC m_torquePosition = new PositionTorqueCurrentFOC(0, 0, 1, false);
   /* Keep a brake request so we can disable the motor */
-  private final StaticBrake m_brake = new StaticBrake();
+  private final NeutralOut m_brake = new NeutralOut();
 
   private final XboxController m_joystick = new XboxController(0);
 
@@ -41,13 +42,25 @@ public class Robot extends TimedRobot {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     configs.Slot0.kP = 24; // An error of 0.5 rotations results in 12V output
     configs.Slot0.kD = 0.1; // A change of 1 rotation per second results in 0.1 volts output
-    configs.Slot0.PeakOutput = 8; // Peak output of 8 volts
+    // Peak output of 8 volts
+    configs.Voltage.PeakForwardVoltage = 8;
+    configs.Voltage.PeakReverseVoltage = -8;
     
     configs.Slot1.kP = 40; // An error of 1 rotations results in 40 amps output
     configs.Slot1.kD = 2; // A change of 1 rotation per second results in 2 amps output
-    configs.Slot1.PeakOutput = 130; // Peak output of 130 amps
+    // Peak output of 130 amps
+    configs.TorqueCurrent.PeakForwardTorqueCurrent = 130;
+    configs.TorqueCurrent.PeakReverseTorqueCurrent = 130;
 
-    m_fx.getConfigurator().apply(configs);
+    /* Retry config apply up to 5 times, report if failure */
+    StatusCode status = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < 5; ++i) {
+      status = m_fx.getConfigurator().apply(configs);
+      if (status.isOK()) break;
+    }
+    if(!status.isOK()) {
+      System.out.println("Could not apply configs, error code: " + status.toString());
+    }
 
     /* Make sure we start at 0 */
     m_fx.setRotorPosition(0);
