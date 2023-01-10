@@ -21,6 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - project-name: 'BasicLatencyCompensation'
+            directory: 'cpp/BasicLatencyCompensation'
           - project-name: 'CANcoder'
             directory: 'cpp/CANcoder'
           - project-name: 'CommandBasedDrive'
@@ -35,6 +37,8 @@ jobs:
             directory: 'cpp/Simulation'
           - project-name: 'VelocityClosedLoop'
             directory: 'cpp/VelocityClosedLoop'
+          - project-name: 'BasicLatencyCompensation'
+            directory: 'java/BasicLatencyCompensation'
           - project-name: 'CANcoder'
             directory: 'java/CANcoder'
           - project-name: 'CommandBasedDrive'
