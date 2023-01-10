@@ -1,0 +1,68 @@
+
+# This is a faster workflow that parallelizes the jobs in a matrix so
+# we can get faster results than waiting for the standard build_all_frc_projects
+# powershell script
+
+name: Build all FRC Projects
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project-name: 'CANcoder'
+            directory: 'cpp/CANcoder'
+          - project-name: 'CommandBasedDrive'
+            directory: 'cpp/CommandBasedDrive'
+          - project-name: 'Falcon500ArcadeDrive'
+            directory: 'cpp/Falcon500ArcadeDrive'
+          - project-name: 'Pigeon2'
+            directory: 'cpp/Pigeon2'
+          - project-name: 'PositionClosedLoop'
+            directory: 'cpp/PositionClosedLoop'
+          - project-name: 'Simulation'
+            directory: 'cpp/Simulation'
+          - project-name: 'VelocityClosedLoop'
+            directory: 'cpp/VelocityClosedLoop'
+          - project-name: 'CANcoder'
+            directory: 'java/CANcoder'
+          - project-name: 'CommandBasedDrive'
+            directory: 'java/CommandBasedDrive'
+          - project-name: 'Falcon500ArcadeDrive'
+            directory: 'java/Falcon500ArcadeDrive'
+          - project-name: 'Pigeon2'
+            directory: 'java/Pigeon2'
+          - project-name: 'PositionClosedLoop'
+            directory: 'java/PositionClosedLoop'
+          - project-name: 'Simulation'
+            directory: 'java/Simulation'
+          - project-name: 'VelocityClosedLoop'
+            directory: 'java/VelocityClosedLoop'
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # This grabs the WPILib docker container
+    container: wpilib/roborio-cross-ubuntu:2023-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Grant execute permission for gradlew
+    - name: Grant execute permission for gradlew
+      run: cd "${{ matrix.directory }}" && chmod +x gradlew
+
+    # Runs a single command using the runners shell
+    - name: Compile and run tests on robot code for project ${{ matrix.project-name }}
+      run: cd "${{ matrix.directory }}" && ./gradlew build
