@@ -116,7 +116,7 @@
             "validPlatforms": [
                 "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64"
+                "osxuniversal"
             ],
             "simMode": "swsim"
         },
@@ -129,7 +129,7 @@
             "validPlatforms": [
                 "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64"
+                "osxuniversal"
             ],
             "simMode": "swsim"
         },
@@ -142,7 +142,7 @@
             "validPlatforms": [
                 "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64"
+                "osxuniversal"
             ],
             "simMode": "swsim"
         }
@@ -294,7 +294,7 @@
             "binaryPlatforms": [
                 "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64"
+                "osxuniversal"
             ],
             "simMode": "swsim"
         },
@@ -309,7 +309,7 @@
             "binaryPlatforms": [
                 "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64"
+                "osxuniversal"
             ],
             "simMode": "swsim"
         },
@@ -324,7 +324,7 @@
             "binaryPlatforms": [
                 "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64"
+                "osxuniversal"
             ],
             "simMode": "swsim"
         }
