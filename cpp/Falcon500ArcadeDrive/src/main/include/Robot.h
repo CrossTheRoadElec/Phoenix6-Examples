@@ -22,6 +22,8 @@ class Robot : public frc::TimedRobot {
 
   frc::XboxController joystick{0};
 
+  int printCount{};
+
  public:
   void RobotInit() override;
   void RobotPeriodic() override;

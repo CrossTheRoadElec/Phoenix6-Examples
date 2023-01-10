@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.h"
+#include <iostream>
 
 using namespace ctre::phoenixpro;
 
@@ -31,7 +32,16 @@ void Robot::RobotInit() {
   leftFollower.SetControl(controls::Follower{leftLeader.GetDeviceID(), false});
   rightFollower.SetControl(controls::Follower{rightLeader.GetDeviceID(), false});
 }
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+  if (++printCount >= 10)
+  {
+    printCount = 0;
+    std::cout << "Left out: " << leftLeader.Get() << std::endl;
+    std::cout << "Right out: " << rightLeader.Get() << std::endl;
+    std::cout << "Left Pos: " << leftLeader.GetPosition() << std::endl;
+    std::cout << "Right Pos: " << rightLeader.GetPosition() << std::endl;
+  }
+}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
