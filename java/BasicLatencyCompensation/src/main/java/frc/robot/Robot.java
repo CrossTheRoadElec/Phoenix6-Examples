@@ -53,6 +53,13 @@ public class Robot extends TimedRobot {
     /* Then get the rates of each of the signal */
     double ccVel = m_cc.getVelocity().getValue();
     double fxVel = m_fx.getVelocity().getValue();
+    /**
+     * Pigeon2 can only perform this latency compensation if the Z axis is straight up, since the
+     * angular velocity Z value comes from the pre-mount orientation gyroscope.
+     * For more information on what signals have what algorithms applied to them,
+     * see section 1.6 of the Pigeon 2's User's Guide
+     * https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf 
+     */
     double p2Rate = m_p2.getAngularVelocityZ().getValue();
 
     /* Multiply the latency (in seconds) by the rates (in seconds) to get the amount to offset by */
