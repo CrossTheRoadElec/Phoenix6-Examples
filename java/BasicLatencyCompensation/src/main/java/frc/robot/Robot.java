@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenixpro.BaseStatusSignalValue;
 import com.ctre.phoenixpro.StatusSignalValue;
 import com.ctre.phoenixpro.controls.DutyCycleOut;
 import com.ctre.phoenixpro.hardware.CANcoder;
@@ -33,6 +34,17 @@ public class Robot extends TimedRobot {
   StatusSignalValue<Double> m_ccpos = m_cc.getPosition();
   StatusSignalValue<Double> m_fxpos = m_fx.getPosition();
   StatusSignalValue<Double> m_p2yaw = m_p2.getYaw();
+  StatusSignalValue<Double> m_ccvel = m_cc.getVelocity();
+  StatusSignalValue<Double> m_fxvel = m_fx.getVelocity();
+  /**
+   * Pigeon2 can only perform this latency compensation if the Z axis is straight up, since the
+   * angular velocity Z value comes from the pre-mount orientation gyroscope.
+   * For more information on what signals have what algorithms applied to them,
+   * see section 1.6 of the Pigeon 2's User's Guide
+   * https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf 
+   */
+  StatusSignalValue<Double> m_p2yawRate = m_p2.getAngularVelocityZ();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -49,37 +61,22 @@ public class Robot extends TimedRobot {
     m_ccpos.refresh();
     m_fxpos.refresh();
     m_p2yaw.refresh();
+    m_ccvel.refresh();
+    m_fxvel.refresh();
+    m_p2yawRate.refresh();
 
-    /* Then get the rates of each of the signal */
-    double ccVel = m_cc.getVelocity().getValue();
-    double fxVel = m_fx.getVelocity().getValue();
-    /**
-     * Pigeon2 can only perform this latency compensation if the Z axis is straight up, since the
-     * angular velocity Z value comes from the pre-mount orientation gyroscope.
-     * For more information on what signals have what algorithms applied to them,
-     * see section 1.6 of the Pigeon 2's User's Guide
-     * https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf 
-     */
-    double p2Rate = m_p2.getAngularVelocityZ().getValue();
-
-    /* Multiply the latency (in seconds) by the rates (in seconds) to get the amount to offset by */
-    /* This automatically uses the best timestamp, CANivore will perform better than RIO since its timestamp */
-    /* is more accurate */
-    double ccPosOffset = ccVel * m_ccpos.getTimestamp().getLatency();
-    double fxPosOffset = fxVel * m_fxpos.getTimestamp().getLatency();
-    double p2YawOffset = p2Rate * m_p2yaw.getTimestamp().getLatency();
-
-    /* And add it to the current signal to get the latency-compensated signal */
-    double ccCompensatedPos = m_ccpos.getValue() + ccPosOffset;
-    double fxCompensatedPos = m_fxpos.getValue() + fxPosOffset;
-    double p2CompensatedYaw = m_p2yaw.getValue() + p2YawOffset;
+    /* Use the helper function to apply latency compensation to the signals */
+    /* Since these are already refreshed we don't need to inline the refresh call */
+    double ccCompensatedPos = BaseStatusSignalValue.getLatencyCompensatedValue(m_ccpos, m_ccvel);
+    double fxCompensatedPos = BaseStatusSignalValue.getLatencyCompensatedValue(m_fxpos, m_fxvel);
+    double p2CompensatedYaw = BaseStatusSignalValue.getLatencyCompensatedValue(m_p2yaw, m_p2yawRate);
 
     /* Print out both values so it shows how they perform */
     if(m_printCount++ > 10 && m_joystick.getAButton()) {
       m_printCount = 0;
-      System.out.printf("CANcoder: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f%n", m_ccpos.getValue(), ccCompensatedPos, ccPosOffset);
-      System.out.printf("Talon FX: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f%n", m_fxpos.getValue(), fxCompensatedPos, fxPosOffset);
-      System.out.printf("Pigeon2 : Yaw: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f%n", m_p2yaw.getValue(), p2CompensatedYaw, p2YawOffset);
+      System.out.printf("CANcoder: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f%n", m_ccpos.getValue(), ccCompensatedPos, ccCompensatedPos - m_ccpos.getValue());
+      System.out.printf("Talon FX: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f%n", m_fxpos.getValue(), fxCompensatedPos, fxCompensatedPos - m_fxpos.getValue());
+      System.out.printf("Pigeon2 : Yaw: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f%n", m_p2yaw.getValue(), p2CompensatedYaw, p2CompensatedYaw - m_p2yaw.getValue());
       System.out.println();
     }
     m_fx.setControl(m_dutycycle.withOutput(m_joystick.getLeftY()));

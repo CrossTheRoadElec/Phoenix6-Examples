@@ -1,0 +1,68 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.ctre.phoenixpro.BaseStatusSignalValue;
+import com.ctre.phoenixpro.hardware.CANcoder;
+import com.ctre.phoenixpro.hardware.TalonFX;
+
+import edu.wpi.first.hal.HAL;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class LatencyCompensationTests {
+    final double DOUBLE_DELTA = 0.01;
+
+    TalonFX talonfx;
+    CANcoder cancoder;
+
+    @BeforeEach
+    public void constructDevices() {
+        assert HAL.initialize(500, 0);
+
+        talonfx = new TalonFX(0);
+        cancoder = new CANcoder(0);
+    }
+    
+    @Test
+    public void testLatencyCompensator() {
+        final double position = 35;
+        final double velocity = 24;
+        /* Initialize by making all the positions 0 */
+        talonfx.setRotorPosition(0);
+        cancoder.setPosition(0);
+
+        /* Set the simulated state of device positions */
+        talonfx.getSimState().setRawRotorPosition(position);
+        talonfx.getSimState().setRotorVelocity(velocity);
+        cancoder.getSimState().setRawPosition(position);
+        cancoder.getSimState().setVelocity(velocity);
+
+        /* Perform latency compensation */
+        /* Start by getting signals */
+        var talonPos = talonfx.getPosition();
+        var talonVel = talonfx.getVelocity();
+        var cancoderPos = cancoder.getPosition();
+        var cancoderVel = cancoder.getVelocity();
+
+        /* Wait for an update on all of them so they're synchronized */
+        BaseStatusSignalValue.waitForAll(1, talonPos, talonVel, cancoderPos, cancoderVel);
+
+        /* Wait a bit longer for the latency to actually do some work */
+        try {
+            Thread.sleep(10);
+        }catch(Exception ex) {}
+        /* Calculate how much latency we'd expect */
+        double talonLatency = talonPos.getTimestamp().getLatency();
+        double compensatedTalonPos = position + (velocity * talonLatency);
+        double cancoderLatency = cancoderPos.getTimestamp().getLatency();
+        double compensatedCANcoderPos = position + (velocity * cancoderLatency);
+
+        /* Calculate compensated values before the assert to avoid timing issue related to it */
+        double functionCompensatedTalon = BaseStatusSignalValue.getLatencyCompensatedValue(talonPos, talonVel);
+        double functionCompensatedCANcoder = BaseStatusSignalValue.getLatencyCompensatedValue(cancoderPos, cancoderVel);
+
+        /* Assert the two methods match */
+        assertEquals(compensatedTalonPos, functionCompensatedTalon, DOUBLE_DELTA);
+        assertEquals(compensatedCANcoderPos, functionCompensatedCANcoder, DOUBLE_DELTA);
+    }
+}
