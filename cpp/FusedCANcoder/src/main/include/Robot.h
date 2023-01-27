@@ -5,7 +5,7 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
-#include <frc/XBoxController.h>
+#include <frc/XboxController.h>
 #include <ctre/phoenixpro/TalonFX.hpp>
 #include <ctre/phoenixpro/CANcoder.hpp>
 

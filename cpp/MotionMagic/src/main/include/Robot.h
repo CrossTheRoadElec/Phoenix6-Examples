@@ -6,7 +6,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/XboxController.h>
-#include <ctre/phoenixpro/TalonFx.hpp>
+#include <ctre/phoenixpro/TalonFX.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
