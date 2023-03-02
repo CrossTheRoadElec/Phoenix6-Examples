@@ -41,6 +41,8 @@ jobs:
             directory: 'cpp/Simulation'
           - project-name: 'VelocityClosedLoop'
             directory: 'cpp/VelocityClosedLoop'
+          - project-name: 'WaitForAll'
+            directory: 'cpp/WaitForAll'
           - project-name: 'BasicLatencyCompensation'
             directory: 'java/BasicLatencyCompensation'
           - project-name: 'CANcoder'
@@ -61,6 +63,8 @@ jobs:
             directory: 'java/Simulation'
           - project-name: 'VelocityClosedLoop'
             directory: 'java/VelocityClosedLoop'
+          - project-name: 'WaitForAll'
+            directory: 'java/WaitForAll'
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
