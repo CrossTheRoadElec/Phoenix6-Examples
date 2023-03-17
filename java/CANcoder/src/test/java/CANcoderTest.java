@@ -26,10 +26,10 @@ public class CANcoderTest {
         var cfg = cancoder.getConfigurator();
 
         cfg.setPosition(firstSet);
-        System.out.println("First set: " + posGetter.waitForUpdate(1) " vs " + firstSet);
+        System.out.println("First set: " + posGetter.waitForUpdate(1) + " vs " + firstSet);
         assertEquals(posGetter.getValue(), firstSet, SET_DELTA);
         cfg.setPosition(secondSet);
-        System.out.println("First set: " + posGetter.waitForUpdate(1) " vs " + firstSet);
+        System.out.println("First set: " + posGetter.waitForUpdate(1) + " vs " + firstSet);
         assertEquals(posGetter.getValue(), secondSet, SET_DELTA);
     }
 }
