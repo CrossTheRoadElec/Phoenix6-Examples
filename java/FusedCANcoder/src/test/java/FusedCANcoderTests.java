@@ -1,6 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenixpro.BaseStatusSignalValue;
+import com.ctre.phoenixpro.StatusCode;
 import com.ctre.phoenixpro.configs.CANcoderConfiguration;
 import com.ctre.phoenixpro.configs.TalonFXConfiguration;
 import com.ctre.phoenixpro.hardware.CANcoder;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class FusedCANcoderTests {
     final double SET_DELTA = 0.1;
+    final int CONFIG_RETRY_COUNT = 5;
 
     TalonFX talon;
     CANcoder cancoder;
@@ -32,8 +36,8 @@ public class FusedCANcoderTests {
         final double CANCODER_POSITION = -3.1;
 
         /* Factory-default Talon and CANcoder */
-        talon.getConfigurator().apply(new TalonFXConfiguration());
-        cancoder.getConfigurator().apply(new CANcoderConfiguration());
+        retryConfigApply(()->talon.getConfigurator().apply(new TalonFXConfiguration()));
+        retryConfigApply(()->cancoder.getConfigurator().apply(new CANcoderConfiguration()));
 
         /* Get sim states */
         var talonSimState = talon.getSimState();
@@ -44,16 +48,16 @@ public class FusedCANcoderTests {
         var cancoderPos = cancoder.getPosition();
 
         /* Make sure both are initially set to 0 before messing with sim state */
-        talonSimState.setRawRotorPosition(0);
-        cancoderSimState.setRawPosition(0);
-        talon.setRotorPosition(0);
-        cancoder.setPosition(0);
+        retryConfigApply(()->talonSimState.setRawRotorPosition(0));
+        retryConfigApply(()->cancoderSimState.setRawPosition(0));
+        retryConfigApply(()->talon.setRotorPosition(0));
+        retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
         BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Set them to different values */
-        talonSimState.setRawRotorPosition(TALON_POSITION);
-        cancoderSimState.setRawPosition(CANCODER_POSITION);
+        retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
+        retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
         
         BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
 
@@ -72,8 +76,8 @@ public class FusedCANcoderTests {
         var configs = new TalonFXConfiguration();
         configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         configs.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
-        talon.getConfigurator().apply(configs);
-        cancoder.getConfigurator().apply(new CANcoderConfiguration());
+        retryConfigApply(()->talon.getConfigurator().apply(configs));
+        retryConfigApply(()->cancoder.getConfigurator().apply(new CANcoderConfiguration()));
 
         /* Get sim states */
         var talonSimState = talon.getSimState();
@@ -84,16 +88,16 @@ public class FusedCANcoderTests {
         var cancoderPos = cancoder.getPosition();
 
         /* Make sure both are initially set to 0 before messing with sim state */
-        talonSimState.setRawRotorPosition(0);
-        cancoderSimState.setRawPosition(0);
-        talon.setRotorPosition(0);
-        cancoder.setPosition(0);
+        retryConfigApply(()->talonSimState.setRawRotorPosition(0));
+        retryConfigApply(()->cancoderSimState.setRawPosition(0));
+        retryConfigApply(()->talon.setRotorPosition(0));
+        retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
         BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Set them to different values */
-        talonSimState.setRawRotorPosition(TALON_POSITION);
-        cancoderSimState.setRawPosition(CANCODER_POSITION);
+        retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
+        retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
         
         BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
 
@@ -116,8 +120,8 @@ public class FusedCANcoderTests {
         var configs = new TalonFXConfiguration();
         configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         configs.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
-        talon.getConfigurator().apply(configs);
-        cancoder.getConfigurator().apply(new CANcoderConfiguration());
+        retryConfigApply(()->talon.getConfigurator().apply(configs));
+        retryConfigApply(()->cancoder.getConfigurator().apply(new CANcoderConfiguration()));
 
         /* Get sim states */
         var talonSimState = talon.getSimState();
@@ -128,16 +132,16 @@ public class FusedCANcoderTests {
         var cancoderPos = cancoder.getPosition();
 
         /* Make sure both are initially set to 0 before messing with sim state */
-        talonSimState.setRawRotorPosition(0);
-        cancoderSimState.setRawPosition(0);
-        talon.setRotorPosition(0);
-        cancoder.setPosition(0);
+        retryConfigApply(()->talonSimState.setRawRotorPosition(0));
+        retryConfigApply(()->cancoderSimState.setRawPosition(0));
+        retryConfigApply(()->talon.setRotorPosition(0));
+        retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
         BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Set them to different values */
-        talonSimState.setRawRotorPosition(TALON_POSITION);
-        cancoderSimState.setRawPosition(CANCODER_POSITION);
+        retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
+        retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
         
         BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
 
@@ -149,5 +153,16 @@ public class FusedCANcoderTests {
         System.out.println("CANcoder Pos vs expected: " + cancoderPos + " vs " + CANCODER_POSITION);
         assertEquals(talonPos.getValue(), CANCODER_POSITION, SET_DELTA);
         assertEquals(cancoderPos.getValue(), CANCODER_POSITION, SET_DELTA);
+    }
+
+    
+
+    private void retryConfigApply(Supplier<StatusCode> toApply) {
+        StatusCode finalCode = StatusCode.StatusCodeNotInitialized;
+        int triesLeftOver = CONFIG_RETRY_COUNT;
+        do{
+            finalCode = toApply.get();
+        } while (!finalCode.isOK() && --triesLeftOver > 0);
+        assert(finalCode.isOK());
     }
 }
