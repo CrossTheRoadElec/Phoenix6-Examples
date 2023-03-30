@@ -1,5 +1,8 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.function.Supplier;
+
+import com.ctre.phoenixpro.StatusCode;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.Timer;
@@ -9,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class Pigeon2Tests {
     final double SET_DELTA = 0.1;
+    final int CONFIG_RETRY_COUNT = 5;
 
     Pigeon2 pidgey;
 
@@ -28,13 +32,14 @@ public class Pigeon2Tests {
 
         /* First make simulation yaw 0 */
         var simState= pidgey.getSimState();
-        simState.setRawYaw(0);
+        retryConfigApply(()->simState.setRawYaw(0));
 
-        cfg.setYaw(firstSet);
+        retryConfigApply(()->cfg.setYaw(firstSet));
         yawGetter.waitForUpdate(1);
         System.out.println("First yaw is " + firstSet + " vs Pidgey's " + yawGetter.getValue());
         assertEquals(yawGetter.getValue(), firstSet, SET_DELTA);
-        cfg.setYaw(secondSet);
+
+        retryConfigApply(()->cfg.setYaw(secondSet));
         yawGetter.waitForUpdate(1);
         System.out.println("Second yaw is " + secondSet + " vs Pidgey's " + yawGetter.getValue());
         assertEquals(yawGetter.getValue(), secondSet, SET_DELTA);
@@ -49,14 +54,14 @@ public class Pigeon2Tests {
 
         /* First make simulation yaw 0 */
         var simState= pidgey.getSimState();
-        simState.setRawYaw(0);
-        cfg.setYaw(0);
+        retryConfigApply(()->simState.setRawYaw(0));
+        retryConfigApply(()->cfg.setYaw(0));
 
-        simState.setRawYaw(firstSet);
+        retryConfigApply(()->simState.setRawYaw(firstSet));
         yawGetter.waitForUpdate(1);
         System.out.println("First yaw is " + firstSet + " vs Pidgey's " + yawGetter.getValue());
         assertEquals(yawGetter.getValue(), firstSet, SET_DELTA);
-        simState.setRawYaw(secondSet);
+        retryConfigApply(()->simState.setRawYaw(secondSet));
         yawGetter.waitForUpdate(1);
         System.out.println("Second yaw is " + secondSet + " vs Pidgey's " + yawGetter.getValue());
         assertEquals(yawGetter.getValue(), secondSet, SET_DELTA);
@@ -70,19 +75,28 @@ public class Pigeon2Tests {
 
         /* First make simulation yaw 0 */
         var simState= pidgey.getSimState();
-        simState.setRawYaw(0);
-        cfg.setYaw(0);
+        retryConfigApply(()->simState.setRawYaw(0));
+        retryConfigApply(()->cfg.setYaw(0));
 
-        simState.setRawYaw(firstSet);
+        retryConfigApply(()->simState.setRawYaw(firstSet));
         Timer.delay(0.1); // There is no synchronous getRotation2d, so we instead have to delay
         var rotation = pidgey.getRotation2d();
         System.out.println("First yaw is " + firstSet + " vs rotation 2d's " + rotation.getDegrees());
         assertEquals(rotation.getDegrees(), firstSet, SET_DELTA);
 
-        simState.setRawYaw(secondSet);
+        retryConfigApply(()->simState.setRawYaw(secondSet));
         Timer.delay(0.1); // There is no synchronous getRotation2d, so we instead have to delay
         rotation = pidgey.getRotation2d();
         System.out.println("Second yaw is " + secondSet + " vs rotation 2d's " + rotation.getDegrees());
         assertEquals(rotation.getDegrees(), secondSet, SET_DELTA);
+    }
+
+    private void retryConfigApply(Supplier<StatusCode> toApply) {
+        StatusCode finalCode = StatusCode.StatusCodeNotInitialized;
+        int triesLeftOver = CONFIG_RETRY_COUNT;
+        do{
+            finalCode = toApply.get();
+        } while (!finalCode.isOK() && --triesLeftOver > 0);
+        assert(finalCode.isOK());
     }
 }
