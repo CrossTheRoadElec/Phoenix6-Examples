@@ -1,6 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.function.Supplier;
+
+import com.ctre.phoenixpro.StatusCode;
 import com.ctre.phoenixpro.configs.CurrentLimitsConfigs;
 import com.ctre.phoenixpro.configs.TalonFXConfiguration;
 import com.ctre.phoenixpro.controls.DutyCycleOut;
@@ -15,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 public class CurrentLimitTests {
     final double SET_DELTA = 0.1;
+    final int CONFIG_RETRY_COUNT = 5;
 
     TalonFX talon;
 
@@ -38,7 +42,7 @@ public class CurrentLimitTests {
         currentLimitConfigs.StatorCurrentLimitEnable = false; // Start with stator limits off
         toConfigure.CurrentLimits = currentLimitConfigs;
 
-        talon.getConfigurator().apply(toConfigure);
+        retryConfigApply(()->talon.getConfigurator().apply(toConfigure));
 
         var simState = talon.getSimState();
 
@@ -54,7 +58,7 @@ public class CurrentLimitTests {
 
         /* Now apply the stator current limit */
         currentLimitConfigs.StatorCurrentLimitEnable = true;
-        talon.getConfigurator().apply(currentLimitConfigs);
+        retryConfigApply(()->talon.getConfigurator().apply(currentLimitConfigs));
 
         waitWhileEnabled(0.5);
 
@@ -80,7 +84,7 @@ public class CurrentLimitTests {
         currentLimitConfigs.StatorCurrentLimitEnable = false; // Start with supply limits off
         toConfigure.CurrentLimits = currentLimitConfigs;
 
-        talon.getConfigurator().apply(toConfigure);
+        retryConfigApply(()->talon.getConfigurator().apply(toConfigure));
 
         var simState = talon.getSimState();
 
@@ -96,7 +100,7 @@ public class CurrentLimitTests {
 
         /* Now apply the supply current limit */
         currentLimitConfigs.SupplyCurrentLimitEnable = true;
-        talon.getConfigurator().apply(currentLimitConfigs);
+        retryConfigApply(()->talon.getConfigurator().apply(currentLimitConfigs));
 
         waitWhileEnabled(0.5);
 
@@ -122,5 +126,14 @@ public class CurrentLimitTests {
             Unmanaged.feedEnable(200); // Feed enable for 200ms
             Timer.delay(0.1); // Wait for 100ms
         }
+    }
+    
+    private void retryConfigApply(Supplier<StatusCode> toApply) {
+        StatusCode finalCode = StatusCode.StatusCodeNotInitialized;
+        int triesLeftOver = CONFIG_RETRY_COUNT;
+        do{
+            finalCode = toApply.get();
+        } while (!finalCode.isOK() && --triesLeftOver > 0);
+        assert(finalCode.isOK());
     }
 }
