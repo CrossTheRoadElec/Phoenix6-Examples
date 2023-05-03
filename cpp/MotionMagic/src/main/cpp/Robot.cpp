@@ -3,9 +3,18 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.h"
+#include "sim/PhysicsSim.h"
+#include "sim/TalonFXSimProfile.h"
 #include <iostream>
 
 using namespace ctre::phoenixpro;
+
+void Robot::SimulationInit() {
+  PhysicsSim::GetInstance().AddTalonFX(m_motor, 0.001_kg_sq_m);
+}
+void Robot::SimulationPeriodic() {
+  PhysicsSim::GetInstance().Run();
+}
 
 void Robot::RobotInit() {
   configs::TalonFXConfiguration cfg{};
@@ -65,9 +74,6 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
-
-void Robot::SimulationInit() {}
-void Robot::SimulationPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
