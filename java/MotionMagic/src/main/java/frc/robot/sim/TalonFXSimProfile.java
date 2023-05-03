@@ -20,13 +20,14 @@ class TalonFXSimProfile extends SimProfile {
      * Creates a new simulation profile for a TalonFX device.
      * 
      * @param falcon
-     *        The TalonFX device
+     *                        The TalonFX device
      * @param accelToFullTime
-     *        The time the motor takes to accelerate from 0 to full, in seconds
+     *                        The time the motor takes to accelerate from 0 to full,
+     *                        in seconds
      * @param fullVel
-     *        The maximum motor velocity, in rotations per second
+     *                        The maximum motor velocity, in rotations per second
      * @param sensorPhase
-     *        The phase of the TalonFX sensors
+     *                        The phase of the TalonFX sensors
      */
     public TalonFXSimProfile(final TalonFX falcon, final double rotorInertia) {
         this._falcon = falcon;
@@ -36,17 +37,16 @@ class TalonFXSimProfile extends SimProfile {
     /**
      * Runs the simulation profile.
      * 
-     * This uses very rudimentary physics simulation and exists to allow users to test
-     * features of our products in simulation using our examples out of the box.
-     * Users may modify this to utilize more accurate physics simulation.
+     * This uses very rudimentary physics simulation and exists to allow users to
+     * test features of our products in simulation using our examples out of the
+     * box. Users may modify this to utilize more accurate physics simulation.
      */
-    public void run() {        
+    public void run() {
         /// DEVICE SPEED SIMULATION
-        
+
         _motorSim.setInputVoltage(_falcon.getSimState().getMotorVoltage());
 
         _motorSim.update(getPeriod());
-
 
         /// SET SIM PHYSICS INPUTS
         double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
@@ -54,6 +54,6 @@ class TalonFXSimProfile extends SimProfile {
         _falcon.getSimState().setRawRotorPosition(_motorSim.getAngularPositionRotations());
         _falcon.getSimState().setRotorVelocity(velocity_rps);
 
-        _falcon.getSimState().setSupplyVoltage(12 - _motorSim.getCurrentDrawAmps() * kMotorResistance);
+        _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
     }
 }

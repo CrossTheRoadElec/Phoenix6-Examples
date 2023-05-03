@@ -47,15 +47,6 @@ public class PhysicsSim {
 
     private final ArrayList<SimProfile> _simProfiles = new ArrayList<SimProfile>();
 
-    /* scales a random domain of [0, 2pi] to [min, max] while prioritizing the peaks */
-    static double random(double min, double max) {
-        return (max - min) / 2 * Math.sin(Math.IEEEremainder(Math.random(), 2 * 3.14159)) + (max + min) / 2;
-    }
-    static double random(double max) {
-        return random(0, max);
-    }
-
-    
     /**
      * Holds information about a simulated device.
      */
@@ -67,7 +58,8 @@ public class PhysicsSim {
          * Runs the simulation profile.
          * Implemented by device-specific profiles.
          */
-        public void run() {}
+        public void run() {
+        }
 
         /**
          * Returns the time since last call, in seconds.
@@ -78,7 +70,7 @@ public class PhysicsSim {
                 _lastTime = Utils.getCurrentTimeSeconds();
                 _running = true;
             }
-            
+
             double now = Utils.getCurrentTimeSeconds();
             final double period = now - _lastTime;
             _lastTime = now;
