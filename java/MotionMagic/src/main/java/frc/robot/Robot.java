@@ -14,6 +14,7 @@ import com.ctre.phoenixpro.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,6 +27,17 @@ public class Robot extends TimedRobot {
   MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
   XboxController m_joystick = new XboxController(0);
   int m_printCount = 0;
+
+  @Override
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(m_motor, 0.001);
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -106,10 +118,4 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {}
-
-  @Override
-  public void simulationInit() {}
-
-  @Override
-  public void simulationPeriodic() {}
 }
