@@ -5,7 +5,7 @@
 #include "Robot.h"
 #include <iostream>
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 void Robot::RobotInit() {
   /* Configure CANcoder to zero the magnet appropriately */
