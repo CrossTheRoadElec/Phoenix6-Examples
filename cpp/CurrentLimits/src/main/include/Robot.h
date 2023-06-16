@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <ctre/phoenixpro/TalonFX.hpp>
+#include <ctre/phoenix6/TalonFX.hpp>
 #include <frc/TimedRobot.h>
 #include <frc/XboxController.h>
 
@@ -28,9 +28,9 @@ class Robot : public frc::TimedRobot {
   void SimulationInit() override;
   void SimulationPeriodic() override;
 
-  ctre::phoenixpro::hardware::TalonFX m_fx{0, "Fred"};
-  ctre::phoenixpro::controls::DutyCycleOut m_output{0};
-  ctre::phoenixpro::configs::CurrentLimitsConfigs m_currentLimits{};
+  ctre::phoenix6::hardware::TalonFX m_fx{0, "Fred"};
+  ctre::phoenix6::controls::DutyCycleOut m_output{0};
+  ctre::phoenix6::configs::CurrentLimitsConfigs m_currentLimits{};
   
   frc::XboxController m_joystick{0};
 

@@ -5,7 +5,7 @@
 #include "Robot.h"
 #include <iostream>
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 void Robot::RobotInit() {
   /* Configure the Talon to use a supply limit of 1 amps IF we exceed 4 amps for over 1 second */
