@@ -4,12 +4,12 @@
 
 package frc.robot;
 
-import com.ctre.phoenixpro.BaseStatusSignalValue;
-import com.ctre.phoenixpro.StatusSignalValue;
-import com.ctre.phoenixpro.controls.DutyCycleOut;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.Pigeon2;
-import com.ctre.phoenixpro.hardware.TalonFX;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -31,11 +31,11 @@ public class Robot extends TimedRobot {
 
   XboxController m_joystick = new XboxController(0);
 
-  StatusSignalValue<Double> m_ccpos = m_cc.getPosition();
-  StatusSignalValue<Double> m_fxpos = m_fx.getPosition();
-  StatusSignalValue<Double> m_p2yaw = m_p2.getYaw();
-  StatusSignalValue<Double> m_ccvel = m_cc.getVelocity();
-  StatusSignalValue<Double> m_fxvel = m_fx.getVelocity();
+  StatusSignal<Double> m_ccpos = m_cc.getPosition();
+  StatusSignal<Double> m_fxpos = m_fx.getPosition();
+  StatusSignal<Double> m_p2yaw = m_p2.getYaw();
+  StatusSignal<Double> m_ccvel = m_cc.getVelocity();
+  StatusSignal<Double> m_fxvel = m_fx.getVelocity();
   /**
    * Pigeon2 can only perform this latency compensation if the Z axis is straight up, since the
    * angular velocity Z value comes from the pre-mount orientation gyroscope.
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
    * see section 1.6 of the Pigeon 2's User's Guide
    * https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf 
    */
-  StatusSignalValue<Double> m_p2yawRate = m_p2.getAngularVelocityZ();
+  StatusSignal<Double> m_p2yawRate = m_p2.getAngularVelocityZ();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -67,9 +67,9 @@ public class Robot extends TimedRobot {
 
     /* Use the helper function to apply latency compensation to the signals */
     /* Since these are already refreshed we don't need to inline the refresh call */
-    double ccCompensatedPos = BaseStatusSignalValue.getLatencyCompensatedValue(m_ccpos, m_ccvel);
-    double fxCompensatedPos = BaseStatusSignalValue.getLatencyCompensatedValue(m_fxpos, m_fxvel);
-    double p2CompensatedYaw = BaseStatusSignalValue.getLatencyCompensatedValue(m_p2yaw, m_p2yawRate);
+    double ccCompensatedPos = BaseStatusSignal.getLatencyCompensatedValue(m_ccpos, m_ccvel);
+    double fxCompensatedPos = BaseStatusSignal.getLatencyCompensatedValue(m_fxpos, m_fxvel);
+    double p2CompensatedYaw = BaseStatusSignal.getLatencyCompensatedValue(m_p2yaw, m_p2yawRate);
 
     /* Print out both values so it shows how they perform */
     if(m_printCount++ > 10 && m_joystick.getAButton()) {

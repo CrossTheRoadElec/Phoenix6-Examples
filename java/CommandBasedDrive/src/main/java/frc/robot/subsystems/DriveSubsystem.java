@@ -1,19 +1,19 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenixpro.StatusSignalValue;
-import com.ctre.phoenixpro.Utils;
-import com.ctre.phoenixpro.configs.Pigeon2Configuration;
-import com.ctre.phoenixpro.configs.Pigeon2Configurator;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.configs.TalonFXConfigurator;
-import com.ctre.phoenixpro.controls.DutyCycleOut;
-import com.ctre.phoenixpro.controls.Follower;
-import com.ctre.phoenixpro.hardware.Pigeon2;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.sim.ChassisReference;
-import com.ctre.phoenixpro.sim.Pigeon2SimState;
-import com.ctre.phoenixpro.sim.TalonFXSimState;
-import com.ctre.phoenixpro.signals.InvertedValue;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Pigeon2Configurator;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -226,15 +226,15 @@ public class DriveSubsystem extends SubsystemBase {
         m_pigeon2SimState.setRawYaw(m_driveSim.getHeading().getDegrees());
     }
 
-    public StatusSignalValue<Double> getYaw() {
+    public StatusSignal<Double> getYaw() {
         return m_pigeon2.getYaw();
     }
 
-    public StatusSignalValue<Double> getLeftPos() {
+    public StatusSignal<Double> getLeftPos() {
         return m_leftLeader.getPosition();
     }
 
-    public StatusSignalValue<Double> getRightPos() {
+    public StatusSignal<Double> getRightPos() {
         return m_rightLeader.getPosition();
     }
 

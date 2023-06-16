@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenixpro.configs.CANcoderConfiguration;
-import com.ctre.phoenixpro.hardware.CANcoder;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
