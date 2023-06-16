@@ -7,7 +7,7 @@
 #include "sim/TalonFXSimProfile.h"
 #include <iostream>
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 void Robot::SimulationInit() {
   PhysicsSim::GetInstance().AddTalonFX(m_motor, 0.001_kg_sq_m);

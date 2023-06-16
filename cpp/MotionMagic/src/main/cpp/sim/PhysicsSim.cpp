@@ -1,7 +1,7 @@
 #include "sim/PhysicsSim.h"
 #include "sim/TalonFXSimProfile.h"
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 void PhysicsSim::AddTalonFX(hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia) {
     TalonFXSimProfile *simFalcon = new TalonFXSimProfile(falcon, rotorInertia);

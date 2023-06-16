@@ -1,6 +1,6 @@
 #include "sim/TalonFXSimProfile.h"
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 TalonFXSimProfile::TalonFXSimProfile(hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia) :
     _motorSim{frc::DCMotor::Falcon500(1), 1, rotorInertia},

@@ -2,7 +2,7 @@
 
 #include "sim/SimProfile.h"
 
-#include <ctre/phoenixpro/TalonFX.hpp>
+#include <ctre/phoenix6/TalonFX.hpp>
 #include <frc/simulation/DCMotorSim.h>
 
 /**
@@ -11,7 +11,7 @@
 class TalonFXSimProfile : public SimProfile {
     units::ohm_t kMotorResistance = 2_mOhm; // Assume 2mOhm resistance for voltage drop calculation
     frc::sim::DCMotorSim _motorSim;
-    ctre::phoenixpro::hardware::TalonFX& _falcon;
+    ctre::phoenix6::hardware::TalonFX& _falcon;
 
 
 public:
@@ -23,7 +23,7 @@ public:
      * @param rotorInertia
      *                        Rotational inertia at the Rotor
      */
-    TalonFXSimProfile(ctre::phoenixpro::hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia);
+    TalonFXSimProfile(ctre::phoenix6::hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia);
 
     /**
      * Runs the simulation profile.

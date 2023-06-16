@@ -1,7 +1,7 @@
 #include "sim/SimProfile.h"
-#include <ctre/phoenixpro/Utils.hpp>
+#include <ctre/phoenix6/Utils.hpp>
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 units::second_t SimProfile::GetPeriod() 
 {
