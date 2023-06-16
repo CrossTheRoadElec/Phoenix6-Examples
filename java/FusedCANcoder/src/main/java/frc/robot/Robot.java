@@ -4,15 +4,15 @@
 
 package frc.robot;
 
-import com.ctre.phoenixpro.StatusSignalValue;
-import com.ctre.phoenixpro.configs.CANcoderConfiguration;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.controls.DutyCycleOut;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenixpro.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenixpro.signals.SensorDirectionValue;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,15 +26,15 @@ import edu.wpi.first.wpilibj.XboxController;
 public class Robot extends TimedRobot {
   TalonFX m_fx = new TalonFX(1, "fred");
   CANcoder m_cc = new CANcoder(1, "fred");
-  StatusSignalValue<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync();
-  StatusSignalValue<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync();
-  StatusSignalValue<Boolean> f_missingRemoteSensor = m_fx.getFault_MissingRemoteSensor();
-  StatusSignalValue<Boolean> sf_missingRemoteSensor = m_fx.getStickyFault_MissingRemoteSensor();
+  StatusSignal<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync();
+  StatusSignal<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync();
+  StatusSignal<Boolean> f_missingRemoteSensor = m_fx.getFault_MissingRemoteSensor();
+  StatusSignal<Boolean> sf_missingRemoteSensor = m_fx.getStickyFault_MissingRemoteSensor();
 
-  StatusSignalValue<Double> fx_pos = m_fx.getPosition();
-  StatusSignalValue<Double> fx_vel = m_fx.getVelocity();
-  StatusSignalValue<Double> cc_pos = m_cc.getPosition();
-  StatusSignalValue<Double> cc_vel = m_cc.getVelocity();
+  StatusSignal<Double> fx_pos = m_fx.getPosition();
+  StatusSignal<Double> fx_vel = m_fx.getVelocity();
+  StatusSignal<Double> cc_pos = m_cc.getPosition();
+  StatusSignal<Double> cc_vel = m_cc.getVelocity();
 
   DutyCycleOut m_dutyCycleControl = new DutyCycleOut(0);
 

@@ -2,13 +2,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenixpro.BaseStatusSignalValue;
-import com.ctre.phoenixpro.StatusCode;
-import com.ctre.phoenixpro.configs.CANcoderConfiguration;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.hal.HAL;
 
@@ -53,13 +53,13 @@ public class FusedCANcoderTests {
         retryConfigApply(()->talon.setRotorPosition(0));
         retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
-        BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Set them to different values */
         retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
         retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
         
-        BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         System.out.println("Talon Pos vs expected: " + talonPos + " vs " + TALON_POSITION);
         System.out.println("CANcoder Pos vs expected: " + cancoderPos + " vs " + CANCODER_POSITION);
@@ -93,13 +93,13 @@ public class FusedCANcoderTests {
         retryConfigApply(()->talon.setRotorPosition(0));
         retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
-        BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Set them to different values */
         retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
         retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
         
-        BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Further wait for Talon, since it probably just received the new CANcoder position frame */
         talonPos.waitForUpdate(1.0);
@@ -137,13 +137,13 @@ public class FusedCANcoderTests {
         retryConfigApply(()->talon.setRotorPosition(0));
         retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
-        BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Set them to different values */
         retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
         retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
         
-        BaseStatusSignalValue.waitForAll(1.0, talonPos, cancoderPos);
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Further wait for Talon, since it probably just received the new CANcoder position frame */
         talonPos.waitForUpdate(1.0);
