@@ -6,24 +6,24 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/XboxController.h>
-#include <ctre/phoenixpro/TalonFX.hpp>
-#include <ctre/phoenixpro/Pigeon2.hpp>
-#include <ctre/phoenixpro/CANcoder.hpp>
+#include <ctre/phoenix6/TalonFX.hpp>
+#include <ctre/phoenix6/Pigeon2.hpp>
+#include <ctre/phoenix6/CANcoder.hpp>
 
 class Robot : public frc::TimedRobot {
   const std::string CANBUS_NAME = "";
-  ctre::phoenixpro::hardware::CANcoder m_cc{0, CANBUS_NAME};
-  ctre::phoenixpro::hardware::TalonFX m_fx{0, CANBUS_NAME};
-  ctre::phoenixpro::hardware::Pigeon2 m_p2{0, CANBUS_NAME};
+  ctre::phoenix6::hardware::CANcoder m_cc{0, CANBUS_NAME};
+  ctre::phoenix6::hardware::TalonFX m_fx{0, CANBUS_NAME};
+  ctre::phoenix6::hardware::Pigeon2 m_p2{0, CANBUS_NAME};
   int m_printCount = 0;
 
-  ctre::phoenixpro::controls::DutyCycleOut m_dutycycle{0};
+  ctre::phoenix6::controls::DutyCycleOut m_dutycycle{0};
 
   frc::XboxController m_joystick{0};
 
-  ctre::phoenixpro::StatusSignalValue<units::turn_t>& m_ccpos = m_cc.GetPosition();
-  ctre::phoenixpro::StatusSignalValue<units::turn_t>& m_fxpos = m_fx.GetPosition();
-  ctre::phoenixpro::StatusSignalValue<units::degree_t>& m_p2yaw = m_p2.GetYaw();
+  ctre::phoenix6::StatusSignal<units::turn_t>& m_ccpos = m_cc.GetPosition();
+  ctre::phoenix6::StatusSignal<units::turn_t>& m_fxpos = m_fx.GetPosition();
+  ctre::phoenix6::StatusSignal<units::degree_t>& m_p2yaw = m_p2.GetYaw();
 
  public:
   void RobotInit() override;

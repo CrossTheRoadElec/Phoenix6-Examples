@@ -39,7 +39,7 @@ void Robot::RobotPeriodic() {
   /* Print out both values so it shows how they perform */
   if(m_printCount++ > 10 && m_joystick.GetAButton()) {
     m_printCount = 0;
-    printf("CANcoder: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_ccpos.GetValue().value(), ccCompensatedPos.value(), ccPosOffset.value());
+    printf("CANcoder: Pos: %103.f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_ccpos.GetValue().value(), ccCompensatedPos.value(), ccPosOffset.value());
     printf("Talon FX: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_fxpos.GetValue().value(), fxCompensatedPos.value(), fxPosOffset.value());
     printf("Pigeon2 : Yaw: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_p2yaw.GetValue().value(), p2CompensatedYaw.value(), p2YawOffset.value());
     printf("\n\n");
