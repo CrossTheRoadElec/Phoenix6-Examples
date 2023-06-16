@@ -1,14 +1,13 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenixpro.StatusCode;
-import com.ctre.phoenixpro.configs.CurrentLimitsConfigs;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.controls.DutyCycleOut;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.unmanaged.Unmanaged;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.unmanaged.Unmanaged;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,7 +30,6 @@ public class CurrentLimitTests {
 
     @Test
     public void testStatorLimit() {
-        final double TALON_POSITION = 0.4;
 
         var statorCurrent = talon.getStatorCurrent();
         
@@ -44,7 +42,6 @@ public class CurrentLimitTests {
 
         retryConfigApply(()->talon.getConfigurator().apply(toConfigure));
 
-        var simState = talon.getSimState();
 
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
@@ -71,7 +68,6 @@ public class CurrentLimitTests {
 
     @Test
     public void testSupplyLimit() {
-        final double TALON_POSITION = 0.4;
 
         var supplyCurrent = talon.getSupplyCurrent();
         
@@ -85,8 +81,6 @@ public class CurrentLimitTests {
         toConfigure.CurrentLimits = currentLimitConfigs;
 
         retryConfigApply(()->talon.getConfigurator().apply(toConfigure));
-
-        var simState = talon.getSimState();
 
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
