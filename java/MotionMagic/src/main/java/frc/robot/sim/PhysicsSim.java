@@ -2,8 +2,8 @@ package frc.robot.sim;
 
 import java.util.ArrayList;
 
-import com.ctre.phoenixpro.Utils;
-import com.ctre.phoenixpro.hardware.TalonFX;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * Manages physics simulation for CTRE products.
