@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import com.ctre.phoenixpro.BaseStatusSignalValue;
-import com.ctre.phoenixpro.StatusSignalValue;
-import com.ctre.phoenixpro.hardware.Pigeon2;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.signals.ControlModeValue;
+import com.ctre.phoenix6.BaseStatusSignalValue;
+import com.ctre.phoenix6.StatusSignalValue;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
