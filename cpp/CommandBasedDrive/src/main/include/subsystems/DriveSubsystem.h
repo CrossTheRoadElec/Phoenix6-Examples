@@ -9,27 +9,27 @@
 #include <frc/simulation/DifferentialDrivetrainSim.h>
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
-#include <ctre/phoenixpro/TalonFX.hpp>
-#include <ctre/phoenixpro/Pigeon2.hpp>
+#include <ctre/phoenix6/TalonFX.hpp>
+#include <ctre/phoenix6/Pigeon2.hpp>
 
 class DriveSubsystem : public frc2::SubsystemBase
 {
 private:
-    ctre::phoenixpro::hardware::TalonFX m_leftLeader{LEFT_LEADER_ID, CANBUS_NAME};
-    ctre::phoenixpro::hardware::TalonFX m_leftFollower{LEFT_FOLLOWER_ID, CANBUS_NAME};
-    ctre::phoenixpro::hardware::TalonFX m_rightLeader{RIGHT_LEADER_ID, CANBUS_NAME};
-    ctre::phoenixpro::hardware::TalonFX m_rightFollower{RIGHT_FOLLOWER_ID, CANBUS_NAME};
+    ctre::phoenix6::hardware::TalonFX m_leftLeader{LEFT_LEADER_ID, CANBUS_NAME};
+    ctre::phoenix6::hardware::TalonFX m_leftFollower{LEFT_FOLLOWER_ID, CANBUS_NAME};
+    ctre::phoenix6::hardware::TalonFX m_rightLeader{RIGHT_LEADER_ID, CANBUS_NAME};
+    ctre::phoenix6::hardware::TalonFX m_rightFollower{RIGHT_FOLLOWER_ID, CANBUS_NAME};
 
-    ctre::phoenixpro::controls::DutyCycleOut m_leftOut{0};  // Initialize with 0% output
-    ctre::phoenixpro::controls::DutyCycleOut m_rightOut{0}; // Initialize with 0% output
+    ctre::phoenix6::controls::DutyCycleOut m_leftOut{0};  // Initialize with 0% output
+    ctre::phoenix6::controls::DutyCycleOut m_rightOut{0}; // Initialize with 0% output
 
-    ctre::phoenixpro::hardware::Pigeon2 m_pigeon2{PIGEON2_ID, CANBUS_NAME};
+    ctre::phoenix6::hardware::Pigeon2 m_pigeon2{PIGEON2_ID, CANBUS_NAME};
 
-    ctre::phoenixpro::sim::TalonFXSimState &m_leftSimState = m_leftLeader.GetSimState();
-    ctre::phoenixpro::sim::TalonFXSimState &m_rightSimState = m_rightLeader.GetSimState();
-    ctre::phoenixpro::sim::TalonFXSimState &m_leftFollowerSimState = m_leftFollower.GetSimState();
-    ctre::phoenixpro::sim::TalonFXSimState &m_rightFollowerSimState = m_rightFollower.GetSimState();
-    ctre::phoenixpro::sim::Pigeon2SimState &m_pigeon2SimState = m_pigeon2.GetSimState();
+    ctre::phoenix6::sim::TalonFXSimState &m_leftSimState = m_leftLeader.GetSimState();
+    ctre::phoenix6::sim::TalonFXSimState &m_rightSimState = m_rightLeader.GetSimState();
+    ctre::phoenix6::sim::TalonFXSimState &m_leftFollowerSimState = m_leftFollower.GetSimState();
+    ctre::phoenix6::sim::TalonFXSimState &m_rightFollowerSimState = m_rightFollower.GetSimState();
+    ctre::phoenix6::sim::Pigeon2SimState &m_pigeon2SimState = m_pigeon2.GetSimState();
 
     /*
      * These numbers are an example AndyMark Drivetrain with some additional weight.
@@ -89,15 +89,15 @@ private:
      * Initialize a left drive TalonFX device from the configurator object
      * \param cfg Configurator of the TalonFX device
      */
-    void InitializeLeftDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg);
+    void InitializeLeftDriveTalonFX(ctre::phoenix6::configs::TalonFXConfigurator &cfg);
     /**
      * Initialize a right drive TalonFX device from the configurator object
      * \param cfg Configurator of the TalonFX device
      */
-    void InitializeRightDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg);
+    void InitializeRightDriveTalonFX(ctre::phoenix6::configs::TalonFXConfigurator &cfg);
     /**
      * Initialize Pigeon2 device from the configurator object
      * \param cfg Configurator of the Pigeon2 device
      */
-    void InitializePigeon2(ctre::phoenixpro::configs::Pigeon2Configurator &cfg);
+    void InitializePigeon2(ctre::phoenix6::configs::Pigeon2Configurator &cfg);
 };

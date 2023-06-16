@@ -3,11 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/DriveSubsystem.h"
-#include "ctre/phoenixpro/Utils.hpp"
+#include "ctre/phoenix6/Utils.hpp"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/RobotController.h>
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 DriveSubsystem::DriveSubsystem()
 {
@@ -33,7 +33,7 @@ DriveSubsystem::DriveSubsystem()
     m_rightOut.UpdateFreqHz = 0_Hz;
     
     /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if (ctre::phoenixpro::IsSimulation())
+    if (ctre::phoenix6::IsSimulation())
     {
         m_leftOut.EnableFOC = false;
         m_rightOut.EnableFOC = false;
@@ -62,7 +62,7 @@ void DriveSubsystem::ArcadeDrive(double fwd, double rot)
     m_rightLeader.SetControl(m_rightOut);
 }
 
-void DriveSubsystem::InitializeLeftDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg)
+void DriveSubsystem::InitializeLeftDriveTalonFX(ctre::phoenix6::configs::TalonFXConfigurator &cfg)
 {
     configs::TalonFXConfiguration toApply{};
 
@@ -74,7 +74,7 @@ void DriveSubsystem::InitializeLeftDriveTalonFX(ctre::phoenixpro::configs::Talon
     /* And initialize position to 0 */
     cfg.SetRotorPosition(0_tr);
 }
-void DriveSubsystem::InitializeRightDriveTalonFX(ctre::phoenixpro::configs::TalonFXConfigurator &cfg)
+void DriveSubsystem::InitializeRightDriveTalonFX(ctre::phoenix6::configs::TalonFXConfigurator &cfg)
 {
     configs::TalonFXConfiguration toApply{};
 
@@ -86,7 +86,7 @@ void DriveSubsystem::InitializeRightDriveTalonFX(ctre::phoenixpro::configs::Talo
     /* And initialize position to 0 */
     cfg.SetRotorPosition(0_tr);
 }
-void DriveSubsystem::InitializePigeon2(ctre::phoenixpro::configs::Pigeon2Configurator &cfg)
+void DriveSubsystem::InitializePigeon2(ctre::phoenix6::configs::Pigeon2Configurator &cfg)
 {
     configs::Pigeon2Configuration toApply{};
 

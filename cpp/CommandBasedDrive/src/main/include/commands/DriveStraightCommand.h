@@ -31,7 +31,7 @@ private:
 
     DriveSubsystem &m_driveSubsystem;
     std::function<double()> m_throttle;
-    ctre::phoenixpro::StatusSignalValue<units::angle::degree_t> &m_yawGetter;
+    ctre::phoenix6::StatusSignal<units::angle::degree_t> &m_yawGetter;
     units::angle::degree_t m_holdYaw;
     frc::Notifier m_driveStraightThread;
 };
