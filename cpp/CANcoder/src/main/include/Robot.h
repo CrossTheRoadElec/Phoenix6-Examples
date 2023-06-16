@@ -6,11 +6,11 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Timer.h>
-#include <ctre/phoenixpro/CANcoder.hpp>
+#include <ctre/phoenix6/CANcoder.hpp>
 
 class Robot : public frc::TimedRobot {
  private:
-  ctre::phoenixpro::hardware::CANcoder cancoder{1, "rio"};
+  ctre::phoenix6::hardware::CANcoder cancoder{1, "rio"};
   units::time::second_t currentTime{frc::Timer::GetFPGATimestamp()};
 
  public:
