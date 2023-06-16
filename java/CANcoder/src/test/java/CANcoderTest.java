@@ -2,8 +2,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenixpro.StatusCode;
-import com.ctre.phoenixpro.hardware.CANcoder;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.hal.HAL;
 
 import org.junit.jupiter.api.BeforeEach;
