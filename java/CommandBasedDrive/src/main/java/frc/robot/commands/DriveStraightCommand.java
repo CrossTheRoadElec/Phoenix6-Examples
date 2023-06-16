@@ -2,7 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenixpro.StatusSignalValue;
+import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -12,7 +12,7 @@ public class DriveStraightCommand extends CommandBase {
     private final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
     private final DoubleSupplier m_throttle;
     private final DriveSubsystem m_drivebase;
-    private final StatusSignalValue<Double> m_yawGetter;
+    private final StatusSignal<Double> m_yawGetter;
     private double m_holdYaw = 0;
 
     /**
