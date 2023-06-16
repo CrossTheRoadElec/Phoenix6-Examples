@@ -5,7 +5,7 @@
 #include "Robot.h"
 #include <iostream>
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 void Robot::RobotInit() {
   /* Configure devices */
@@ -22,7 +22,7 @@ void Robot::RobotInit() {
   rightFollower.GetConfigurator().Apply(rightConfiguration);
     
   /* Currently in simulation, we do not support FOC, so disable it while simulating */
-  if (ctre::phoenixpro::IsSimulation())
+  if (ctre::phoenix6::IsSimulation())
   {
     leftOut.EnableFOC = false;
     rightOut.EnableFOC = false;
