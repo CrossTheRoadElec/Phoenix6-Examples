@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.BaseStatusSignalValue;
-import com.ctre.phoenix6.StatusSignalValue;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
@@ -26,29 +26,29 @@ public class Robot extends TimedRobot {
                                                                      // selectively power it to completely test this example 
   TalonFX m_motor2 = new TalonFX(0, "rio"); // Pick the RIO bus to force a failure we can detect
 
-  StatusSignalValue<Double> m_canbus1signal1 = m_motor1.getPosition();
-  StatusSignalValue<Double> m_canbus1signal2 = m_motor1.getVelocity();
-  StatusSignalValue<ControlModeValue> m_canbus1signal3 = m_motor1.getControlMode();
-  StatusSignalValue<Double> m_canbus1signal4 = m_pigdey.getYaw();
-  StatusSignalValue<Double> m_canbus1signal5 = m_pigdey.getRoll();
+  StatusSignal<Double> m_canbus1signal1 = m_motor1.getPosition();
+  StatusSignal<Double> m_canbus1signal2 = m_motor1.getVelocity();
+  StatusSignal<ControlModeValue> m_canbus1signal3 = m_motor1.getControlMode();
+  StatusSignal<Double> m_canbus1signal4 = m_pigdey.getYaw();
+  StatusSignal<Double> m_canbus1signal5 = m_pigdey.getRoll();
   
-  StatusSignalValue<Double> m_canbus2signal1 = m_motor2.getPosition();
+  StatusSignal<Double> m_canbus2signal1 = m_motor2.getPosition();
   
-  StatusSignalValue<Double> m_canbus1transcient1 = m_transcientMotor.getPosition();
-  StatusSignalValue<Double> m_canbus1transcient2 = m_transcientMotor.getVelocity();
+  StatusSignal<Double> m_canbus1transcient1 = m_transcientMotor.getPosition();
+  StatusSignal<Double> m_canbus1transcient2 = m_transcientMotor.getVelocity();
 
-  StatusSignalValue<?>[] m_signalsAcrossCANbuses = new StatusSignalValue<?>[]{
+  StatusSignal<?>[] m_signalsAcrossCANbuses = new StatusSignal<?>[]{
     m_canbus1signal1,
     m_canbus2signal1
   };
-  StatusSignalValue<?>[] m_lotsOfSignals = new StatusSignalValue<?>[]{
+  StatusSignal<?>[] m_lotsOfSignals = new StatusSignal<?>[]{
     m_canbus1signal1,
     m_canbus1signal2,
     m_canbus1signal3,
     m_canbus1signal5
   };
-  StatusSignalValue<?>[] m_noSignals = new StatusSignalValue<?>[]{};
-  StatusSignalValue<?>[] m_tanscientSignals = new StatusSignalValue<?>[]{
+  StatusSignal<?>[] m_noSignals = new StatusSignal<?>[]{};
+  StatusSignal<?>[] m_tanscientSignals = new StatusSignal<?>[]{
     m_canbus1signal1,
     m_canbus1signal2,
     m_canbus1transcient1,
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
 
     /* If we press the A button, test what happens when we wait on lots of signals (normal use case) */
     if(m_joystick.getAButtonPressed()) {
-      var status = BaseStatusSignalValue.waitForAll(m_waitForAllTimeout, m_lotsOfSignals);
+      var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_lotsOfSignals);
       System.out.println("Status of waiting on signals (normal use case): " + status);
       for(var sig : m_lotsOfSignals) {
         System.out.println("Signal status: " + sig.getError());
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
     }
     /* If we press the B button, test what happens when we wait on signals from different busses */
     if(m_joystick.getBButtonPressed()) {
-      var status = BaseStatusSignalValue.waitForAll(m_waitForAllTimeout, m_signalsAcrossCANbuses);
+      var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_signalsAcrossCANbuses);
       System.out.println("Status of waiting on signals across different CAN busses: " + status);
       for(var sig : m_signalsAcrossCANbuses) {
         System.out.println("Signal status: " + sig.getError());
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
     }
     /* If we press the Y button, test what happens when we wait on no signals */
     if(m_joystick.getYButtonPressed()) {
-      var status = BaseStatusSignalValue.waitForAll(m_waitForAllTimeout, m_noSignals);
+      var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_noSignals);
       System.out.println("Status of waiting on no signals: " + status);
       for(var sig : m_noSignals) {
         System.out.println("Signal status: " + sig.getError());
@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
     }
     /* If we press the X button, test what happens when we wait on signals with the transcient motor controller */
     if(m_joystick.getXButtonPressed()) {
-      var status = BaseStatusSignalValue.waitForAll(m_waitForAllTimeout, m_tanscientSignals);
+      var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_tanscientSignals);
       System.out.println("Status of waiting on transcient signals: " + status);
       for(var sig : m_tanscientSignals) {
         System.out.println("Signal status: " + sig.getError());
