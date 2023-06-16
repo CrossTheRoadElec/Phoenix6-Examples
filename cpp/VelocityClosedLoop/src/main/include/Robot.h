@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include "ctre/phoenixpro/TalonFX.hpp"
+#include "ctre/phoenix6/TalonFX.hpp"
 #include <frc/TimedRobot.h>
 #include <frc/XboxController.h>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenixpro::hardware::TalonFX m_fx{0};
-  ctre::phoenixpro::controls::VelocityVoltage m_voltageVelocity{0_tps, true, 0_V, 0, false};
-  ctre::phoenixpro::controls::VelocityTorqueCurrentFOC m_torqueVelocity{0_tps, 0_A, 1, false};
-  ctre::phoenixpro::controls::StaticBrake m_brake{};
+  ctre::phoenix6::hardware::TalonFX m_fx{0};
+  ctre::phoenix6::controls::VelocityVoltage m_voltageVelocity{0_tps, true, 0_V, 0, false};
+  ctre::phoenix6::controls::VelocityTorqueCurrentFOC m_torqueVelocity{0_tps, 0_A, 1, false};
+  ctre::phoenix6::controls::StaticBrake m_brake{};
 
   frc::XboxController m_joystick{0};
 
