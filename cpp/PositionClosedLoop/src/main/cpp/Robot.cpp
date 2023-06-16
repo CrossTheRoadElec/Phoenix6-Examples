@@ -4,7 +4,7 @@
 
 #include "Robot.h"
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 void Robot::RobotInit() {
   configs::TalonFXConfiguration configs{};
