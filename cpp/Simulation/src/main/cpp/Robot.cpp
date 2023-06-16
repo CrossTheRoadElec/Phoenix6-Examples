@@ -7,7 +7,7 @@
 #include <frc/RobotController.h>
 #include <iostream>
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 void Robot::RobotInit()
 {

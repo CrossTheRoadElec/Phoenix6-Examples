@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <ctre/phoenixpro/TalonFX.hpp>
-#include <ctre/phoenixpro/CANcoder.hpp>
-#include <ctre/phoenixpro/Pigeon2.hpp>
+#include <ctre/phoenix6/TalonFX.hpp>
+#include <ctre/phoenix6/CANcoder.hpp>
+#include <ctre/phoenix6/Pigeon2.hpp>
 #include <frc/simulation/DifferentialDrivetrainSim.h>
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
@@ -16,17 +16,17 @@
 #include <units/velocity.h>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenixpro::hardware::TalonFX leftFX{0};
-  ctre::phoenixpro::hardware::TalonFX rightFX{1};
-  ctre::phoenixpro::hardware::CANcoder leftSensor{0};
-  ctre::phoenixpro::hardware::CANcoder rightSensor{1};
-  ctre::phoenixpro::hardware::Pigeon2 imu{0};
+  ctre::phoenix6::hardware::TalonFX leftFX{0};
+  ctre::phoenix6::hardware::TalonFX rightFX{1};
+  ctre::phoenix6::hardware::CANcoder leftSensor{0};
+  ctre::phoenix6::hardware::CANcoder rightSensor{1};
+  ctre::phoenix6::hardware::Pigeon2 imu{0};
 
-  ctre::phoenixpro::sim::TalonFXSimState &leftSim = leftFX.GetSimState();
-  ctre::phoenixpro::sim::TalonFXSimState &rightSim = rightFX.GetSimState();
-  ctre::phoenixpro::sim::CANcoderSimState &leftSensSim = leftSensor.GetSimState();
-  ctre::phoenixpro::sim::CANcoderSimState &rightSensSim = rightSensor.GetSimState();
-  ctre::phoenixpro::sim::Pigeon2SimState &imuSim = imu.GetSimState();
+  ctre::phoenix6::sim::TalonFXSimState &leftSim = leftFX.GetSimState();
+  ctre::phoenix6::sim::TalonFXSimState &rightSim = rightFX.GetSimState();
+  ctre::phoenix6::sim::CANcoderSimState &leftSensSim = leftSensor.GetSimState();
+  ctre::phoenix6::sim::CANcoderSimState &rightSensSim = rightSensor.GetSimState();
+  ctre::phoenix6::sim::Pigeon2SimState &imuSim = imu.GetSimState();
 
   frc::DifferentialDrive drivetrain{leftFX, rightFX};
 
