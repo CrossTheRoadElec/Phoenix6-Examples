@@ -4,19 +4,19 @@
 
 package frc.robot;
 
-import com.ctre.phoenixpro.StatusCode;
-import com.ctre.phoenixpro.configs.CANcoderConfiguration;
-import com.ctre.phoenixpro.configs.Pigeon2Configuration;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.Pigeon2;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.sim.CANcoderSimState;
-import com.ctre.phoenixpro.sim.ChassisReference;
-import com.ctre.phoenixpro.sim.Pigeon2SimState;
-import com.ctre.phoenixpro.sim.TalonFXSimState;
-import com.ctre.phoenixpro.signals.SensorDirectionValue;
-import com.ctre.phoenixpro.signals.InvertedValue;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
