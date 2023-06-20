@@ -6,11 +6,11 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Timer.h>
-#include <ctre/phoenixpro/Pigeon2.hpp>
+#include <ctre/phoenix6/Pigeon2.hpp>
 
 class Robot : public frc::TimedRobot {
  private:
-  ctre::phoenixpro::hardware::Pigeon2 pidgey{1, "rio"};
+  ctre::phoenix6::hardware::Pigeon2 pidgey{1, "rio"};
   units::time::second_t currentTime{frc::Timer::GetFPGATimestamp()};
 
  public:

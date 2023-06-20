@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Robot.h"
 
-using namespace ctre::phoenixpro;
+using namespace ctre::phoenix6;
 
 constexpr units::time::second_t print_period{500_ms};
 
