@@ -6,9 +6,18 @@ package frc.robot;
 
 import com.ctre.phoenixpro.configs.Pigeon2Configuration;
 import com.ctre.phoenixpro.hardware.Pigeon2;
+import com.ctre.phoenixpro.sim.Pigeon2SimState;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,6 +30,26 @@ public class Robot extends TimedRobot {
 
   private final Pigeon2 pidgey = new Pigeon2(1, "rio");
   private double currentTime = Timer.getFPGATimestamp();
+
+  /* Sim only */
+  private final double HEIGHT = 1;
+  private final double WIDTH = 1;
+  private final double ROOT_X = WIDTH / 2;
+  private final double ROOT_Y = HEIGHT / 2;
+
+  private final Pigeon2SimState pidgeySim = pidgey.getSimState(); // We need a sim state in order to change the values of pidgey
+  private final DCMotorSim motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 100, 100);
+  private final XboxController controller = new XboxController(0); // Uses an Xbox controller for setting the CANcoder simulation
+  private Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT); // Main mechanism object
+  private MechanismLigament2d wrist = mech.
+                                      getRoot("base", ROOT_X, ROOT_Y).
+                                      append(new MechanismLigament2d("Wrist", .25, 90, 6, new Color8Bit(Color.kAliceBlue)));
+
+  private MechanismLigament2d leftArrow = wrist.append(new MechanismLigament2d("LeftArrow", 0.1, 150, 6, new Color8Bit(Color.kAliceBlue)));
+  private MechanismLigament2d rightArrow = wrist.append(new MechanismLigament2d("RightArrow", 0.1, -150, 6, new Color8Bit(Color.kAliceBlue)));
+  /* End sim only */
+
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -116,5 +145,16 @@ public class Robot extends TimedRobot {
   public void simulationInit() {}
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    double Yaxis = controller.getLeftY();
+    double motorVoltage = Yaxis * 12; // scales joystick axis to motor voltage ( +-12v)
+    motorSim.setInputVoltage(motorVoltage);
+    motorSim.update(.02);
+    double position = motorSim.getAngularPositionRotations()*360;
+    pidgeySim.setRawYaw(position);
+
+    SmartDashboard.putData("mech2d", mech);
+    
+    wrist.setAngle(position); //converts 1 rotation to 360 degrees
+  }
 }
