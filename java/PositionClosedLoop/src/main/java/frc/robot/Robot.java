@@ -13,6 +13,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,6 +39,25 @@ public class Robot extends TimedRobot {
 
   private final XboxController m_joystick = new XboxController(0);
 
+  /* Sim only */
+  double HEIGHT = .5; //Controls tyhe height of the mech2d SmartDashboard
+  double WIDTH = 1; //Controls tyhe height of the mech2d SmartDashboard
+  double PCL = 1;
+
+  Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
+  MechanismLigament2d wrist = mech.
+                              getRoot("PCL", 0.5, 0.4).
+                              append(new MechanismLigament2d("PCL",  PCL, 0, 6, new Color8Bit(Color.kAliceBlue)));
+  
+  MechanismLigament2d reference = mech.
+                              getRoot("Reference", 0, .1).
+                              append(new MechanismLigament2d("reference", 1, 0, 6, new Color8Bit(Color.kCyan)));
+  
+  MechanismLigament2d joint = mech.
+                              getRoot("joint", 0.5, .1).
+                              append(new MechanismLigament2d("joint", 0.3, 90, 6, new Color8Bit(Color.kCyan)));
+  /* End sim only */
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -40,8 +65,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Slot0.kP = 24; // An error of 0.5 rotations results in 12V output
-    configs.Slot0.kD = 0.1; // A change of 1 rotation per second results in 0.1 volts output
+    configs.Slot0.kP = 12; // An error of 0.5 rotations results in 12V output
+    configs.Slot0.kD = 1; // A change of 1 rotation per second results in 0.1 volts output
     // Peak output of 8 volts
     configs.Voltage.PeakForwardVoltage = 8;
     configs.Voltage.PeakReverseVoltage = -8;
@@ -81,6 +106,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double desiredRotations = m_joystick.getLeftY() * 10; // Go for plus/minus 10 rotations
+    if (Math.abs(desiredRotations) <= 0.5) { // Joystick deadzone
+      desiredRotations = 0;
+    }
     if (m_joystick.getLeftBumper()) {
       /* Use voltage position */
       m_fx.setControl(m_voltagePosition.withPosition(desiredRotations));
@@ -108,8 +136,16 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+    PCL = m_fx.getPosition().getValue();
+    wrist.setLength(PCL/30); //Divide by 2 to scale motion to fit in the window
+
+    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+  }
 }
