@@ -14,6 +14,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -34,6 +40,36 @@ public class Robot extends TimedRobot {
   private final NeutralOut m_brake = new NeutralOut();
 
   private final XboxController m_joystick = new XboxController(0);
+
+   /* Sim only */
+   double HEIGHT = 1; //Controls tyhe height of the mech2d SmartDashboard
+   double WIDTH = 1; //Controls tyhe height of the mech2d SmartDashboard
+   double VCL = 1;
+ 
+   Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
+   // Velocity
+   MechanismLigament2d VelocityMech = mech.
+                               getRoot("VCL", 0.75, 0.5).
+                               append(new MechanismLigament2d("VCL",  VCL,90, 6, new Color8Bit(Color.kAliceBlue)));
+   
+  MechanismLigament2d midline = mech.
+                                getRoot("midline", 0.7, 0.5).
+                                append(new MechanismLigament2d("midline", 0.1, 0, 3, new Color8Bit(Color.kCyan)));
+                          
+  //Position                            
+  MechanismLigament2d arm = mech.
+                                getRoot("pivotPoint", 0.25, 0.5).
+                                append(new MechanismLigament2d("arm", .2, 0, 0, new Color8Bit(Color.kAliceBlue)));
+
+  MechanismLigament2d side1 = arm.append(new MechanismLigament2d("side1", 0.15307, 112.5, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side2 = side1.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side3 = side2.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side4 = side3.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side5 = side4.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side6 = side5.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side7 = side6.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side8 = side7.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+   /* End sim only */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -93,6 +129,9 @@ public class Robot extends TimedRobot {
     if (joyValue > -0.1 && joyValue < 0.1) joyValue = 0;
 
     double desiredRotationsPerSecond = joyValue * 50; // Go for plus/minus 10 rotations per second
+    if (Math.abs(desiredRotationsPerSecond) <= 1) { // Joystick deadzone
+      desiredRotationsPerSecond = 0;
+    }
     if (m_joystick.getLeftBumper()) {
       /* Use voltage velocity */
       m_fx.setControl(m_voltageVelocity.withVelocity(desiredRotationsPerSecond));
@@ -121,8 +160,18 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+    VCL = m_fx.getRotorVelocity().getValue();
+    VelocityMech.setLength(VCL/120); //Divide by 2 to scale motion to fit in the window
+    double position = m_fx.getPosition().getValue() / 25; //Gear reduction by 25:1 so rotation is visible in sim
+    arm.setAngle(position*360);
+
+    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+  }
 }
