@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
 
   private final XboxController m_joystick = new XboxController(0);
 
-  /* Sim only */
+  /* Mech2d only */
   double HEIGHT = .5; //Controls tyhe height of the mech2d SmartDashboard
   double WIDTH = 1; //Controls tyhe height of the mech2d SmartDashboard
   double PCL = 1;
@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
   MechanismLigament2d joint = mech.
                               getRoot("joint", 0.5, .1).
                               append(new MechanismLigament2d("joint", 0.3, 90, 6, new Color8Bit(Color.kCyan)));
-  /* End sim only */
+  /* End mech2d only */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -92,7 +92,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() { 
+    wrist.setLength(PCL/30); // Divide by 2 to scale motion to fit in the window
+    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+  }
 
   @Override
   public void autonomousInit() {}
@@ -144,8 +147,5 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {
     PhysicsSim.getInstance().run();
     PCL = m_fx.getPosition().getValue();
-    wrist.setLength(PCL/30); //Divide by 2 to scale motion to fit in the window
-
-    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 }
