@@ -5,19 +5,19 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,18 +28,20 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class Robot extends TimedRobot {
   private final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final CANcoder cancoder = new CANcoder(1, "rio");
-  private double currentTime = Timer.getFPGATimestamp();
+  private final String canBusName = "Fred";
+  private final TalonFX talonFX = new TalonFX(2, canBusName);
+  private final CANcoder cancoder = new CANcoder(1, canBusName);
+  private final DutyCycleOut fwdOut = new DutyCycleOut(0);
+  private final XboxController controller = new XboxController(0);
+
+  double currentTime = Timer.getFPGATimestamp();
   
-  /* Sim only */
+  /* Mech2d only */
   private final double HEIGHT = 1;
   private final double WIDTH = 1;
   private final double ROOT_X = WIDTH / 2;
   private final double ROOT_Y = HEIGHT / 2;
 
-  private final CANcoderSimState cancoderSim = cancoder.getSimState(); // We need a sim state in order to change the values of CANcoder
-  private final DCMotorSim motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 100, .001);
-  private final XboxController controller = new XboxController(0); // Uses an Xbox controller for setting the CANcoder simulation
   private Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT); // Main mechanism object
   private MechanismLigament2d wrist = mech.
                                       getRoot("base", ROOT_X, ROOT_Y).
@@ -47,7 +49,7 @@ public class Robot extends TimedRobot {
 
   private MechanismLigament2d leftArrow = wrist.append(new MechanismLigament2d("LeftArrow", 0.1, 150, 6, new Color8Bit(Color.kAliceBlue)));
   private MechanismLigament2d rightArrow = wrist.append(new MechanismLigament2d("RightArrow", 0.1, -150, 6, new Color8Bit(Color.kAliceBlue)));
-  /* End sim only */
+  /* End mech2d only */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -59,7 +61,6 @@ public class Robot extends TimedRobot {
     var toApply = new CANcoderConfiguration();
 
     /* User can change the configs if they want, or leave it empty for factory-default */
-
     cancoder.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
@@ -106,6 +107,8 @@ public class Robot extends TimedRobot {
        */
       System.out.println();
     }
+    SmartDashboard.putData("mech2d", mech); // Creates a mech2d window in GUI
+    wrist.setAngle(cancoder.getPosition().getValue()*360); // Converts 1 rotation to 360 degrees
   }
 
   @Override
@@ -125,7 +128,15 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    var fwd = controller.getLeftY();
+
+    //modify control requests
+    fwdOut.Output = fwd;
+
+    //send control requests
+    talonFX.setControl(fwdOut);
+  }
 
   @Override
   public void disabledInit() {}
@@ -141,21 +152,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(talonFX, cancoder, 25, 0.001);
   }
 
   @Override
   public void simulationPeriodic() {
-    double Yaxis = controller.getLeftY();
-    double motorVoltage = Yaxis * 12; // scales joystick axcis to motor voltage ( +-12v)
-    motorSim.setInputVoltage(motorVoltage);
-    motorSim.update(.02);
-    double position = motorSim.getAngularPositionRotations();
-    double velocity = motorSim.getAngularVelocityRPM()/60;
-    cancoderSim.setRawPosition(position);
-    cancoderSim.setVelocity(velocity);
-
-    SmartDashboard.putData("mech2d", mech);
-    
-    wrist.setAngle(position*360); //converts 1 rotation to 360 degrees
+    PhysicsSim.getInstance().run();
   }
 }
