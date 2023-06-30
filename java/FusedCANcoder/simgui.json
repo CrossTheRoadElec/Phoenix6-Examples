@@ -41,7 +41,17 @@
       }
     }
   },
-  "NetworkTables View": {
-    "visible": false
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "mech2d": {
+          "open": true
+        },
+        "open": true
+      }
+    }
   }
 }

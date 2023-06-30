@@ -125,6 +125,7 @@ public class Robot extends TimedRobot {
     cancoder.setPosition(0.4, 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
     cancoder.getPosition().waitForUpdate(0.1); // And wait up to 100 ms for the position to take affect
     System.out.println("Set the position to 0.4 rotations, we are currently at " + cancoder.getPosition()); // Use java's implicit toString operator
+    
   }
 
   @Override

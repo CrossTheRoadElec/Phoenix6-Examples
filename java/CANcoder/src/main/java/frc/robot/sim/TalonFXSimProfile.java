@@ -69,9 +69,8 @@ class TalonFXSimProfile extends SimProfile {
         _canCoder.getSimState().setRawPosition(_motorSim.getAngularPositionRotations()/_gearRatio);
         _canCoder.getSimState().setVelocity(velocity_rps/_gearRatio);
 
-        //TODO get the Xbox controller input to change the motor voltage
-        double Yaxis = m_controller.getLeftY(); // Xbox controller object
-        double motorVoltage = Yaxis * 12; // scales joystick axcis to motor voltage ( +-12v)
+        double Yaxis = m_controller.getLeftY();
+        double motorVoltage = Yaxis * 12; // Scales joystick axcis to motor voltage ( +-12v)
         _motorSim.setInputVoltage(motorVoltage);
         _motorSim.update(.02);
         double position = _motorSim.getAngularPositionRotations();

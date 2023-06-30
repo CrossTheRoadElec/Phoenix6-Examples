@@ -163,6 +163,10 @@ public class Robot extends TimedRobot {
       System.out.println("CC Position: " + cc_pos + " CC Vel: " + cc_vel);
       System.out.println("");
     }
+    FXarm.setAngle(fx_rotorPos.refresh().getValue() * 360);
+    TALONarm.setAngle(fx_pos.refresh().getValue() * 360);
+    CANarm.setAngle(cc_pos.refresh().getValue() * 360);
+    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 
   @Override
@@ -200,10 +204,5 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
     PhysicsSim.getInstance().run();
-    
-    FXarm.setAngle(fx_rotorPos.refresh().getValue() * 360);
-    TALONarm.setAngle(fx_pos.refresh().getValue() * 360);
-    CANarm.setAngle(cc_pos.refresh().getValue() * 360);
-    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 }

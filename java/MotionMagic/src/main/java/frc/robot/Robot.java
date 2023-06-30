@@ -12,15 +12,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.sim.PhysicsSim;
 
 /**
@@ -30,34 +23,15 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_motor = new TalonFX(1, "Fred");
+  TalonFX m_fx = new TalonFX(1, "Fred");
   MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
   XboxController m_joystick = new XboxController(0);
   int m_printCount = 0;
 
-  /* Sim only */
-  double HEIGHT = .5; // Controls tyhe height of the mech2d smart dashboard
-  double WIDTH = 1; // Controls tyhe height of the mech2d smart dashboard
-  double MOTIONMAGIC = 1; // This value changes in the simulationPeriodic method
-
-  DCMotorSim m_motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 100, .001);
-  Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
-  MechanismLigament2d wrist = mech.
-                              getRoot("base", 0.5, 0.4).
-                              append(new MechanismLigament2d("motionMagic", MOTIONMAGIC, 0, 6, new Color8Bit(Color.kAliceBlue)));
-
-  MechanismLigament2d reference = mech.
-                              getRoot("Reference", 0, .1).
-                              append(new MechanismLigament2d("reference", 1, 0, 6, new Color8Bit(Color.kCyan)));
-
-  MechanismLigament2d joint = mech.
-                              getRoot("joint", 0.5, .1).
-                              append(new MechanismLigament2d("joint", 0.3, 90, 6, new Color8Bit(Color.kCyan)));
-  /* End sim only */
-
+  
   @Override
   public void simulationInit() {
-    PhysicsSim.getInstance().addTalonFX(m_motor, 0.001);
+    PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
   }
 
   @Override
@@ -95,7 +69,7 @@ public class Robot extends TimedRobot {
 
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for(int i = 0; i < 5; ++i) {
-      status = m_motor.getConfigurator().apply(cfg);
+      status = m_fx.getConfigurator().apply(cfg);
       if (status.isOK()) break;
     }
     if (!status.isOK()) {
@@ -107,13 +81,11 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     if (m_printCount++ > 10) {
       m_printCount = 0;
-      System.out.println("Pos: " + m_motor.getPosition());
-      System.out.println("Vel: " + m_motor.getVelocity());
+      System.out.println("Pos: " + m_fx.getPosition());
+      System.out.println("Vel: " + m_fx.getVelocity());
       System.out.println();
     }
-    MOTIONMAGIC = m_motor.getPosition().getValue();
-    SmartDashboard.putData("mech2d", mech);
-    wrist.setLength(MOTIONMAGIC/25); //Divide by 25 to scale motion to fit in the window
+    Mechanism2dHelper.getInstance().distanceBarSetLength(m_fx);
   }
 
   @Override
@@ -131,9 +103,9 @@ public class Robot extends TimedRobot {
     double leftY = m_joystick.getLeftY();
     if(leftY > -0.1 && leftY < 0.1) leftY = 0;
 
-    m_motor.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
+    m_fx.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
     if(m_joystick.getBButton()) {
-      m_motor.setRotorPosition(1);
+      m_fx.setRotorPosition(1);
     }
   }
 

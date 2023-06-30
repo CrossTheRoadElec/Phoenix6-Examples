@@ -10,6 +10,9 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,9 +26,15 @@ import edu.wpi.first.wpilibj.XboxController;
 public class Robot extends TimedRobot {
   private final String CANBUS_NAME = "";
   private CANcoder m_cc = new CANcoder(0, CANBUS_NAME);
-  private TalonFX m_fx = new TalonFX(0, CANBUS_NAME);
+   private TalonFX m_fx = new TalonFX(0, CANBUS_NAME);
   private Pigeon2 m_p2 = new Pigeon2(0, CANBUS_NAME);
   private int m_printCount = 0;
+
+  //TODO finish creating simulation objects
+  private CANcoderSimState m_ccSim = m_cc.getSimState();
+  private TalonFXSimState m_fxSim = m_fx.getSimState();
+  private Pigeon2SimState m_p2Sim = m_p2.getSimState();
+
 
   private DutyCycleOut m_dutycycle = new DutyCycleOut(0);
 
@@ -51,7 +60,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    
+
   }
 
   @Override

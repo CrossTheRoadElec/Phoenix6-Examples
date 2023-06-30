@@ -27,7 +27,7 @@ public class CurrentLimitTests {
 
         talon = new TalonFX(0);
     }
-
+//TODO add simulation compatibility to the bolow java code
     @Test
     public void testStatorLimit() {
 
