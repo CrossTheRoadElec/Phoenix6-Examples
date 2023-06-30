@@ -58,10 +58,11 @@ class TalonFXSimProfile extends SimProfile {
 
         _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
 
+        /// GUI SIM 
         double rotorPosition = _motorSim.getAngularPositionRotations() / 10; //Gear reduction by 10:1 so rotation is visible in sim
         _falconSim.setRawRotorPosition(rotorPosition);
 
-        double rotorVelocity = _motorSim.getAngularVelocityRadPerSec(); // TODO move this to TalonFXSimProfile
+        double rotorVelocity = _motorSim.getAngularVelocityRadPerSec();
         _falconSim.setRotorVelocity(rotorVelocity);
     }
 }
