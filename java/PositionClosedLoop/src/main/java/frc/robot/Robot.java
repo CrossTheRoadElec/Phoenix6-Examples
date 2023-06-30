@@ -13,11 +13,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.sim.PhysicsSim;
 
 /**
@@ -38,24 +33,6 @@ public class Robot extends TimedRobot {
   private final NeutralOut m_brake = new NeutralOut();
 
   private final XboxController m_joystick = new XboxController(0);
-
-  /* Mech2d only */
-  double HEIGHT = .5; // Controls tyhe height of the mech2d SmartDashboard
-  double WIDTH = 1; // Controls tyhe height of the mech2d SmartDashboard
-
-  Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
-  MechanismLigament2d wrist = mech.
-                              getRoot("PCL", 0.5, 0.4).
-                              append(new MechanismLigament2d("PCL",  1, 0, 6, new Color8Bit(Color.kAliceBlue)));
-  
-  MechanismLigament2d reference = mech.
-                              getRoot("Reference", 0, .1).
-                              append(new MechanismLigament2d("reference", 1, 0, 6, new Color8Bit(Color.kCyan)));
-  
-  MechanismLigament2d joint = mech.
-                              getRoot("joint", 0.5, .1).
-                              append(new MechanismLigament2d("joint", 0.3, 90, 6, new Color8Bit(Color.kCyan)));
-  /* End mech2d only */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -91,9 +68,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() { 
-    wrist.setLength(m_fx.getPosition().getValue()/30); // Divide by 30 to scale motion to fit in the window
-    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+  public void robotPeriodic() {
+    Mechanism2dHelper.getInstance().distanceBarSetLength(m_fx);
   }
 
   @Override
