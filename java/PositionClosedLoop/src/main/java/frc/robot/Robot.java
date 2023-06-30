@@ -27,7 +27,7 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(0);
+  private final TalonFX m_fx = new TalonFX(0, "Fred");
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at position 0, enable FOC, no feed forward, use slot 0 */
@@ -40,14 +40,13 @@ public class Robot extends TimedRobot {
   private final XboxController m_joystick = new XboxController(0);
 
   /* Mech2d only */
-  double HEIGHT = .5; //Controls tyhe height of the mech2d SmartDashboard
-  double WIDTH = 1; //Controls tyhe height of the mech2d SmartDashboard
-  double PCL = 1;
+  double HEIGHT = .5; // Controls tyhe height of the mech2d SmartDashboard
+  double WIDTH = 1; // Controls tyhe height of the mech2d SmartDashboard
 
   Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
   MechanismLigament2d wrist = mech.
                               getRoot("PCL", 0.5, 0.4).
-                              append(new MechanismLigament2d("PCL",  PCL, 0, 6, new Color8Bit(Color.kAliceBlue)));
+                              append(new MechanismLigament2d("PCL",  1, 0, 6, new Color8Bit(Color.kAliceBlue)));
   
   MechanismLigament2d reference = mech.
                               getRoot("Reference", 0, .1).
@@ -65,8 +64,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Slot0.kP = 12; // An error of 0.5 rotations results in 12V output
-    configs.Slot0.kD = 1; // A change of 1 rotation per second results in 0.1 volts output
+    configs.Slot0.kP = 2; // An error of 0.5 rotations results in 12V output
+    configs.Slot0.kD = .1; // A change of 1 rotation per second results in 0.1 volts output
     // Peak output of 8 volts
     configs.Voltage.PeakForwardVoltage = 8;
     configs.Voltage.PeakReverseVoltage = -8;
@@ -93,7 +92,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() { 
-    wrist.setLength(PCL/30); // Divide by 2 to scale motion to fit in the window
+    wrist.setLength(m_fx.getPosition().getValue()/30); // Divide by 30 to scale motion to fit in the window
     SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 
@@ -146,6 +145,5 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
     PhysicsSim.getInstance().run();
-    PCL = m_fx.getPosition().getValue();
   }
 }

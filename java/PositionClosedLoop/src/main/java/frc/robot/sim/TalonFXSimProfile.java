@@ -1,6 +1,7 @@
 package frc.robot.sim;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -15,6 +16,7 @@ class TalonFXSimProfile extends SimProfile {
     private final TalonFX _falcon;
 
     private final DCMotorSim _motorSim;
+    private final TalonFXSimState _falconSim;
 
     /**
      * Creates a new simulation profile for a TalonFX device.
@@ -32,6 +34,7 @@ class TalonFXSimProfile extends SimProfile {
     public TalonFXSimProfile(final TalonFX falcon, final double rotorInertia) {
         this._falcon = falcon;
         this._motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 1.0, rotorInertia);
+        this._falconSim = _falcon.getSimState();
     }
 
     /**
@@ -55,5 +58,9 @@ class TalonFXSimProfile extends SimProfile {
         _falcon.getSimState().setRotorVelocity(velocity_rps);
 
         _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
+
+        ///GUI SIM
+        double rotorPosition = _motorSim.getAngularPositionRotations();
+        _falconSim.setRawRotorPosition(rotorPosition);
     }
 }
