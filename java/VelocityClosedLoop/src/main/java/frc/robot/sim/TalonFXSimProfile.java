@@ -1,6 +1,7 @@
 package frc.robot.sim;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -13,7 +14,7 @@ import frc.robot.sim.PhysicsSim.SimProfile;
 class TalonFXSimProfile extends SimProfile {
     private final double kMotorResistance = 0.002; // Assume 2mOhm resistance for voltage drop calculation
     private final TalonFX _falcon;
-
+    private final TalonFXSimState _falconSim;
     private final DCMotorSim _motorSim;
 
     /**
@@ -30,8 +31,9 @@ class TalonFXSimProfile extends SimProfile {
      *                        The phase of the TalonFX sensors
      */
     public TalonFXSimProfile(final TalonFX falcon, final double rotorInertia) {
-        this._falcon = falcon;
+        this._falcon = new TalonFX(0);
         this._motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 1.0, rotorInertia);
+        this._falconSim = _falcon.getSimState();
     }
 
     /**
@@ -55,5 +57,11 @@ class TalonFXSimProfile extends SimProfile {
         _falcon.getSimState().setRotorVelocity(velocity_rps);
 
         _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
+
+        double rotorPosition = _motorSim.getAngularPositionRotations() / 10; //Gear reduction by 10:1 so rotation is visible in sim
+        _falconSim.setRawRotorPosition(rotorPosition);
+
+        double rotorVelocity = _motorSim.getAngularVelocityRadPerSec(); // TODO move this to TalonFXSimProfile
+        _falconSim.setRotorVelocity(rotorVelocity);
     }
 }

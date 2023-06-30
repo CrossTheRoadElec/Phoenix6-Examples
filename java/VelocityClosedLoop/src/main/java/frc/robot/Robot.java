@@ -28,8 +28,8 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(0);
-  private final TalonFX m_fllr = new TalonFX(1);
+  private final TalonFX m_fx = new TalonFX(0, "Fred");
+  private final TalonFX m_fllr = new TalonFX(1, "Fred");
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, enable FOC, no feed forward, use slot 0 */
@@ -41,16 +41,15 @@ public class Robot extends TimedRobot {
 
   private final XboxController m_joystick = new XboxController(0);
 
-   /* Sim only */
-   double HEIGHT = 1; //Controls tyhe height of the mech2d SmartDashboard
-   double WIDTH = 1; //Controls tyhe height of the mech2d SmartDashboard
-   double VCL = 1;
+   /* Mech2d only */
+   double HEIGHT = 1; // Controls the height of the mech2d SmartDashboard
+   double WIDTH = 1; // Controls the height of the mech2d SmartDashboard
  
    Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
    // Velocity
    MechanismLigament2d VelocityMech = mech.
-                               getRoot("VCL", 0.75, 0.5).
-                               append(new MechanismLigament2d("VCL",  VCL,90, 6, new Color8Bit(Color.kAliceBlue)));
+                               getRoot("velocityLineReferencePosition", 0.75, 0.5).
+                               append(new MechanismLigament2d("velocityLine",  1,90, 6, new Color8Bit(Color.kAliceBlue)));
    
   MechanismLigament2d midline = mech.
                                 getRoot("midline", 0.7, 0.5).
@@ -63,13 +62,13 @@ public class Robot extends TimedRobot {
 
   MechanismLigament2d side1 = arm.append(new MechanismLigament2d("side1", 0.15307, 112.5, 6, new Color8Bit(Color.kAliceBlue)));
   MechanismLigament2d side2 = side1.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
-  MechanismLigament2d side3 = side2.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
-  MechanismLigament2d side4 = side3.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
-  MechanismLigament2d side5 = side4.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
-  MechanismLigament2d side6 = side5.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
-  MechanismLigament2d side7 = side6.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
-  MechanismLigament2d side8 = side7.append(new MechanismLigament2d("side2", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
-   /* End sim only */
+  MechanismLigament2d side3 = side2.append(new MechanismLigament2d("side3", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side4 = side3.append(new MechanismLigament2d("side4", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side5 = side4.append(new MechanismLigament2d("side5", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side6 = side5.append(new MechanismLigament2d("side6", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side7 = side6.append(new MechanismLigament2d("side7", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+  MechanismLigament2d side8 = side7.append(new MechanismLigament2d("side8", 0.15307, 45, 6, new Color8Bit(Color.kAliceBlue)));
+   /* End mech2d only */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -112,6 +111,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    VelocityMech.setLength(m_fx.getVelocity().getValue()/120); // Divide by 120 to scale motion to fit in the window
+    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+    arm.setAngle(m_fx.getPosition().getValue() * 360);
   }
 
   @Override
@@ -167,11 +169,5 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
     PhysicsSim.getInstance().run();
-    VCL = m_fx.getRotorVelocity().getValue();
-    VelocityMech.setLength(VCL/120); //Divide by 2 to scale motion to fit in the window
-    double position = m_fx.getPosition().getValue() / 25; //Gear reduction by 25:1 so rotation is visible in sim
-    arm.setAngle(position*360);
-
-    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 }
