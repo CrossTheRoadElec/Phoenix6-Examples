@@ -30,15 +30,15 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_motor = new TalonFX(1, "fred");
+  TalonFX m_motor = new TalonFX(1, "Fred");
   MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
   XboxController m_joystick = new XboxController(0);
   int m_printCount = 0;
 
   /* Sim only */
-  double HEIGHT = .5;
-  double WIDTH = 1;
-  double MOTIONMAGIC = 1; //this value changes in the simulationPeriodic method
+  double HEIGHT = .5; // Controls tyhe height of the mech2d smart dashboard
+  double WIDTH = 1; // Controls tyhe height of the mech2d smart dashboard
+  double MOTIONMAGIC = 1; // This value changes in the simulationPeriodic method
 
   DCMotorSim m_motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 100, .001);
   Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
@@ -63,10 +63,6 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
     PhysicsSim.getInstance().run();
-    MOTIONMAGIC = m_motor.getPosition().getValue();
-    wrist.setLength(MOTIONMAGIC/25); //Divide by 25 to scale motion to fit in the window
-
-    SmartDashboard.putData("mech2d", mech);
   }
 
   /**
@@ -115,6 +111,9 @@ public class Robot extends TimedRobot {
       System.out.println("Vel: " + m_motor.getVelocity());
       System.out.println();
     }
+    MOTIONMAGIC = m_motor.getPosition().getValue();
+    SmartDashboard.putData("mech2d", mech);
+    wrist.setLength(MOTIONMAGIC/25); //Divide by 25 to scale motion to fit in the window
   }
 
   @Override
