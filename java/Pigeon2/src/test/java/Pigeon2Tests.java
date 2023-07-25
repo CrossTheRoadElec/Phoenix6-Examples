@@ -2,8 +2,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenixpro.StatusCode;
-import com.ctre.phoenixpro.hardware.Pigeon2;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.Timer;
 
