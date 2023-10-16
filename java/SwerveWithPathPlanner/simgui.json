@@ -1,0 +1,136 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "CANCoder (Pro)[1]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/Pigeon 2 (Pro) [1]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [1]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [2]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [3]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [4]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [5]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [6]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [7]": "Motor Controller",
+      "/Pose": "Field2d",
+      "/SmartDashboard/Current Pose": "Field2d",
+      "/SmartDashboard/Module 0": "Mechanism2d",
+      "/SmartDashboard/Module 1": "Mechanism2d",
+      "/SmartDashboard/Module 2": "Mechanism2d",
+      "/SmartDashboard/Module 3": "Mechanism2d"
+    },
+    "windows": {
+      "/Pose": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 0": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 1": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 2": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 3": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "transitory": {
+      "Pose": {
+        "open": true
+      }
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 0,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Drive/Velocity X"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/Drive/Velocity Y"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/Drive/Speed"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "height": 0,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Drive/Odometry Period"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    }
+  }
+}
