@@ -65,6 +65,8 @@ jobs:
             directory: 'java/PositionClosedLoop'
           - project-name: 'Simulation'
             directory: 'java/Simulation'
+          - project-name: 'SwerveWithPathPlanner'
+            directory: 'java/SwerveWithPathPlanner'
           - project-name: 'VelocityClosedLoop'
             directory: 'java/VelocityClosedLoop'
           - project-name: 'WaitForAll'
