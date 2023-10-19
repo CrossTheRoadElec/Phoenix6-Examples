@@ -30,7 +30,7 @@ public class TunerConstants {
     private static final double kWheelRadiusInches = 2.167; // Estimated at first, then fudge-factored to make odom match record
     private static final int kPigeonId = 1;
     private static final boolean kSteerMotorReversed = true;
-    private static final String kCANbusName = "Fred";
+    private static final String kCANbusName = "rio";
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
 
