@@ -29,13 +29,6 @@ private:
   frc::XboxController m_joystick{0};
 
   DriveSubsystem m_driveSubsystem{};
-
-  frc2::RunCommand m_teleopDrive{[this]()
-                                 {
-                                   /* invert the joystick Y because forward Y is negative */
-                                   m_driveSubsystem.ArcadeDrive(-m_joystick.GetLeftY(), m_joystick.GetRightX());
-                                 },
-                                 {&m_driveSubsystem}};
   DriveStraightCommand m_driveStraightCommand{m_driveSubsystem,
                                               [this]()
                                               { return -m_joystick.GetLeftY(); }};

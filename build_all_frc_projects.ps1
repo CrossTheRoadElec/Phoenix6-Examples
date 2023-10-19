@@ -1,9 +1,9 @@
-$Depth = 2
+$Depth = 1
 $Levels = '/*' * $Depth
 
 $ErrorActionPreference = "Stop"
 
-Get-ChildItem -Directory "./$Levels" |
+Get-ChildItem -Directory "./$Levels" -Exclude ".github" |
     ForEach-Object {
         Push-Location $_.FullName
         echo "Building example $_"

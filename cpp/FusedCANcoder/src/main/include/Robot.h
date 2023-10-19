@@ -34,8 +34,8 @@ class Robot : public frc::TimedRobot {
   ctre::phoenix6::hardware::CANcoder m_cc{1, "fred"};
   ctre::phoenix6::StatusSignal<bool> f_fusedSensorOutOfSync = m_fx.GetFault_FusedSensorOutOfSync();
   ctre::phoenix6::StatusSignal<bool> sf_fusedSensorOutOfSync = m_fx.GetStickyFault_FusedSensorOutOfSync();
-  ctre::phoenix6::StatusSignal<bool> f_missingRemoteSensor = m_fx.GetFault_MissingRemoteSensor();
-  ctre::phoenix6::StatusSignal<bool> sf_missingRemoteSensor = m_fx.GetStickyFault_MissingRemoteSensor();
+  ctre::phoenix6::StatusSignal<bool> f_remoteSensorInvalid = m_fx.GetFault_RemoteSensorDataInvalid();
+  ctre::phoenix6::StatusSignal<bool> sf_remoteSensorInvalid = m_fx.GetStickyFault_RemoteSensorDataInvalid();
 
   ctre::phoenix6::StatusSignal<units::turn_t> fx_pos = m_fx.GetPosition();
   ctre::phoenix6::StatusSignal<units::turns_per_second_t> fx_vel = m_fx.GetVelocity();

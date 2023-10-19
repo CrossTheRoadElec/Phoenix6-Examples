@@ -29,9 +29,9 @@ void Robot::RobotPeriodic() {
     // If any faults happen, print them out. Sticky faults will always be present if live-fault occurs
     f_fusedSensorOutOfSync.Refresh();
     sf_fusedSensorOutOfSync.Refresh();
-    f_missingRemoteSensor.Refresh();
-    sf_missingRemoteSensor.Refresh();
-    bool anyFault = sf_fusedSensorOutOfSync.GetValue() || sf_missingRemoteSensor.GetValue();
+    f_remoteSensorInvalid.Refresh();
+    sf_remoteSensorInvalid.Refresh();
+    bool anyFault = sf_fusedSensorOutOfSync.GetValue() || sf_remoteSensorInvalid.GetValue();
     if(anyFault) {
       std::cout << "A fault has occurred:" << std::endl;;
       /* If we're live, indicate live, otherwise if we're sticky indicate sticky, otherwise do nothing */
@@ -41,9 +41,9 @@ void Robot::RobotPeriodic() {
         std::cout << "Fused sensor out of sync sticky-faulted" << std::endl;
       }
       /* If we're live, indicate live, otherwise if we're sticky indicate sticky, otherwise do nothing */
-      if(f_missingRemoteSensor.GetValue()) {
+      if(f_remoteSensorInvalid.GetValue()) {
         std::cout << "Missing remote sensor live-faulted" << std::endl;
-      } else if (sf_missingRemoteSensor.GetValue()) {
+      } else if (sf_remoteSensorInvalid.GetValue()) {
         std::cout << "Missing remote sensor sticky-faulted" << std::endl;
       }
     }

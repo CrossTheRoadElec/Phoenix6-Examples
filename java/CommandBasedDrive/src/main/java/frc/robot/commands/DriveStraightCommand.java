@@ -5,10 +5,10 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveStraightCommand extends CommandBase {
+public class DriveStraightCommand extends Command {
     private final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
     private final DoubleSupplier m_throttle;
     private final DriveSubsystem m_drivebase;

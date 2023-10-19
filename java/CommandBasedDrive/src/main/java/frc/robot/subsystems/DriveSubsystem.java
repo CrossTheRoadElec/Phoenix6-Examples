@@ -254,7 +254,7 @@ public class DriveSubsystem extends SubsystemBase {
         cfg.apply(toApply);
 
         /* And initialize position to 0 */
-        cfg.setRotorPosition(0);
+        cfg.setPosition(0);
     }
 
     /**
@@ -273,7 +273,7 @@ public class DriveSubsystem extends SubsystemBase {
         cfg.apply(toApply);
 
         /* And initialize position to 0 */
-        cfg.setRotorPosition(0);
+        cfg.setPosition(0);
     }
 
     /**

@@ -29,7 +29,7 @@ void Robot::RobotInit() {
   m_fx.GetConfigurator().Apply(configs);
 
   /* Make sure we start at 0 */
-  m_fx.SetRotorPosition(0_tr);
+  m_fx.SetPosition(0_tr);
 }
 void Robot::RobotPeriodic() {}
 

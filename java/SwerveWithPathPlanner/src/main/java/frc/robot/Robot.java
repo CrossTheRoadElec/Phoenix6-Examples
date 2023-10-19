@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private final boolean UseLimelight = true;
+  private final boolean UseLimelight = false;
 
   @Override
   public void robotInit() {
@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.drivetrain.getDaqThread().setThreadPriority(99);
 
-    SignalLogger.startLogger();
+    SignalLogger.start();
   }
   @Override
   public void robotPeriodic() {
@@ -78,7 +78,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopExit() {
-    SignalLogger.stopLogger();
   }
 
   @Override

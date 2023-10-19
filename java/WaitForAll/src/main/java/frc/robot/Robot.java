@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_lotsOfSignals);
       System.out.println("Status of waiting on signals (normal use case): " + status);
       for(var sig : m_lotsOfSignals) {
-        System.out.println("Signal status: " + sig.getError());
+        System.out.println("Signal status: " + sig.getStatus());
       }
     }
     /* If we press the B button, test what happens when we wait on signals from different busses */
@@ -89,7 +89,7 @@ public class Robot extends TimedRobot {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_signalsAcrossCANbuses);
       System.out.println("Status of waiting on signals across different CAN busses: " + status);
       for(var sig : m_signalsAcrossCANbuses) {
-        System.out.println("Signal status: " + sig.getError());
+        System.out.println("Signal status: " + sig.getStatus());
       }
     }
     /* If we press the Y button, test what happens when we wait on no signals */
@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_noSignals);
       System.out.println("Status of waiting on no signals: " + status);
       for(var sig : m_noSignals) {
-        System.out.println("Signal status: " + sig.getError());
+        System.out.println("Signal status: " + sig.getStatus());
       }
     }
     /* If we press the X button, test what happens when we wait on signals with the transcient motor controller */
@@ -105,7 +105,7 @@ public class Robot extends TimedRobot {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_tanscientSignals);
       System.out.println("Status of waiting on transcient signals: " + status);
       for(var sig : m_tanscientSignals) {
-        System.out.println("Signal status: " + sig.getError());
+        System.out.println("Signal status: " + sig.getStatus());
       }
     }
   }

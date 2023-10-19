@@ -72,7 +72,7 @@ void DriveSubsystem::InitializeLeftDriveTalonFX(ctre::phoenix6::configs::TalonFX
     cfg.Apply(toApply);
 
     /* And initialize position to 0 */
-    cfg.SetRotorPosition(0_tr);
+    cfg.SetPosition(0_tr);
 }
 void DriveSubsystem::InitializeRightDriveTalonFX(ctre::phoenix6::configs::TalonFXConfigurator &cfg)
 {
@@ -84,7 +84,7 @@ void DriveSubsystem::InitializeRightDriveTalonFX(ctre::phoenix6::configs::TalonF
     cfg.Apply(toApply);
 
     /* And initialize position to 0 */
-    cfg.SetRotorPosition(0_tr);
+    cfg.SetPosition(0_tr);
 }
 void DriveSubsystem::InitializePigeon2(ctre::phoenix6::configs::Pigeon2Configurator &cfg)
 {

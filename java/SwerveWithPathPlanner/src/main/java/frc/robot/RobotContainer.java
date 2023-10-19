@@ -4,21 +4,12 @@
 
 package frc.robot;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 
@@ -35,29 +26,12 @@ public class RobotContainer {
   SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withIsOpenLoop(true);
   SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-  private final double Velocity = 3;
-  private final double Acceleration = 10;
   /* Path follower */
-  List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("Tests", new PathConstraints(Velocity, Acceleration), new PathConstraints(Velocity, Acceleration));
-  Map<String, Command> eventMap = new HashMap<>() {{
-    put("marker", new PrintCommand("Passed Marker"));
-  }};
-  SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
-  SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-      ()->drivetrain.getState().Pose, // Supplier of current robot pose
-      drivetrain::seedFieldRelative,  // Consumer for seeding pose against auto
-      new PIDConstants(10, 0, 0), // Translation gains
-      new PIDConstants(10, 0, 0), // Rotation gains
-      (speeds)->drivetrain.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
-      eventMap, // Map of events to trigger commands based on where the robot is in the path
-      true, // Mirror the path based on red or blue
-      drivetrain); // Subsystem for requirements
-
-  Command runAuto = autoBuilder.fullAuto(pathGroup);
+  // Command runAuto = drivetrain.getAutoPath("Tests");
 
   Telemetry logger = new Telemetry(MaxSpeed);
 
-  Pose2d odomStart = pathGroup.get(0).getInitialHolonomicPose();
+  Pose2d odomStart = new Pose2d(0, 0, new Rotation2d(0, 0));
 
   private void configureBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -86,7 +60,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     /* First put the drivetrain into auto run mode, then run the auto */
-    return runAuto;
+    return new InstantCommand(()->{});
   }
 
   public boolean seedPoseButtonDown() {
