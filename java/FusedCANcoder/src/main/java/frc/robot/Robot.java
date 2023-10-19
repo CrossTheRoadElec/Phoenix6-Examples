@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
   CANcoder m_cc = new CANcoder(1, "fred");
   StatusSignal<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync();
   StatusSignal<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync();
-  StatusSignal<Boolean> f_missingRemoteSensor = m_fx.getFault_MissingRemoteSensor();
-  StatusSignal<Boolean> sf_missingRemoteSensor = m_fx.getStickyFault_MissingRemoteSensor();
+  StatusSignal<Boolean> f_remoteSensorInvalid = m_fx.getFault_RemoteSensorDataInvalid();
+  StatusSignal<Boolean> sf_remoteSensorInvalid = m_fx.getStickyFault_RemoteSensorDataInvalid();
 
   StatusSignal<Double> fx_pos = m_fx.getPosition();
   StatusSignal<Double> fx_vel = m_fx.getVelocity();
@@ -71,9 +71,9 @@ public class Robot extends TimedRobot {
       // If any faults happen, print them out. Sticky faults will always be present if live-fault occurs
       f_fusedSensorOutOfSync.refresh();
       sf_fusedSensorOutOfSync.refresh();
-      f_missingRemoteSensor.refresh();
-      sf_missingRemoteSensor.refresh();
-      boolean anyFault = sf_fusedSensorOutOfSync.getValue() || sf_missingRemoteSensor.getValue();
+      f_remoteSensorInvalid.refresh();
+      sf_remoteSensorInvalid.refresh();
+      boolean anyFault = sf_fusedSensorOutOfSync.getValue() || sf_remoteSensorInvalid.getValue();
       if(anyFault) {
         System.out.println("A fault has occurred:");
         /* If we're live, indicate live, otherwise if we're sticky indicate sticky, otherwise do nothing */
@@ -83,9 +83,9 @@ public class Robot extends TimedRobot {
           System.out.println("Fused sensor out of sync sticky-faulted");
         }
         /* If we're live, indicate live, otherwise if we're sticky indicate sticky, otherwise do nothing */
-        if(f_missingRemoteSensor.getValue()) {
+        if(f_remoteSensorInvalid.getValue()) {
           System.out.println("Missing remote sensor live-faulted");
-        } else if (sf_missingRemoteSensor.getValue()) {
+        } else if (sf_remoteSensorInvalid.getValue()) {
           System.out.println("Missing remote sensor sticky-faulted");
         }
       }

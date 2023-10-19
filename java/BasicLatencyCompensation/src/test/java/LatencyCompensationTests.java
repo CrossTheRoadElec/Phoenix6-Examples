@@ -30,7 +30,7 @@ public class LatencyCompensationTests {
         final double position = 35;
         final double velocity = 24;
         /* Initialize by making all the positions 0 */
-        talonfx.setRotorPosition(0);
+        talonfx.setPosition(0);
         cancoder.setPosition(0);
 
         /* Set the simulated state of device positions */

@@ -8,7 +8,13 @@
 RobotContainer::RobotContainer()
 {
   // Initialize all of your commands and subsystems here
-  m_driveSubsystem.SetDefaultCommand(m_teleopDrive);
+  frc2::RunCommand teleopDrive {[this]()
+                                 {
+                                   /* invert the joystick Y because forward Y is negative */
+                                   m_driveSubsystem.ArcadeDrive(-m_joystick.GetLeftY(), m_joystick.GetRightX());
+                                 },
+                                 {&m_driveSubsystem}};
+  m_driveSubsystem.SetDefaultCommand(std::move(teleopDrive));
 
   // Configure the button bindings
   ConfigureButtonBindings();

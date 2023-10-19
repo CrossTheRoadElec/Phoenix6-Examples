@@ -50,7 +50,7 @@ public class FusedCANcoderTests {
         /* Make sure both are initially set to 0 before messing with sim state */
         retryConfigApply(()->talonSimState.setRawRotorPosition(0));
         retryConfigApply(()->cancoderSimState.setRawPosition(0));
-        retryConfigApply(()->talon.setRotorPosition(0));
+        retryConfigApply(()->talon.setPosition(0));
         retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
         BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
@@ -90,7 +90,7 @@ public class FusedCANcoderTests {
         /* Make sure both are initially set to 0 before messing with sim state */
         retryConfigApply(()->talonSimState.setRawRotorPosition(0));
         retryConfigApply(()->cancoderSimState.setRawPosition(0));
-        retryConfigApply(()->talon.setRotorPosition(0));
+        retryConfigApply(()->talon.setPosition(0));
         retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
         BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
@@ -134,7 +134,7 @@ public class FusedCANcoderTests {
         /* Make sure both are initially set to 0 before messing with sim state */
         retryConfigApply(()->talonSimState.setRawRotorPosition(0));
         retryConfigApply(()->cancoderSimState.setRawPosition(0));
-        retryConfigApply(()->talon.setRotorPosition(0));
+        retryConfigApply(()->talon.setPosition(0));
         retryConfigApply(()->cancoder.setPosition(0));
         /* Wait for sets to take affect */
         BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
