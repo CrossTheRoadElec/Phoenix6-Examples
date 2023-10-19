@@ -7,7 +7,14 @@
     "mavenUrls": [
         "https://maven.ctr-electronics.com/release/"
     ],
-    "jsonUrl": "https://maven.ctr-electronics.com/release/com/ctre/phoenix6/latest/Phoenix6-frc2024-alpha-latest.json",
+    "jsonUrl": "https://maven.ctr-electronics.com/release/com/ctre/phoenix6/latest/Phoenix6-frc2024-latest.json",
+    "conflictsWith": [
+        {
+            "uuid": "3fcf3402-e646-4fa6-971e-18afe8173b1a",
+            "errorMessage": "The combined Phoenix-6-And-5 vendordep is no longer supported. Please remove the vendordep and instead add both the latest Phoenix 6 vendordep and Phoenix 5 vendordep.",
+            "offlineFileName": "Phoenix6And5.json"
+        }
+    ],
     "javaDependencies": [
         {
             "groupId": "com.ctre.phoenix6",
