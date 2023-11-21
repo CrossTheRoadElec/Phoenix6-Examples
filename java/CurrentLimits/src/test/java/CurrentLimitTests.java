@@ -26,6 +26,9 @@ public class CurrentLimitTests {
         assert HAL.initialize(500, 0);
 
         talon = new TalonFX(0);
+
+        /* Confirm we get the version code from the Talon before trying to control it */
+        talon.getVersion().waitForUpdate(1.0);
     }
 
     @Test
