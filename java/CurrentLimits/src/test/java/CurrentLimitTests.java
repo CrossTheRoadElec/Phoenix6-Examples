@@ -13,13 +13,20 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CurrentLimitTests {
+public class CurrentLimitTests implements AutoCloseable {
     final int CONFIG_RETRY_COUNT = 5;
 
     TalonFX talon;
+
+    @Override
+    public void close() {
+        /* destroy our TalonFX object */
+        talon.close();
+    }
 
     @BeforeEach
     public void constructDevices() {
@@ -31,8 +38,13 @@ public class CurrentLimitTests {
         DriverStationSim.setEnabled(true);
         DriverStationSim.notifyNewData();
 
-        /* delay ~100ms so the devices can start up and enable */
-        Timer.delay(0.100);
+        /* delay ~1s so the devices can start up and enable */
+        Timer.delay(1);
+    }
+
+    @AfterEach
+    void shutdown() {
+        close();
     }
 
     @Test
@@ -53,13 +65,10 @@ public class CurrentLimitTests {
 
         retryConfigApply(() -> talon.getConfigurator().apply(toConfigure));
 
-        /* Wait for an initial stator current signal */
-        statorCurrent.waitForUpdate(1);
-
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
         /* wait for the control to apply */
-        Timer.delay(0.100);
+        Timer.delay(0.020);
 
         /* Get the next update for stator current */
         statorCurrent.waitForUpdate(1);
@@ -70,6 +79,9 @@ public class CurrentLimitTests {
         /* Now apply the stator current limit */
         currentLimitConfigs.StatorCurrentLimitEnable = true;
         retryConfigApply(() -> talon.getConfigurator().apply(currentLimitConfigs));
+
+        /* wait for the current to drop */
+        Timer.delay(0.500);
 
         /* Get the next update for stator current */
         statorCurrent.waitForUpdate(1);
@@ -92,13 +104,10 @@ public class CurrentLimitTests {
 
         retryConfigApply(() -> talon.getConfigurator().apply(toConfigure));
 
-        /* Wait for an initial supply current signal */
-        supplyCurrent.waitForUpdate(1);
-
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
         /* wait for the control to apply */
-        Timer.delay(0.100);
+        Timer.delay(0.020);
 
         /* Get the next update for supply current */
         supplyCurrent.waitForUpdate(1);
@@ -109,6 +118,9 @@ public class CurrentLimitTests {
         /* Now apply the supply current limit */
         currentLimitConfigs.SupplyCurrentLimitEnable = true;
         retryConfigApply(() -> talon.getConfigurator().apply(currentLimitConfigs));
+
+        /* wait for the current to adjust */
+        Timer.delay(0.500);
 
         /* Get the next update for supply current */
         supplyCurrent.waitForUpdate(1);
