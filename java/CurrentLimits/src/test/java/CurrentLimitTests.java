@@ -53,6 +53,9 @@ public class CurrentLimitTests {
 
         retryConfigApply(() -> talon.getConfigurator().apply(toConfigure));
 
+        /* Wait for an initial stator current signal */
+        statorCurrent.waitForUpdate(1);
+
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
         /* wait for the control to apply */
@@ -88,6 +91,9 @@ public class CurrentLimitTests {
         currentLimitConfigs.StatorCurrentLimitEnable = false; // Start with supply limits off
 
         retryConfigApply(() -> talon.getConfigurator().apply(toConfigure));
+
+        /* Wait for an initial supply current signal */
+        supplyCurrent.waitForUpdate(1);
 
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
