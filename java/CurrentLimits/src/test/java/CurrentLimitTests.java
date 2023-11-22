@@ -56,7 +56,7 @@ public class CurrentLimitTests {
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
         /* wait for the control to apply */
-        Timer.delay(0.020);
+        Timer.delay(0.100);
 
         /* Get the next update for stator current */
         statorCurrent.waitForUpdate(1);
@@ -92,7 +92,7 @@ public class CurrentLimitTests {
         /* Put the talon in a stall, which should produce a lot of current */
         talon.setControl(new DutyCycleOut(1));
         /* wait for the control to apply */
-        Timer.delay(0.020);
+        Timer.delay(0.100);
 
         /* Get the next update for supply current */
         supplyCurrent.waitForUpdate(1);
