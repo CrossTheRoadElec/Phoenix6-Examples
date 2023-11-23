@@ -10,24 +10,17 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.CommandSwerveDrivetrain;
 
 public class TunerConstants {
-    static class CustomSlotGains extends Slot0Configs {
-        public CustomSlotGains(double kP, double kI, double kD, double kS, double kV, double kA) {
-            this.kP = kP;
-            this.kI = kI;
-            this.kD = kD;
-            this.kS = kS;
-            this.kV = kV;
-            this.kA = kA;
-        }
-    }
-
     // Both sets of gains need to be tuned to your individual robot
     // The steer motor uses MotionMagicVoltage control
-    private static final CustomSlotGains steerGains = new CustomSlotGains(100, 0, 0.05, 0, 0, 0);
+    private static final Slot0Configs steerGains = new Slot0Configs()
+        .withKP(100).withKI(0).withKD(0.05)
+        .withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses:
     // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
     // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
-    private static final CustomSlotGains driveGains = new CustomSlotGains(3, 0, 0, 0, 0, 0);
+    private static final Slot0Configs driveGains = new Slot0Configs()
+        .withKP(3).withKI(0).withKD(0)
+        .withKS(0).withKV(0).withKA(0);
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
