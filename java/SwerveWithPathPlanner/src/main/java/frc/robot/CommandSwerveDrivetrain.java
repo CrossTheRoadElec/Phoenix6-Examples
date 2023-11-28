@@ -15,8 +15,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
@@ -24,7 +24,8 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * so it can be used in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-    private SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+    private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
@@ -50,7 +51,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return new RunCommand(()->{this.setControl(requestSupplier.get());}, this);
+        return run(() -> this.setControl(requestSupplier.get()));
     }
 
     public Command getAutoPath(String pathName) {
@@ -59,24 +60,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     @Override
     public void simulationPeriodic() {
-        /* Assume  */
-        updateSimState(0.02, 12);
-    }
-    /**
-     * Takes the specified location and makes it the current pose for
-     * field-relative maneuvers
-     *
-     * @param location Pose to make the current pose at.
-     */
-    @Override
-    public void seedFieldRelative(Pose2d location) {
-        try {
-            m_stateLock.writeLock().lock();
-
-            m_odometry.resetPosition(Rotation2d.fromDegrees(m_pigeon2.getYaw().getValue()), m_modulePositions, location);
-        } finally {
-            m_stateLock.writeLock().unlock();
-        }
+        /* Assume 20ms update rate, get battery voltage from WPILib */
+        updateSimState(0.02, RobotController.getBatteryVoltage());
     }
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
