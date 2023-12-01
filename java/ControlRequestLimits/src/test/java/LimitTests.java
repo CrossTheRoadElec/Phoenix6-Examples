@@ -293,7 +293,7 @@ public class LimitTests {
 
         talonfx.setControl(test.request);
 
-        for(int i = 0; i < 10; ++i)
+        for(int i = 0; i < 20; ++i)
         {
             talonfx.getSimState().setRawRotorPosition(0); // Set position/velocity so we can drive in the desired direction
             talonfx.getSimState().setRotorVelocity(0);
