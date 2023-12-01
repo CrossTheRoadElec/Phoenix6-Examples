@@ -51,6 +51,8 @@ jobs:
             directory: 'java/CANcoder'
           - project-name: 'CommandBasedDrive'
             directory: 'java/CommandBasedDrive'
+          - project-name: 'ControlRequestLimits'
+            directory: 'java/ControlRequestLimits'
           - project-name: 'CurrentLimits'
             directory: 'java/CurrentLimits'
           - project-name: 'Falcon500ArcadeDrive'
