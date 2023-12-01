@@ -1,1 +1,8 @@
 *.bak
+
+*.hoot
+*.wpilog
+simgui-ds.json
+simgui.json
+networktables.json
+ctre_sim
