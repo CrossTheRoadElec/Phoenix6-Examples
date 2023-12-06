@@ -25,9 +25,9 @@ public class Robot extends TimedRobot {
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at position 0, enable FOC, no feed forward, use slot 0 */
-  private final PositionVoltage m_voltagePosition = new PositionVoltage(0, 0, true, 0, 0, false);
+  private final PositionVoltage m_voltagePosition = new PositionVoltage(0, 0, true, 0, 0, false, false, false);
   /* Start at position 0, no feed forward, use slot 1 */
-  private final PositionTorqueCurrentFOC m_torquePosition = new PositionTorqueCurrentFOC(0, 0, 0, 1, false);
+  private final PositionTorqueCurrentFOC m_torquePosition = new PositionTorqueCurrentFOC(0, 0, 0, 1, false, false, false);
   /* Keep a brake request so we can disable the motor */
   private final NeutralOut m_brake = new NeutralOut();
 
