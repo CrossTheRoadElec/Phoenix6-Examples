@@ -38,8 +38,8 @@ public class CurrentLimitTests implements AutoCloseable {
         DriverStationSim.setEnabled(true);
         DriverStationSim.notifyNewData();
 
-        /* delay ~1s so the devices can start up and enable */
-        Timer.delay(1);
+        /* delay ~100ms so the devices can start up and enable */
+        Timer.delay(0.100);
     }
 
     @AfterEach
