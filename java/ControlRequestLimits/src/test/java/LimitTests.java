@@ -25,20 +25,17 @@ public class LimitTests {
 
     TalonFX talonfx;
 
-    private enum DriveDirection
-    {
+    private enum DriveDirection {
         Zero,
         Forward,
         Reverse
     }
 
-    private class ControlRequestTest<T extends ControlRequest>
-    {
+    private class ControlRequestTest<T extends ControlRequest> {
         public final T request;
         public Consumer<DriveDirection> direction = null;
         public Consumer<Boolean> limitForward, limitReverse = null;
-        public ControlRequestTest(T request)
-        {
+        public ControlRequestTest(T request) {
             this.request = request;
         }
     }
@@ -239,25 +236,25 @@ public class LimitTests {
         cfg.Slot0.kP = 1; // Have some kP in slot 0 so we can drive with forward/reverse pos/vel
         cfg.MotionMagic.MotionMagicAcceleration = 10000; // Very large number to get a change in output quickly
         cfg.MotionMagic.MotionMagicCruiseVelocity = 10000; // Very large number to get a change in output quickly
-        retryConfigApply(()->talonfx.getConfigurator().apply(cfg));
-        retryConfigApply(()->talonfx.setPosition(0));
+        retryConfigApply(() -> talonfx.getConfigurator().apply(cfg));
+        retryConfigApply(() -> talonfx.setPosition(0));
 
+        /* enable the robot */
         DriverStationSim.setEnabled(true);
         DriverStationSim.notifyNewData();
 
-        Timer.delay(0.1);
+        /* delay ~100ms so the devices can start up and enable */
+        Timer.delay(0.100);
     }
 
     @Test
-    public void robotIsEnabled()
-    {
+    public void robotIsEnabled() {
         assertTrue(DriverStation.isEnabled());
     }
 
     @Test
     public void testAllControlLimits() {
-        for (var test : tests)
-        {
+        for (var test : tests) {
             testControl(test);
         }
     }
@@ -271,18 +268,15 @@ public class LimitTests {
         assert(finalCode.isOK());
     }
 
-    private <T extends ControlRequest> void testControl(ControlRequestTest<T> test)
-    {
-        for(var dir : DriveDirection.values())
-        {
+    private <T extends ControlRequest> void testControl(ControlRequestTest<T> test) {
+        for (var dir : DriveDirection.values()) {
             testControlPriv(test, dir, false, false);
             testControlPriv(test, dir, false, true);
             testControlPriv(test, dir, true, false);
             testControlPriv(test, dir, true, true);
         }
     }
-    private <T extends ControlRequest> void testControlPriv(ControlRequestTest<T> test, DriveDirection direction, boolean forwardLimit, boolean reverseLimit)
-    {
+    private <T extends ControlRequest> void testControlPriv(ControlRequestTest<T> test, DriveDirection direction, boolean forwardLimit, boolean reverseLimit) {
         var appliedMotorVoltage = talonfx.getMotorVoltage();
         var forwardLimitStatus = talonfx.getFault_ForwardHardLimit();
         var reverseLimitStatus = talonfx.getFault_ReverseHardLimit();
@@ -293,8 +287,7 @@ public class LimitTests {
 
         talonfx.setControl(test.request);
 
-        for(int i = 0; i < 20; ++i)
-        {
+        for (int i = 0; i < 20; ++i) {
             talonfx.getSimState().setRawRotorPosition(0); // Set position/velocity so we can drive in the desired direction
             talonfx.getSimState().setRotorVelocity(0);
             Timer.delay(0.01); /* Delay just enough for things like motion magic to ramp */
@@ -307,32 +300,25 @@ public class LimitTests {
         System.out.println("Applied out is " + appliedMotorVoltage);
         System.out.println("Forward Limit is " + forwardLimit + " with fault " + forwardLimitStatus);
         System.out.println("Reverse Limit is " + reverseLimit + " with fault " + reverseLimitStatus);
-        switch(direction)
-        {
+        switch(direction) {
             case Zero:
                 assertEquals(appliedMotorVoltage.getValue(), 0, SET_DELTA);
                 assertFalse(forwardLimitStatus.getValue());
                 assertFalse(reverseLimitStatus.getValue());
                 break;
             case Forward:
-                if(forwardLimit)
-                {
+                if (forwardLimit) {
                     assertEquals(appliedMotorVoltage.getValue(), 0, SET_DELTA);
-                }
-                else
-                {
+                } else {
                     assertTrue(appliedMotorVoltage.getValue() > SET_DELTA);
                 }
                 assertTrue(forwardLimitStatus.getValue() == forwardLimit);
                 assertFalse(reverseLimitStatus.getValue());
                 break;
             case Reverse:
-                if(reverseLimit)
-                {
+                if (reverseLimit) {
                     assertEquals(appliedMotorVoltage.getValue(), 0, SET_DELTA);
-                }
-                else
-                {
+                } else {
                     assertTrue(appliedMotorVoltage.getValue() < -SET_DELTA);
                 }
                 assertTrue(reverseLimitStatus.getValue() == reverseLimit);
