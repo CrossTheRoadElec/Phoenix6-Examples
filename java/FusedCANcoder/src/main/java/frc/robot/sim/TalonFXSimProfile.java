@@ -36,7 +36,7 @@ class TalonFXSimProfile extends SimProfile {
         this._falcon = falcon;
         this._canCoder = canCoder;
         this._gearRatio = gearRatio;
-        this._motorSim = new DCMotorSim(DCMotor.getFalcon500(1), gearRatio, rotorInertia);
+        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), gearRatio, rotorInertia);
     }
 
     /**
@@ -54,15 +54,16 @@ class TalonFXSimProfile extends SimProfile {
         _motorSim.update(getPeriod());
 
         /// SET SIM PHYSICS INPUTS
-        double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
+        final double position_rot = _motorSim.getAngularPositionRotations() * _gearRatio;
+        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec()) * _gearRatio;
 
-        _falcon.getSimState().setRawRotorPosition(_motorSim.getAngularPositionRotations());
+        _falcon.getSimState().setRawRotorPosition(position_rot);
         _falcon.getSimState().setRotorVelocity(velocity_rps);
 
         _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
 
-        _canCoder.getSimState().setRawPosition(_motorSim.getAngularPositionRotations()/_gearRatio);
-        _canCoder.getSimState().setVelocity(velocity_rps/_gearRatio);
+        _canCoder.getSimState().setRawPosition(position_rot / _gearRatio);
+        _canCoder.getSimState().setVelocity(velocity_rps / _gearRatio);
 
     }
 }

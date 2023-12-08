@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
         }
       }
 
-      if(m_joystick.getAButton()) {
+      if (m_joystick.getAButton()) {
         /* Clear sticky faults */
         m_fx.clearStickyFaults();
       }
@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
-    PhysicsSim.getInstance().addTalonFX(m_fx, m_cc, 25, 0.001);
+    PhysicsSim.getInstance().addTalonFX(m_fx, m_cc, 12.8, 0.001);
   }
 
   @Override

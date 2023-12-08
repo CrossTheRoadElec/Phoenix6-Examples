@@ -34,7 +34,7 @@ class TalonFXSimProfile extends SimProfile {
     public TalonFXSimProfile(final TalonFX falcon, final Pigeon2 pigeon, final double rotorInertia) {
         this._falcon = falcon;
         this._pigeon = pigeon;
-        this._motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 1.0, rotorInertia);
+        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), 1.0, rotorInertia);
     }
 
     /**
@@ -52,14 +52,15 @@ class TalonFXSimProfile extends SimProfile {
         _motorSim.update(getPeriod());
 
         /// SET SIM PHYSICS INPUTS
-        double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
+        final double position_rot = _motorSim.getAngularPositionRotations();
+        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
 
-        _falcon.getSimState().setRawRotorPosition(_motorSim.getAngularPositionRotations());
+        _falcon.getSimState().setRawRotorPosition(position_rot);
         _falcon.getSimState().setRotorVelocity(velocity_rps);
 
         _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
 
-        _pigeon.getSimState().setRawYaw(_motorSim.getAngularPositionRotations());
+        _pigeon.getSimState().setRawYaw(position_rot);
 
     }
 }

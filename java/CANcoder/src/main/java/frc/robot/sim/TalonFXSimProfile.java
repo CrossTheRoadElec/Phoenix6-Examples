@@ -2,7 +2,6 @@ package frc.robot.sim;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.sim.CANcoderSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -19,7 +18,6 @@ class TalonFXSimProfile extends SimProfile {
     private final double _gearRatio;
 
     private final DCMotorSim _motorSim;
-    private final CANcoderSimState _cancoderSim; // We need a sim state in order to change the values of CANcoder
 
     /**
      * Creates a new simulation profile for a TalonFX device.
@@ -38,8 +36,7 @@ class TalonFXSimProfile extends SimProfile {
         this._falcon = falcon;
         this._canCoder = canCoder;
         this._gearRatio = gearRatio;
-        this._motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 100, .001);
-        this._cancoderSim = _canCoder.getSimState();
+        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), gearRatio, .001);
     }
 
     /**
@@ -56,18 +53,15 @@ class TalonFXSimProfile extends SimProfile {
         _motorSim.update(getPeriod());
 
         // SET SIM PHYSICS INPUTS
-        double position = _motorSim.getAngularPositionRotations();
-        double velocity = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
+        final double position_rot = _motorSim.getAngularPositionRotations() * _gearRatio;
+        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec()) * _gearRatio;
 
-        _falcon.getSimState().setRawRotorPosition(position);
-        _falcon.getSimState().setRotorVelocity(velocity);
+        _falcon.getSimState().setRawRotorPosition(position_rot);
+        _falcon.getSimState().setRotorVelocity(velocity_rps);
 
         _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);
 
-        _canCoder.getSimState().setRawPosition(_motorSim.getAngularPositionRotations() / _gearRatio);
-        _canCoder.getSimState().setVelocity(velocity / _gearRatio);
-
-        _cancoderSim.setRawPosition(position);
-        _cancoderSim.setVelocity(velocity);
+        _canCoder.getSimState().setRawPosition(position_rot / _gearRatio);
+        _canCoder.getSimState().setVelocity(velocity_rps / _gearRatio);
     }
 }

@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
 
     /* Simulation model of the drivetrain */
     private final DifferentialDrivetrainSim m_driveSim = new DifferentialDrivetrainSim(
-        DCMotor.getFalcon500(2), // 2 CIMS on each side of the drivetrain.
+        DCMotor.getFalcon500Foc(2), // 2 CIMS on each side of the drivetrain.
         kGearRatio, // Standard AndyMark Gearing reduction.
         2.1, // MOI of 2.1 kg m^2 (from CAD model).
         26.5, // Mass of the robot is 26.5 kg.

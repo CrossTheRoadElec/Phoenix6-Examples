@@ -30,7 +30,7 @@ class TalonFXSimProfile extends SimProfile {
      *                        The phase of the TalonFX sensors
      */
     public TalonFXSimProfile(final TalonFX falcon, final double rotorInertia) {
-        this._motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 1.0, rotorInertia);
+        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), 1.0, rotorInertia);
         this._falconSim = falcon.getSimState();
     }
 
@@ -49,9 +49,10 @@ class TalonFXSimProfile extends SimProfile {
         _motorSim.update(getPeriod());
 
         /// SET SIM PHYSICS INPUTS
-        double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
+        final double position_rot = _motorSim.getAngularPositionRotations();
+        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
 
-        _falconSim.setRawRotorPosition(_motorSim.getAngularPositionRotations());
+        _falconSim.setRawRotorPosition(position_rot);
         _falconSim.setRotorVelocity(velocity_rps);
 
         _falconSim.setSupplyVoltage(12 - _falconSim.getSupplyCurrent() * kMotorResistance);

@@ -44,7 +44,7 @@ class Robot : public frc::TimedRobot {
   static constexpr units::inch_t kWheelRadiusInches = 3_in;
 
   frc::sim::DifferentialDrivetrainSim m_driveSim{
-    frc::DCMotor::Falcon500(2),
+    frc::DCMotor::Falcon500FOC(2),
     kGearRatio,
     2.1_kg_sq_m, // MOI of 2.1 kg m^2 (from CAD model)
     26.5_kg,     // Mass of robot is 26.5 kg
