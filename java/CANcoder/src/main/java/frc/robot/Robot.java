@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
   private final DutyCycleOut fwdOut = new DutyCycleOut(0);
   private final XboxController controller = new XboxController(0);
 
-  double currentTime = Timer.getFPGATimestamp();
+  private double currentTime = Timer.getFPGATimestamp();
 
   private final Mechanisms mechanism = new Mechanisms();
 

@@ -43,8 +43,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Slot0.kP = 2; // An error of 0.5 rotations results in 12V output
-    configs.Slot0.kD = .1; // A change of 1 rotation per second results in 0.1 volts output
+    configs.Slot0.kP = 2.4; // An error of 0.5 rotations results in 1.2 volts output
+    configs.Slot0.kD = 0.1; // A change of 1 rotation per second results in 0.1 volts output
     // Peak output of 8 volts
     configs.Voltage.PeakForwardVoltage = 8;
     configs.Voltage.PeakReverseVoltage = -8;
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double desiredRotations = m_joystick.getLeftY() * 10; // Go for plus/minus 10 rotations
-    if (Math.abs(desiredRotations) <= 0.5) { // Joystick deadzone
+    if (Math.abs(desiredRotations) <= 0.1) { // Joystick deadzone
       desiredRotations = 0;
     }
     if (m_joystick.getLeftBumper()) {

@@ -138,7 +138,6 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationInit() {
     PhysicsSim.getInstance().addTalonFX(m_fx, m_cc, 25, 0.001);
-    cc_pos.setUpdateFrequency(10);
   }
 
   @Override
