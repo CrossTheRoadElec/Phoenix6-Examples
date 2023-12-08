@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final String CANBUS_NAME = "";
+  private static final String CANBUS_NAME = "canivore";
   private final TalonFX leftLeader = new TalonFX(1, CANBUS_NAME);
   private final TalonFX leftFollower = new TalonFX(2, CANBUS_NAME);
   private final TalonFX rightLeader = new TalonFX(3, CANBUS_NAME);

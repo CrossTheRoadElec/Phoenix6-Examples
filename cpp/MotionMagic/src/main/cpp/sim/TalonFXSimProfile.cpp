@@ -3,7 +3,7 @@
 using namespace ctre::phoenix6;
 
 TalonFXSimProfile::TalonFXSimProfile(hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia) :
-    _motorSim{frc::DCMotor::Falcon500(1), 1, rotorInertia},
+    _motorSim{frc::DCMotor::Falcon500FOC(1), 1, rotorInertia},
     _falcon{falcon} {
 }
 
@@ -15,9 +15,10 @@ void TalonFXSimProfile::Run() {
     _motorSim.Update(GetPeriod());
 
     /// SET SIM PHYSICS INPUTS
-    auto velocity = _motorSim.GetAngularVelocity();
+    auto const position = _motorSim.GetAngularPosition();
+    auto const velocity = _motorSim.GetAngularVelocity();
 
-    _falcon.GetSimState().SetRawRotorPosition(_motorSim.GetAngularPosition());
+    _falcon.GetSimState().SetRawRotorPosition(position);
     _falcon.GetSimState().SetRotorVelocity(velocity);
 
     _falcon.GetSimState().SetSupplyVoltage(12_V - _falcon.GetSimState().GetSupplyCurrent() * kMotorResistance);

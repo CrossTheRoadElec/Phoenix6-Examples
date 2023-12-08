@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,8 +23,9 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(0);
-  private final TalonFX m_fllr = new TalonFX(1);
+  private static final String canBusName = "canivore";
+  private final TalonFX m_fx = new TalonFX(0, canBusName);
+  private final TalonFX m_fllr = new TalonFX(1, canBusName);
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, enable FOC, no feed forward, use slot 0 */
@@ -34,6 +36,8 @@ public class Robot extends TimedRobot {
   private final NeutralOut m_brake = new NeutralOut();
 
   private final XboxController m_joystick = new XboxController(0);
+
+  private final Mechanisms m_mechanisms = new Mechanisms();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -76,6 +80,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
   }
 
   @Override
@@ -93,6 +98,9 @@ public class Robot extends TimedRobot {
     if (joyValue > -0.1 && joyValue < 0.1) joyValue = 0;
 
     double desiredRotationsPerSecond = joyValue * 50; // Go for plus/minus 10 rotations per second
+    if (Math.abs(desiredRotationsPerSecond) <= 1) { // Joystick deadzone
+      desiredRotationsPerSecond = 0;
+    }
     if (m_joystick.getLeftBumper()) {
       /* Use voltage velocity */
       m_fx.setControl(m_voltageVelocity.withVelocity(desiredRotationsPerSecond));
@@ -121,8 +129,12 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 }

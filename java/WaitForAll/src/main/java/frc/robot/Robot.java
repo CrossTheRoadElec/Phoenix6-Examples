@@ -20,44 +20,45 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_motor1 = new TalonFX(0, "*"); // Pick the first CANivore bus
-  Pigeon2 m_pigdey = new Pigeon2(1, "*"); // Pick the first CANivore bus also
-  TalonFX m_transcientMotor = new TalonFX(20, "*"); // This motor may or may not be on the bus, 
-                                                                     // selectively power it to completely test this example 
-  TalonFX m_motor2 = new TalonFX(0, "rio"); // Pick the RIO bus to force a failure we can detect
+  private final TalonFX m_motor1 = new TalonFX(0, "*"); // Pick the first CANivore bus
+  private final Pigeon2 m_pigdey = new Pigeon2(1, "*"); // Pick the first CANivore bus also
+  private final TalonFX m_transcientMotor = new TalonFX(20, "*"); // This motor may or may not be on the bus, 
+                                                                  // selectively power it to completely test this example 
+  private final TalonFX m_motor2 = new TalonFX(0, "rio"); // Pick the RIO bus to force a failure we can detect
 
-  StatusSignal<Double> m_canbus1signal1 = m_motor1.getPosition();
-  StatusSignal<Double> m_canbus1signal2 = m_motor1.getVelocity();
-  StatusSignal<ControlModeValue> m_canbus1signal3 = m_motor1.getControlMode();
-  StatusSignal<Double> m_canbus1signal4 = m_pigdey.getYaw();
-  StatusSignal<Double> m_canbus1signal5 = m_pigdey.getRoll();
+  private final StatusSignal<Double> m_canbus1signal1 = m_motor1.getPosition();
+  private final StatusSignal<Double> m_canbus1signal2 = m_motor1.getVelocity();
+  private final StatusSignal<ControlModeValue> m_canbus1signal3 = m_motor1.getControlMode();
+  private final StatusSignal<Double> m_canbus1signal4 = m_pigdey.getYaw();
+  private final StatusSignal<Double> m_canbus1signal5 = m_pigdey.getRoll();
   
-  StatusSignal<Double> m_canbus2signal1 = m_motor2.getPosition();
+  private final StatusSignal<Double> m_canbus2signal1 = m_motor2.getPosition();
   
-  StatusSignal<Double> m_canbus1transcient1 = m_transcientMotor.getPosition();
-  StatusSignal<Double> m_canbus1transcient2 = m_transcientMotor.getVelocity();
+  private final StatusSignal<Double> m_canbus1transcient1 = m_transcientMotor.getPosition();
+  private final StatusSignal<Double> m_canbus1transcient2 = m_transcientMotor.getVelocity();
 
-  StatusSignal<?>[] m_signalsAcrossCANbuses = new StatusSignal<?>[]{
+  private final StatusSignal<?>[] m_signalsAcrossCANbuses = new StatusSignal<?>[]{
     m_canbus1signal1,
     m_canbus2signal1
   };
-  StatusSignal<?>[] m_lotsOfSignals = new StatusSignal<?>[]{
+  private final StatusSignal<?>[] m_lotsOfSignals = new StatusSignal<?>[]{
     m_canbus1signal1,
     m_canbus1signal2,
     m_canbus1signal3,
+    m_canbus1signal4,
     m_canbus1signal5
   };
-  StatusSignal<?>[] m_noSignals = new StatusSignal<?>[]{};
-  StatusSignal<?>[] m_tanscientSignals = new StatusSignal<?>[]{
+  private final StatusSignal<?>[] m_noSignals = new StatusSignal<?>[]{};
+  private final StatusSignal<?>[] m_tanscientSignals = new StatusSignal<?>[]{
     m_canbus1signal1,
     m_canbus1signal2,
     m_canbus1transcient1,
     m_canbus1transcient2
   };
 
-  XboxController m_joystick = new XboxController(0); // Allow us to see the different errors
+  private final XboxController m_joystick = new XboxController(0); // Allow us to see the different errors
 
-  double m_waitForAllTimeout = 0.1;
+  private double m_waitForAllTimeout = 0.1;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.

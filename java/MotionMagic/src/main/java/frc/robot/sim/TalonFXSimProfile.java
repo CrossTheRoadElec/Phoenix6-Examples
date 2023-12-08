@@ -11,7 +11,7 @@ import frc.robot.sim.PhysicsSim.SimProfile;
  * Holds information about a simulated TalonFX.
  */
 class TalonFXSimProfile extends SimProfile {
-    private final double kMotorResistance = 0.002; // Assume 2mOhm resistance for voltage drop calculation
+    private static final double kMotorResistance = 0.002; // Assume 2mOhm resistance for voltage drop calculation
     private final TalonFX _falcon;
 
     private final DCMotorSim _motorSim;
@@ -31,7 +31,7 @@ class TalonFXSimProfile extends SimProfile {
      */
     public TalonFXSimProfile(final TalonFX falcon, final double rotorInertia) {
         this._falcon = falcon;
-        this._motorSim = new DCMotorSim(DCMotor.getFalcon500(1), 1.0, rotorInertia);
+        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), 1.0, rotorInertia);
     }
 
     /**
@@ -49,9 +49,10 @@ class TalonFXSimProfile extends SimProfile {
         _motorSim.update(getPeriod());
 
         /// SET SIM PHYSICS INPUTS
-        double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
+        final double position_rot = _motorSim.getAngularPositionRotations();
+        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
 
-        _falcon.getSimState().setRawRotorPosition(_motorSim.getAngularPositionRotations());
+        _falcon.getSimState().setRawRotorPosition(position_rot);
         _falcon.getSimState().setRotorVelocity(velocity_rps);
 
         _falcon.getSimState().setSupplyVoltage(12 - _falcon.getSimState().getSupplyCurrent() * kMotorResistance);

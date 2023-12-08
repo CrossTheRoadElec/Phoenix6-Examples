@@ -20,24 +20,21 @@ void Robot::RobotInit() {
   configs::TalonFXConfiguration cfg{};
 
   /* Configure current limits */
-  configs::MotionMagicConfigs mm{};
+  configs::MotionMagicConfigs &mm = cfg.MotionMagic;
   mm.MotionMagicCruiseVelocity = 5; // 5 rotations per second cruise
   mm.MotionMagicAcceleration = 10; // Take approximately 0.5 seconds to reach max vel
   // Take approximately 0.2 seconds to reach max accel 
   mm.MotionMagicJerk = 50;
-  cfg.MotionMagic = mm;
 
-  configs::Slot0Configs slot0{};
+  configs::Slot0Configs &slot0 = cfg.Slot0;
   slot0.kP = 60;
   slot0.kI = 0;
   slot0.kD = 0.1;
   slot0.kV = 0.12;
   slot0.kS = 0.25; // Approximately 0.25V to get the mechanism moving
-  cfg.Slot0 = slot0;
 
-  configs::FeedbackConfigs fdb{};
+  configs::FeedbackConfigs &fdb = cfg.Feedback;
   fdb.SensorToMechanismRatio = 12.8;
-  cfg.Feedback = fdb;
 
   ctre::phoenix::StatusCode status = ctre::phoenix::StatusCode::StatusCodeNotInitialized;
   for(int i = 0; i < 5; ++i) {

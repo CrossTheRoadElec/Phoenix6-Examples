@@ -5,10 +5,14 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,10 +21,17 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final double PRINT_PERIOD = 0.5; // Update every 500 ms
+  private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final CANcoder cancoder = new CANcoder(1, "rio");
+  private static final String canBusName = "rio";
+  private final TalonFX talonFX = new TalonFX(2, canBusName);
+  private final CANcoder cancoder = new CANcoder(1, canBusName);
+  private final DutyCycleOut fwdOut = new DutyCycleOut(0);
+  private final XboxController controller = new XboxController(0);
+
   private double currentTime = Timer.getFPGATimestamp();
+
+  private final Mechanisms mechanism = new Mechanisms();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -32,7 +43,6 @@ public class Robot extends TimedRobot {
     var toApply = new CANcoderConfiguration();
 
     /* User can change the configs if they want, or leave it empty for factory-default */
-
     cancoder.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
@@ -79,6 +89,7 @@ public class Robot extends TimedRobot {
        */
       System.out.println();
     }
+    mechanism.update(cancoder.getPosition());
   }
 
   @Override
@@ -98,7 +109,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    /* Send control requests to control Talon that's connected to CANcoder */
+    talonFX.setControl(fwdOut.withOutput(controller.getLeftY()));
+  }
 
   @Override
   public void disabledInit() {}
@@ -113,8 +127,12 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(talonFX, cancoder, 25, 0.001);
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 }

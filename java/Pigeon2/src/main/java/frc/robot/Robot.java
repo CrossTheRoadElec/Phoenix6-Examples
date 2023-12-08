@@ -5,10 +5,14 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,10 +21,17 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final double PRINT_PERIOD = 0.5; // Update every 500 ms
+  private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
+  /* Keep a reference for a TalonFX around so we can drive the thing the Pigeon is on */
+  private final TalonFX talonfx = new TalonFX(0, "rio");
   private final Pigeon2 pidgey = new Pigeon2(1, "rio");
   private double currentTime = Timer.getFPGATimestamp();
+
+  private final XboxController joystick = new XboxController(0);
+  private final DutyCycleOut control = new DutyCycleOut(0);
+
+  private final Mechanisms mechanisms = new Mechanisms();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -79,6 +90,7 @@ public class Robot extends TimedRobot {
        */
       System.out.println();
     }
+    mechanisms.update(pidgey.getYaw());
   }
 
   @Override
@@ -98,7 +110,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    talonfx.setControl(control.withOutput(joystick.getLeftY()));
+  }
 
   @Override
   public void disabledInit() {}
@@ -113,8 +127,12 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(talonfx, pidgey, 0.001);
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 }

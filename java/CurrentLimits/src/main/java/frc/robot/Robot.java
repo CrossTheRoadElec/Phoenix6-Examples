@@ -19,12 +19,12 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_fx = new TalonFX(0, "Fred");
-  DutyCycleOut m_output = new DutyCycleOut(0);
+  private final TalonFX m_fx = new TalonFX(0, "canivore");
+  private final DutyCycleOut m_output = new DutyCycleOut(0);
 
-  CurrentLimitsConfigs m_currentLimits = new CurrentLimitsConfigs();
+  private final CurrentLimitsConfigs m_currentLimits = new CurrentLimitsConfigs();
 
-  XboxController m_joystick = new XboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
   
 
   int printCount = 0;

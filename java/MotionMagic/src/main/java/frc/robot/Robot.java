@@ -23,14 +23,17 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_motor = new TalonFX(1, "fred");
-  MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
-  XboxController m_joystick = new XboxController(0);
-  int m_printCount = 0;
+  private final TalonFX m_fx = new TalonFX(1, "canivore");
+  private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
+  private final XboxController m_joystick = new XboxController(0);
+
+  private int m_printCount = 0;
+
+  private final Mechanisms m_mechanisms = new Mechanisms();
 
   @Override
   public void simulationInit() {
-    PhysicsSim.getInstance().addTalonFX(m_motor, 0.001);
+    PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
   }
 
   @Override
@@ -47,28 +50,25 @@ public class Robot extends TimedRobot {
     TalonFXConfiguration cfg = new TalonFXConfiguration();
 
     /* Configure current limits */
-    MotionMagicConfigs mm = new MotionMagicConfigs();
+    MotionMagicConfigs mm = cfg.MotionMagic;
     mm.MotionMagicCruiseVelocity = 5; // 5 rotations per second cruise
     mm.MotionMagicAcceleration = 10; // Take approximately 0.5 seconds to reach max vel
     // Take approximately 0.2 seconds to reach max accel 
     mm.MotionMagicJerk = 50;
-    cfg.MotionMagic = mm;
 
-    Slot0Configs slot0 = new Slot0Configs();
+    Slot0Configs slot0 = cfg.Slot0;
     slot0.kP = 60;
     slot0.kI = 0;
     slot0.kD = 0.1;
     slot0.kV = 0.12;
     slot0.kS = 0.25; // Approximately 0.25V to get the mechanism moving
-    cfg.Slot0 = slot0;
 
-    FeedbackConfigs fdb = new FeedbackConfigs();
+    FeedbackConfigs fdb = cfg.Feedback;
     fdb.SensorToMechanismRatio = 12.8;
-    cfg.Feedback = fdb;
 
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for(int i = 0; i < 5; ++i) {
-      status = m_motor.getConfigurator().apply(cfg);
+      status = m_fx.getConfigurator().apply(cfg);
       if (status.isOK()) break;
     }
     if (!status.isOK()) {
@@ -80,10 +80,11 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     if (m_printCount++ > 10) {
       m_printCount = 0;
-      System.out.println("Pos: " + m_motor.getPosition());
-      System.out.println("Vel: " + m_motor.getVelocity());
+      System.out.println("Pos: " + m_fx.getPosition());
+      System.out.println("Vel: " + m_fx.getVelocity());
       System.out.println();
     }
+    m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
   }
 
   @Override
@@ -101,9 +102,9 @@ public class Robot extends TimedRobot {
     double leftY = m_joystick.getLeftY();
     if(leftY > -0.1 && leftY < 0.1) leftY = 0;
 
-    m_motor.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
+    m_fx.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
     if(m_joystick.getBButton()) {
-      m_motor.setPosition(1);
+      m_fx.setPosition(1);
     }
   }
 

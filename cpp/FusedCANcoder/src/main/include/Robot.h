@@ -30,8 +30,8 @@ class Robot : public frc::TimedRobot {
   void SimulationPeriodic() override;
 
 
-  ctre::phoenix6::hardware::TalonFX m_fx{1, "fred"};
-  ctre::phoenix6::hardware::CANcoder m_cc{1, "fred"};
+  ctre::phoenix6::hardware::TalonFX m_fx{1, "canivore"};
+  ctre::phoenix6::hardware::CANcoder m_cc{1, "canivore"};
   ctre::phoenix6::StatusSignal<bool> f_fusedSensorOutOfSync = m_fx.GetFault_FusedSensorOutOfSync();
   ctre::phoenix6::StatusSignal<bool> sf_fusedSensorOutOfSync = m_fx.GetStickyFault_FusedSensorOutOfSync();
   ctre::phoenix6::StatusSignal<bool> f_remoteSensorInvalid = m_fx.GetFault_RemoteSensorDataInvalid();
