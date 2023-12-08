@@ -1,6 +1,6 @@
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -9,18 +9,9 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
- * Holds information about the mech2d widget in GUI simulation.
+ * Class to keep all the mechanism-specific objects together and out of the main example
  */
-public class Mechanism2dHelper {
-    private static final Mechanism2dHelper Instance = new Mechanism2dHelper();
-
-    /**
-     * Gets the robot simulator instance.
-     */
-    public static Mechanism2dHelper getInstance() {
-        return Instance;
-    }
-
+public class Mechanisms {
     double HEIGHT = 1; // Controls the height of the mech2d SmartDashboard
     double WIDTH = 1; // Controls the height of the mech2d SmartDashboard
   
@@ -55,9 +46,9 @@ public class Mechanism2dHelper {
      * features of our products in simulation using our examples out of the box. Users may modify to have a 
      * display interface that they find more intuitive or visually appealing.
      */                            
-    public void distanceBarSetLength(TalonFX m_fx) {  
-        VelocityMech.setLength(m_fx.getVelocity().getValue()/120); // Divide by 120 to scale motion to fit in the window
-        arm.setAngle(m_fx.getPosition().getValue() * 360);
+    public void update(StatusSignal<Double> position, StatusSignal<Double> velocity) {  
+        VelocityMech.setLength(velocity.getValue()/120); // Divide by 120 to scale motion to fit in the window
+        arm.setAngle(position.getValue() * 360);
         SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
     }                             
 }

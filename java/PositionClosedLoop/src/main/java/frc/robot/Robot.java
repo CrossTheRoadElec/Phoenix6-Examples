@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
 
   private final XboxController m_joystick = new XboxController(0);
 
+  private final Mechanisms m_mechanism = new Mechanisms();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -69,7 +71,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    Mechanism2dHelper.getInstance().distanceBarSetLength(m_fx);
+    m_mechanism.update(m_fx.getPosition());
   }
 
   @Override

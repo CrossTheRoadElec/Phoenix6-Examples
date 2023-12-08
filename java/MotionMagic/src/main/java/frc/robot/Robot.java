@@ -28,7 +28,8 @@ public class Robot extends TimedRobot {
   XboxController m_joystick = new XboxController(0);
   int m_printCount = 0;
 
-  
+  Mechanisms m_mechanisms = new Mechanisms();
+
   @Override
   public void simulationInit() {
     PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
@@ -85,7 +86,7 @@ public class Robot extends TimedRobot {
       System.out.println("Vel: " + m_fx.getVelocity());
       System.out.println();
     }
-    Mechanism2dHelper.getInstance().distanceBarSetLength(m_fx);
+    m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
   }
 
   @Override
@@ -105,7 +106,7 @@ public class Robot extends TimedRobot {
 
     m_fx.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
     if(m_joystick.getBButton()) {
-      m_motor.setPosition(1);
+      m_fx.setPosition(1);
     }
   }
 

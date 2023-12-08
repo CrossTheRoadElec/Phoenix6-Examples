@@ -53,7 +53,6 @@ class TalonFXSimProfile extends SimProfile {
      */
     public void run() {
         // DEVICE SPEED SIMULATION
-
         _motorSim.setInputVoltage(_falcon.getSimState().getMotorVoltage());
 
         _motorSim.update(getPeriod());
