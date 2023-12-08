@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(0);
+  private final TalonFX m_fx = new TalonFX(0, "Fred");
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at position 0, enable FOC, no feed forward, use slot 0 */
@@ -40,8 +41,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Slot0.kP = 24; // An error of 0.5 rotations results in 12V output
-    configs.Slot0.kD = 0.1; // A change of 1 rotation per second results in 0.1 volts output
+    configs.Slot0.kP = 2; // An error of 0.5 rotations results in 12V output
+    configs.Slot0.kD = .1; // A change of 1 rotation per second results in 0.1 volts output
     // Peak output of 8 volts
     configs.Voltage.PeakForwardVoltage = 8;
     configs.Voltage.PeakReverseVoltage = -8;
@@ -67,7 +68,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    Mechanism2dHelper.getInstance().distanceBarSetLength(m_fx);
+  }
 
   @Override
   public void autonomousInit() {}
@@ -81,6 +84,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double desiredRotations = m_joystick.getLeftY() * 10; // Go for plus/minus 10 rotations
+    if (Math.abs(desiredRotations) <= 0.5) { // Joystick deadzone
+      desiredRotations = 0;
+    }
     if (m_joystick.getLeftBumper()) {
       /* Use voltage position */
       m_fx.setControl(m_voltagePosition.withPosition(desiredRotations));
@@ -108,8 +114,12 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 }

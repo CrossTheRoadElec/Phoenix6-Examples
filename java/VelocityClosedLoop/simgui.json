@@ -1,0 +1,26 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX (Pro)[0]/Rotor Sensor": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [1]": "Motor Controller",
+      "/SmartDashboard/mech2d": "Mechanism2d"
+    },
+    "windows": {
+      "/SmartDashboard/mech2d": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  }
+}

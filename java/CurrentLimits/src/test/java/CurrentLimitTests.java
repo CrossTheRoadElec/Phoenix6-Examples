@@ -52,7 +52,7 @@ public class CurrentLimitTests implements AutoCloseable {
         /* verify that the robot is enabled */
         assertTrue(DriverStation.isEnabled());
     }
-
+//TODO add simulation compatibility to the bolow java code
     @Test
     public void testStatorLimit() {
         var statorCurrent = talon.getStatorCurrent();

@@ -5,10 +5,19 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,8 +28,28 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends TimedRobot {
   private final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final CANcoder cancoder = new CANcoder(1, "rio");
-  private double currentTime = Timer.getFPGATimestamp();
+  private final String canBusName = "Fred";
+  private final TalonFX talonFX = new TalonFX(2, canBusName);
+  private final CANcoder cancoder = new CANcoder(1, canBusName);
+  private final DutyCycleOut fwdOut = new DutyCycleOut(0);
+  private final XboxController controller = new XboxController(0);
+
+  double currentTime = Timer.getFPGATimestamp();
+  
+  /* Mech2d only */
+  private final double HEIGHT = 1;
+  private final double WIDTH = 1;
+  private final double ROOT_X = WIDTH / 2;
+  private final double ROOT_Y = HEIGHT / 2;
+
+  private Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT); // Main mechanism object
+  private MechanismLigament2d wrist = mech.
+                                      getRoot("base", ROOT_X, ROOT_Y).
+                                      append(new MechanismLigament2d("Wrist", .25, 90, 6, new Color8Bit(Color.kAliceBlue)));
+
+  private MechanismLigament2d leftArrow = wrist.append(new MechanismLigament2d("LeftArrow", 0.1, 150, 6, new Color8Bit(Color.kAliceBlue)));
+  private MechanismLigament2d rightArrow = wrist.append(new MechanismLigament2d("RightArrow", 0.1, -150, 6, new Color8Bit(Color.kAliceBlue)));
+  /* End mech2d only */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -32,7 +61,6 @@ public class Robot extends TimedRobot {
     var toApply = new CANcoderConfiguration();
 
     /* User can change the configs if they want, or leave it empty for factory-default */
-
     cancoder.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
@@ -79,6 +107,8 @@ public class Robot extends TimedRobot {
        */
       System.out.println();
     }
+    SmartDashboard.putData("mech2d", mech); // Creates a mech2d window in GUI
+    wrist.setAngle(cancoder.getPosition().getValue()*360); // Converts 1 rotation to 360 degrees
   }
 
   @Override
@@ -95,10 +125,19 @@ public class Robot extends TimedRobot {
     cancoder.setPosition(0.4, 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
     cancoder.getPosition().waitForUpdate(0.1); // And wait up to 100 ms for the position to take affect
     System.out.println("Set the position to 0.4 rotations, we are currently at " + cancoder.getPosition()); // Use java's implicit toString operator
+    
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    var fwd = controller.getLeftY();
+
+    //modify control requests
+    fwdOut.Output = fwd;
+
+    //send control requests
+    talonFX.setControl(fwdOut);
+  }
 
   @Override
   public void disabledInit() {}
@@ -113,8 +152,12 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonFX(talonFX, cancoder, 25, 0.001);
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 }
