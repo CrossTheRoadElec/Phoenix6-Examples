@@ -25,26 +25,28 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_fx = new TalonFX(1, "fred");
-  CANcoder m_cc = new CANcoder(1, "fred");
-  StatusSignal<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync();
-  StatusSignal<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync();
-  StatusSignal<Boolean> f_remoteSensorInvalid = m_fx.getFault_RemoteSensorDataInvalid();
-  StatusSignal<Boolean> sf_remoteSensorInvalid = m_fx.getStickyFault_RemoteSensorDataInvalid();
+  private static final String canBusName = "canivore";
+  private final TalonFX m_fx = new TalonFX(1, canBusName);
+  private final CANcoder m_cc = new CANcoder(1, canBusName);
 
-  StatusSignal<Double> fx_pos = m_fx.getPosition();
-  StatusSignal<Double> fx_vel = m_fx.getVelocity();
-  StatusSignal<Double> cc_pos = m_cc.getPosition();
-  StatusSignal<Double> cc_vel = m_cc.getVelocity();
-  StatusSignal<Double> fx_rotorPos = m_fx.getRotorPosition();
+  private final StatusSignal<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync();
+  private final StatusSignal<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync();
+  private final StatusSignal<Boolean> f_remoteSensorInvalid = m_fx.getFault_RemoteSensorDataInvalid();
+  private final StatusSignal<Boolean> sf_remoteSensorInvalid = m_fx.getStickyFault_RemoteSensorDataInvalid();
 
-  DutyCycleOut m_dutyCycleControl = new DutyCycleOut(0);
+  private final StatusSignal<Double> fx_pos = m_fx.getPosition();
+  private final StatusSignal<Double> fx_vel = m_fx.getVelocity();
+  private final StatusSignal<Double> cc_pos = m_cc.getPosition();
+  private final StatusSignal<Double> cc_vel = m_cc.getVelocity();
+  private final StatusSignal<Double> fx_rotorPos = m_fx.getRotorPosition();
 
-  XboxController m_joystick = new XboxController(0);
+  private final DutyCycleOut m_dutyCycleControl = new DutyCycleOut(0);
 
-  int printCount = 0;
+  private final XboxController m_joystick = new XboxController(0);
 
-  Mechanisms m_mechanism = new Mechanisms();
+  private int printCount = 0;
+
+  private final Mechanisms m_mechanism = new Mechanisms();
 
   /**
    * This function is run when the robot is first started up and should be used for any

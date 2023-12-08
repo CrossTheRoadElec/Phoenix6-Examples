@@ -28,7 +28,7 @@ class Robot : public frc::TimedRobot {
   void SimulationInit() override;
   void SimulationPeriodic() override;
 
-  ctre::phoenix6::hardware::TalonFX m_fx{0, "Fred"};
+  ctre::phoenix6::hardware::TalonFX m_fx{0, "canivore"};
   ctre::phoenix6::controls::DutyCycleOut m_output{0};
   ctre::phoenix6::configs::CurrentLimitsConfigs m_currentLimits{};
   

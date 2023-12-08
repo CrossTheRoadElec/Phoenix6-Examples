@@ -21,9 +21,9 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final double PRINT_PERIOD = 0.5; // Update every 500 ms
+  private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final String canBusName = "Fred";
+  private static final String canBusName = "rio";
   private final TalonFX talonFX = new TalonFX(2, canBusName);
   private final CANcoder cancoder = new CANcoder(1, canBusName);
   private final DutyCycleOut fwdOut = new DutyCycleOut(0);

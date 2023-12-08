@@ -9,7 +9,7 @@
  * Holds information about a simulated TalonFX.
  */
 class TalonFXSimProfile : public SimProfile {
-    units::ohm_t kMotorResistance = 2_mOhm; // Assume 2mOhm resistance for voltage drop calculation
+    static constexpr units::ohm_t kMotorResistance = 2_mOhm; // Assume 2mOhm resistance for voltage drop calculation
     frc::sim::DCMotorSim _motorSim;
     ctre::phoenix6::hardware::TalonFX& _falcon;
 

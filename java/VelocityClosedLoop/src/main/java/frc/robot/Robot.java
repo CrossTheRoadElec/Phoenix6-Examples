@@ -23,8 +23,9 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(0, "Fred");
-  private final TalonFX m_fllr = new TalonFX(1, "Fred");
+  private static final String canBusName = "canivore";
+  private final TalonFX m_fx = new TalonFX(0, canBusName);
+  private final TalonFX m_fllr = new TalonFX(1, canBusName);
   
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, enable FOC, no feed forward, use slot 0 */

@@ -23,12 +23,13 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  TalonFX m_fx = new TalonFX(1, "Fred");
-  MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
-  XboxController m_joystick = new XboxController(0);
-  int m_printCount = 0;
+  private final TalonFX m_fx = new TalonFX(1, "canivore");
+  private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
+  private final XboxController m_joystick = new XboxController(0);
 
-  Mechanisms m_mechanisms = new Mechanisms();
+  private int m_printCount = 0;
+
+  private final Mechanisms m_mechanisms = new Mechanisms();
 
   @Override
   public void simulationInit() {

@@ -21,21 +21,21 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final String CANBUS_NAME = "Fred";
-  private CANcoder m_cc = new CANcoder(0, CANBUS_NAME);
-  private TalonFX m_fx = new TalonFX(0, CANBUS_NAME);
-  private Pigeon2 m_p2 = new Pigeon2(0, CANBUS_NAME);
+  private static final String CANBUS_NAME = "canivore";
+  private final CANcoder m_cc = new CANcoder(0, CANBUS_NAME);
+  private final TalonFX m_fx = new TalonFX(0, CANBUS_NAME);
+  private final Pigeon2 m_p2 = new Pigeon2(0, CANBUS_NAME);
   private int m_printCount = 0;
 
-  private DutyCycleOut m_dutycycle = new DutyCycleOut(0);
+  private final DutyCycleOut m_dutycycle = new DutyCycleOut(0);
 
-  XboxController m_joystick = new XboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
-  StatusSignal<Double> m_ccpos = m_cc.getPosition();
-  StatusSignal<Double> m_fxpos = m_fx.getPosition();
-  StatusSignal<Double> m_p2yaw = m_p2.getYaw();
-  StatusSignal<Double> m_ccvel = m_cc.getVelocity();
-  StatusSignal<Double> m_fxvel = m_fx.getVelocity();
+  private final StatusSignal<Double> m_ccpos = m_cc.getPosition();
+  private final StatusSignal<Double> m_fxpos = m_fx.getPosition();
+  private final StatusSignal<Double> m_p2yaw = m_p2.getYaw();
+  private final StatusSignal<Double> m_ccvel = m_cc.getVelocity();
+  private final StatusSignal<Double> m_fxvel = m_fx.getVelocity();
   /**
    * Pigeon2 can only perform this latency compensation if the Z axis is straight up, since the
    * angular velocity Z value comes from the pre-mount orientation gyroscope.
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
    * see section 1.6 of the Pigeon 2's User's Guide
    * https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf 
    */
-  StatusSignal<Double> m_p2yawRate = m_p2.getAngularVelocityZ();
+  private final StatusSignal<Double> m_p2yawRate = m_p2.getAngularVelocityZ();
 
   /**
    * This function is run when the robot is first started up and should be used for any

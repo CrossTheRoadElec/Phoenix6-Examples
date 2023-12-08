@@ -11,7 +11,7 @@ import frc.robot.sim.PhysicsSim.SimProfile;
  * Holds information about a simulated TalonFX.
  */
 class TalonFXSimProfile extends SimProfile {
-    private final double kMotorResistance = 0.002; // Assume 2mOhm resistance for voltage drop calculation
+    private static final double kMotorResistance = 0.002; // Assume 2mOhm resistance for voltage drop calculation
     private final TalonFX _falcon;
 
     private final DCMotorSim _motorSim;

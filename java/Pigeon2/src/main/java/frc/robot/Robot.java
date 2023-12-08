@@ -21,7 +21,7 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final double PRINT_PERIOD = 0.5; // Update every 500 ms
+  private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
   /* Keep a reference for a TalonFX around so we can drive the thing the Pigeon is on */
   private final TalonFX talonfx = new TalonFX(0, "rio");
