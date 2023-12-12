@@ -32,7 +32,8 @@ def test_latency_compensation():
     fx.sim_state.set_raw_rotor_position(POS)
     fx.sim_state.set_rotor_velocity(VEL)
 
-    # Wait for the signals to update
+    # Wait for 2 signals to update to ensure we have a fresh signal
+    BaseStatusSignal.wait_for_all(1.0, pos, vel)
     BaseStatusSignal.wait_for_all(1.0, pos, vel)
 
     # Wait another 100ms so we latency-compensate one full rotation
