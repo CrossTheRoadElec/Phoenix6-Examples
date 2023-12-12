@@ -81,7 +81,7 @@ jobs:
     container: wpilib/roborio-cross-ubuntu:2024-22.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -90,3 +90,33 @@ jobs:
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code for project ${{ matrix.project-name }}
       run: cd "${{ matrix.directory }}" && ./gradlew build
+
+  build-python:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project-name: 'ArcadeDrive'
+            directory: 'python/ArcadeDrive'
+          - project-name: 'CANcoder'
+            directory: 'python/CANcoder'
+          - project-name: 'StatusSignals'
+            directory: 'python/StatusSignals'
+        python_version: ['3.9', '3.10', '3.11', '3.12']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python_version }}
+    - name: Install python dependencies
+      run: |
+        pip install -U pip
+        pip install 'robotpy' phoenix6
+    - name: Test ${{ matrix.project-name }}
+      run: |
+        cd "${{ matrix.directory }}" && python3 robot.py test
