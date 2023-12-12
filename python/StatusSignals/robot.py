@@ -32,6 +32,7 @@ class MyRobot(wpilib.TimedRobot):
         self.motor.set_position(6)
 
     def robotPeriodic(self) -> None:
+        # Drive the motor so we have a changing position/velocity
         self.motor.set_control(self.request.with_output(self.joystick.getLeftY()))
 
     def teleopInit(self) -> None:
@@ -44,6 +45,9 @@ class MyRobot(wpilib.TimedRobot):
         if self.timer.hasElapsed(0.1):
             BaseStatusSignal.refresh_all(self.pos, self.vel)
             print(f"Position is {self.pos} and velocity is {self.vel} at timestamp {self.pos.all_timestamps.get_device_timestamp().time}")
+
+            latency_compensated_pos = BaseStatusSignal.get_latency_compensated_value(self.pos, self.vel)
+            print(f"Latency compensated position is {latency_compensated_pos}")
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)
