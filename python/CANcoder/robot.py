@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-    This is a demo program for StatusSignal usage in Phoenix 6
+    This is a demo program for CANcoder usage in Phoenix 6
 """
 import wpilib
 from wpilib import Timer
@@ -11,9 +11,6 @@ class MyRobot(wpilib.TimedRobot):
     Example program that shows how to use CANcoder
     in Phoenix 6 python
     """
-    
-    cancoder: CANcoder
-    timer: Timer
 
     def robotInit(self):
         """Robot initialization function"""

@@ -7,9 +7,6 @@ from wpilib import Timer, XboxController
 from phoenix6 import (
     TalonFX,
     DutyCycleOut,
-    StatusSignal,
-    rotation,
-    rotations_per_second,
     SignalLogger,
     BaseStatusSignal,
 )
@@ -20,13 +17,6 @@ class MyRobot(wpilib.TimedRobot):
     Example program that provides basic usage on StatusSignals
     in Phoenix 6 python
     """
-
-    motor: TalonFX
-    request: DutyCycleOut
-    pos: StatusSignal[rotation]
-    vel: StatusSignal[rotations_per_second]
-    timer: Timer
-    joystick: XboxController
 
     def robotInit(self):
         """Robot initialization function"""
@@ -60,9 +50,7 @@ class MyRobot(wpilib.TimedRobot):
             BaseStatusSignal.refresh_all(self.pos, self.vel)
 
             pos_timestamp = self.pos.all_timestamps.get_device_timestamp().time
-            print(
-                f"Position is {self.pos} and velocity is {self.vel} at timestamp {pos_timestamp}"
-            )
+            print(f"Position is {self.pos} and velocity is {self.vel} at timestamp {pos_timestamp}")
 
             latency_compensated_pos = BaseStatusSignal.get_latency_compensated_value(
                 self.pos, self.vel
