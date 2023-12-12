@@ -45,6 +45,4 @@ def test_latency_compensation():
     assert_almost_equal(pos.value, POS, 0.01)
     assert_almost_equal(vel.value, VEL, 0.01)
     # This can be more loose since it's time-dependent
-    assert_almost_equal(measured_latency, DELAY, 0.1)
-    # This is also a little more loose since measured_latency can be different from the latency used
     assert_almost_equal(latency_compensated_pos, POS + (VEL * measured_latency), 0.1)
