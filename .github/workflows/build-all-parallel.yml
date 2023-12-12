@@ -96,15 +96,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - project-name: 'ArcadeDrive'
-            directory: 'python/ArcadeDrive'
-          - project-name: 'CANcoder'
-            directory: 'python/CANcoder'
-          - project-name: 'StatusSignals'
-            directory: 'python/StatusSignals'
         python_version: ['3.9', '3.10', '3.11', '3.12']
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        project-name: ['ArcadeDrive', 'CANcoder', 'StatusSignals']
 
     runs-on: ${{ matrix.os }}
 
@@ -119,4 +113,4 @@ jobs:
         pip install 'robotpy' phoenix6
     - name: Test ${{ matrix.project-name }}
       run: |
-        cd "${{ matrix.directory }}" && python3 robot.py test
+        cd "python/${{ matrix.project-name }}" && python3 robot.py test
