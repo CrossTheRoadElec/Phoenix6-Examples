@@ -5,7 +5,21 @@
 import wpilib
 from phoenix6 import TalonFX, Follower, DutyCycleOut
 
+
 class MyRobot(wpilib.TimedRobot):
+    """
+    Example program that shows to do simple arcade drive in robotpy
+    with Phoenix 6
+    """
+
+    front_left_motor: TalonFX
+    rear_left_motor: TalonFX
+    front_right_motor: TalonFX
+    rear_right_motor: TalonFX
+    left_out: DutyCycleOut
+    right_out: DutyCycleOut
+    joy: wpilib.XboxController
+
     def robotInit(self):
         """Robot initialization function"""
 

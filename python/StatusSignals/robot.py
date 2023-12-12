@@ -4,9 +4,23 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import *
+from phoenix6 import (
+    TalonFX,
+    DutyCycleOut,
+    StatusSignal,
+    rotation,
+    rotations_per_second,
+    SignalLogger,
+    BaseStatusSignal,
+)
+
 
 class MyRobot(wpilib.TimedRobot):
+    """
+    Example program that provides basic usage on StatusSignals
+    in Phoenix 6 python
+    """
+
     motor: TalonFX
     request: DutyCycleOut
     pos: StatusSignal[rotation]
@@ -18,7 +32,7 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the motor controllers used
-        self.motor = TalonFX(1, "Fred")
+        self.motor = TalonFX(1, "canivore")
         self.request = DutyCycleOut(0)
 
         self.pos = self.motor.get_position()
@@ -44,10 +58,17 @@ class MyRobot(wpilib.TimedRobot):
 
         if self.timer.hasElapsed(0.1):
             BaseStatusSignal.refresh_all(self.pos, self.vel)
-            print(f"Position is {self.pos} and velocity is {self.vel} at timestamp {self.pos.all_timestamps.get_device_timestamp().time}")
 
-            latency_compensated_pos = BaseStatusSignal.get_latency_compensated_value(self.pos, self.vel)
+            pos_timestamp = self.pos.all_timestamps.get_device_timestamp().time
+            print(
+                f"Position is {self.pos} and velocity is {self.vel} at timestamp {pos_timestamp}"
+            )
+
+            latency_compensated_pos = BaseStatusSignal.get_latency_compensated_value(
+                self.pos, self.vel
+            )
             print(f"Latency compensated position is {latency_compensated_pos}")
+
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

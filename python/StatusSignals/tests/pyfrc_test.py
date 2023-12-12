@@ -5,7 +5,11 @@
 
 from time import sleep
 from pyfrc.tests import *
-from phoenix6 import TalonFX, StatusSignal, BaseStatusSignal
+from phoenix6 import TalonFX, BaseStatusSignal
+
+POS = 1.5
+VEL = 10
+DELAY = 0.1
 
 def assert_almost_equal(a: float, b: float, range_val: float):
     """
@@ -20,10 +24,6 @@ def test_latency_compensation():
     fx = TalonFX(1, "sim")
     pos = fx.get_position()
     vel = fx.get_velocity()
-
-    POS = 1.5
-    VEL = 10
-    DELAY = 0.1
 
     BaseStatusSignal.wait_for_all(1.0, pos, vel)
     fx.set_position(0, 1.0) # Set position to 0 to initialize
