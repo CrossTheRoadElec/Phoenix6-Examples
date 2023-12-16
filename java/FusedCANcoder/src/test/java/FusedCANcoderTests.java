@@ -58,7 +58,8 @@ public class FusedCANcoderTests {
         /* Set them to different values */
         retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
         retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
-        
+
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
         BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         System.out.println("Talon Pos vs expected: " + talonPos + " vs " + TALON_POSITION);
@@ -98,7 +99,8 @@ public class FusedCANcoderTests {
         /* Set them to different values */
         retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
         retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
-        
+
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
         BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Further wait for Talon, since it probably just received the new CANcoder position frame */
@@ -142,7 +144,8 @@ public class FusedCANcoderTests {
         /* Set them to different values */
         retryConfigApply(()->talonSimState.setRawRotorPosition(TALON_POSITION));
         retryConfigApply(()->cancoderSimState.setRawPosition(CANCODER_POSITION));
-        
+
+        BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
         BaseStatusSignal.waitForAll(1.0, talonPos, cancoderPos);
 
         /* Further wait for Talon, since it probably just received the new CANcoder position frame */
@@ -155,7 +158,7 @@ public class FusedCANcoderTests {
         assertEquals(cancoderPos.getValue(), CANCODER_POSITION, SET_DELTA);
     }
 
-    
+
 
     private void retryConfigApply(Supplier<StatusCode> toApply) {
         StatusCode finalCode = StatusCode.StatusCodeNotInitialized;
