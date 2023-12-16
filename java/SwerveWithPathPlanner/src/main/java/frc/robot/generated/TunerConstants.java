@@ -2,7 +2,7 @@ package frc.robot.generated;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SwerveModuleSteerFeedbackType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 
@@ -33,7 +33,7 @@ public class TunerConstants {
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
     private static final double kCoupleRatio = 3.5;
-    
+
     private static final double kDriveGearRatio = 7.363636364;
     private static final double kSteerGearRatio = 15.42857143;
     private static final double kWheelRadiusInches = 2.167; // Estimated at first, then fudge-factored to make odom match record
@@ -52,8 +52,7 @@ public class TunerConstants {
 
     private static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
             .withPigeon2Id(kPigeonId)
-            .withCANbusName(kCANbusName)
-            .withSupportsPro(true);
+            .withCANbusName(kCANbusName);
 
     private static final SwerveModuleConstantsFactory ConstantCreator = new SwerveModuleConstantsFactory()
             .withDriveMotorGearRatio(kDriveGearRatio)
@@ -65,7 +64,7 @@ public class TunerConstants {
             .withSpeedAt12VoltsMps(kSpeedAt12VoltsMps)
             .withSteerInertia(kSteerInertia)
             .withDriveInertia(kDriveInertia)
-            .withFeedbackSource(SwerveModuleSteerFeedbackType.FusedCANcoder)
+            .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
             .withCouplingGearRatio(kCoupleRatio)
             .withSteerMotorInverted(kSteerMotorReversed);
 
