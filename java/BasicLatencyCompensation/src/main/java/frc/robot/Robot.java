@@ -41,9 +41,9 @@ public class Robot extends TimedRobot {
    * angular velocity Z value comes from the pre-mount orientation gyroscope.
    * For more information on what signals have what algorithms applied to them,
    * see section 1.6 of the Pigeon 2's User's Guide
-   * https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf 
+   * https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf
    */
-  private final StatusSignal<Double> m_p2yawRate = m_p2.getAngularVelocityZ();
+  private final StatusSignal<Double> m_p2yawRate = m_p2.getAngularVelocityZWorld();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    
+
   }
 
   @Override
