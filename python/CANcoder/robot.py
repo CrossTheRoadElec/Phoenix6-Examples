@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer
-from phoenix6 import hardware
+from phoenix6 import hardware, unmanaged
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -25,6 +25,7 @@ class MyRobot(wpilib.TimedRobot):
         """Every 100ms, print the status of the StatusSignal"""
 
         if self.timer.hasElapsed(0.1):
+            self.timer.reset()
             # get_position automatically calls refresh(), no need to manually refresh.
             #
             # StatusSignals also implement the str dunder to provide a useful print of the signal
@@ -38,6 +39,12 @@ class MyRobot(wpilib.TimedRobot):
             print(f"Velocity is {vel} with {vel.timestamp.get_latency()} seconds of latency")
 
             print("")
+
+    def _simulationPeriodic(self):
+        """"""
+        # If the driver station is enabled, then feed enable for phoenix devices
+        if wpilib.DriverStation.isEnabled():
+            unmanaged.feed_enable(100)
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

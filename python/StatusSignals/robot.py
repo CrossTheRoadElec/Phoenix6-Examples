@@ -9,6 +9,7 @@ from phoenix6 import (
     controls,
     SignalLogger,
     BaseStatusSignal,
+    unmanaged
 )
 
 
@@ -47,6 +48,7 @@ class MyRobot(wpilib.TimedRobot):
         """Every 100ms, print the status of the StatusSignal"""
 
         if self.timer.hasElapsed(0.1):
+            self.timer.reset()
             BaseStatusSignal.refresh_all(self.pos, self.vel)
 
             pos_timestamp = self.pos.all_timestamps.get_device_timestamp().time
@@ -56,6 +58,12 @@ class MyRobot(wpilib.TimedRobot):
                 self.pos, self.vel
             )
             print(f"Latency compensated position is {latency_compensated_pos}")
+
+    def _simulationPeriodic(self):
+        """"""
+        # If the driver station is enabled, then feed enable for phoenix devices
+        if wpilib.DriverStation.isEnabled():
+            unmanaged.feed_enable(100)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import hardware, controls, configs
+from phoenix6 import hardware, controls, configs, unmanaged
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -42,6 +42,7 @@ class MyRobot(wpilib.TimedRobot):
         self.talonfx.set_control(self.position_request.with_position(self.joystick.getLeftY() * 10))
 
         if self.timer.hasElapsed(0.1):
+            self.timer.reset()
             # Print the position & velocity to see what they are
             pos = self.talonfx.get_position()
             vel = self.talonfx.get_velocity()
@@ -50,6 +51,12 @@ class MyRobot(wpilib.TimedRobot):
             print(f"Velocity: {vel}")
 
             print("")
+
+    def _simulationPeriodic(self):
+        """"""
+        # If the driver station is enabled, then feed enable for phoenix devices
+        if wpilib.DriverStation.isEnabled():
+            unmanaged.feed_enable(100)
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

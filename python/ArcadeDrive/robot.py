@@ -3,7 +3,7 @@
     This is a demo program for arcade drive in Python with Phoenix 6
 """
 import wpilib
-from phoenix6 import hardware, controls
+from phoenix6 import hardware, controls, unmanaged
 
 
 class MyRobot(wpilib.TimedRobot):
@@ -45,6 +45,12 @@ class MyRobot(wpilib.TimedRobot):
         # And set the DutyCycleOut to the motor controllers
         self.front_left_motor.set_control(self.left_out.with_output(throttle + wheel))
         self.front_right_motor.set_control(self.right_out.with_output(throttle - wheel))
+
+    def _simulationPeriodic(self):
+        """"""
+        # If the driver station is enabled, then feed enable for phoenix devices
+        if wpilib.DriverStation.isEnabled():
+            unmanaged.feed_enable(100)
 
 
 if __name__ == "__main__":
