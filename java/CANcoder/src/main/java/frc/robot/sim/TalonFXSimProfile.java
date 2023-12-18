@@ -24,19 +24,18 @@ class TalonFXSimProfile extends SimProfile {
      *
      * @param falcon
      *                        The TalonFX device
-     * @param accelToFullTime
-     *                        The time the motor takes to accelerate from 0 to full,
-     *                        in seconds
-     * @param fullVel
-     *                        The maximum motor velocity, in rotations per second
-     * @param sensorPhase
-     *                        The phase of the TalonFX sensors
+     * @param canCoder
+     *                        The CANcoder associated with the TalonFX
+     * @param gearRatio
+     *                        The gear ratio from the TalonFX to the mechanism
+     * @param rotorInertia
+     *                        Rotational Inertia of the mechanism at the rotor
      */
     public TalonFXSimProfile(final TalonFX falcon, final CANcoder canCoder, final double gearRatio, final double rotorInertia) {
         this._falcon = falcon;
         this._canCoder = canCoder;
         this._gearRatio = gearRatio;
-        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), gearRatio, .001);
+        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), gearRatio, rotorInertia);
     }
 
     /**

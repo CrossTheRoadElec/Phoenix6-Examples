@@ -5,12 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveStraightCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -25,7 +24,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
-  private final XboxController m_joystick = new XboxController(0);
+  private final CommandXboxController m_joystick = new CommandXboxController(0);
 
   /* invert the joystick Y because forward Y is negative */
   private final Command m_teleopDrive = new RunCommand(() -> {
@@ -55,7 +54,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* If the upper left shoulder button is pressed, drive straight */
-    new Trigger(m_joystick::getLeftBumper).whileTrue(m_driveStraight);
+    m_joystick.leftBumper().whileTrue(m_driveStraight);
   }
 
   /**
