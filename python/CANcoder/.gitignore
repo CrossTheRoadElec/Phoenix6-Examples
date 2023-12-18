@@ -1,3 +1,5 @@
 ctre_sim
 __pycache__
 .pytest_cache
+.deploy_cfg
+.installer_config
