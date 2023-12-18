@@ -4,7 +4,7 @@
 '''
 
 from pyfrc.tests import *
-from phoenix6 import TalonFX, TalonFXConfiguration
+from phoenix6 import hardware, configs
 
 FIRST_SET = 0
 SECOND_SET = 4.8
@@ -16,10 +16,10 @@ def assert_almost_equal(a: float, b: float, range_val: float):
     assert a >= (b - range_val) and a <= (b + range_val)
 
 def test_pos_setter():
-    talonfx = talonfx(1, "sim")
+    talonfx = hardware.TalonFX(1, "sim")
     pos = talonfx.get_position()
 
-    cfg = TalonFXConfiguration()
+    cfg = configs.TalonFXConfiguration()
     talonfx.configurator.apply(cfg)
 
     talonfx.set_position(FIRST_SET)

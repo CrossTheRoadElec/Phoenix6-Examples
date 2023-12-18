@@ -5,7 +5,7 @@
 
 from time import sleep
 from pyfrc.tests import *
-from phoenix6 import TalonFX, BaseStatusSignal
+from phoenix6 import hardware, BaseStatusSignal
 
 POS = 1.5
 VEL = 10
@@ -21,7 +21,7 @@ def test_latency_compensation():
     """
     Verifies that latency compensation is performing as expected
     """
-    fx = TalonFX(1, "sim")
+    fx = hardware.TalonFX(1, "sim")
     pos = fx.get_position()
     vel = fx.get_velocity()
 

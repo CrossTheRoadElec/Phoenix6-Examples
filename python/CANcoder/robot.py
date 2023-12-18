@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer
-from phoenix6 import CANcoder
+from phoenix6 import hardware
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -16,7 +16,7 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the motor controllers used
-        self.cancoder = CANcoder(1, "canivore")
+        self.cancoder = hardware.CANcoder(1, "canivore")
 
         self.timer = Timer()
         self.timer.start()

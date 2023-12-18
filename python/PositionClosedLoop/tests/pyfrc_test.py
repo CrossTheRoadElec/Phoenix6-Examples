@@ -5,7 +5,7 @@
 
 from time import sleep
 from pyfrc.tests import *
-from phoenix6 import TalonFX, TalonFXConfiguration, PositionVoltage
+from phoenix6 import hardware, configs, controls
 from phoenix6.unmanaged import feed_enable
 from wpilib.simulation import DCMotorSim
 from wpimath.system.plant import DCMotor
@@ -22,7 +22,7 @@ def assert_almost_equal(a: float, b: float, range_val: float):
 
 # PID loop means we should be kinda fast, let's target 10ms
 LOOP_PERIOD = 0.01
-def wait_with_sim(time: float, fx: TalonFX, dcmotorsim: DCMotorSim):
+def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
     start_time = 0
     while start_time < time:
         feed_enable(LOOP_PERIOD * 2)
@@ -36,14 +36,14 @@ def wait_with_sim(time: float, fx: TalonFX, dcmotorsim: DCMotorSim):
         sleep(LOOP_PERIOD)
 
 def test_position_closed_loop():
-    talonfx = TalonFX(1, "sim")
+    talonfx = hardware.TalonFX(1, "sim")
     motorsim = DCMotorSim(DCMotor.falcon500FOC(1), 1.0, 0.001)
     pos = talonfx.get_position()
 
     talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
     talonfx.sim_state.set_supply_voltage(12)
 
-    cfg = TalonFXConfiguration()
+    cfg = configs.TalonFXConfiguration()
     cfg.slot0.k_p = 2
     cfg.slot0.k_d = 0.1
     assert talonfx.configurator.apply(cfg).is_ok()
@@ -53,7 +53,7 @@ def test_position_closed_loop():
     assert_almost_equal(pos.value, 0, 0.01)
 
     # Closed loop for 1 seconds to a target of 1 rotation, and verify we're close
-    target_control = PositionVoltage(position=1.0)
+    target_control = controls.PositionVoltage(position=1.0)
     talonfx.set_control(target_control)
 
     wait_with_sim(1, talonfx, motorsim)

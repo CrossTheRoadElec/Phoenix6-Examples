@@ -3,7 +3,7 @@
     This is a demo program for arcade drive in Python with Phoenix 6
 """
 import wpilib
-from phoenix6 import TalonFX, Follower, DutyCycleOut
+from phoenix6 import hardware, controls
 
 
 class MyRobot(wpilib.TimedRobot):
@@ -17,21 +17,21 @@ class MyRobot(wpilib.TimedRobot):
 
         # Keep a reference to all the motor controllers used
         canivore_name = "canivore"
-        self.front_left_motor = TalonFX(0, canivore_name)
-        self.rear_left_motor = TalonFX(1, canivore_name)
-        self.front_right_motor = TalonFX(2, canivore_name)
-        self.rear_right_motor = TalonFX(3, canivore_name)
+        self.front_left_motor = hardware.TalonFX(0, canivore_name)
+        self.rear_left_motor = hardware.TalonFX(1, canivore_name)
+        self.front_right_motor = hardware.TalonFX(2, canivore_name)
+        self.rear_right_motor = hardware.TalonFX(3, canivore_name)
 
         # Configure the rear motors to follow the front motors
-        follow_left_request = Follower(0, False)
+        follow_left_request = controls.Follower(0, False)
         self.rear_left_motor.set_control(follow_left_request)
 
-        follow_right_request = Follower(2, False)
+        follow_right_request = controls.Follower(2, False)
         self.rear_right_motor.set_control(follow_right_request)
 
         # Keep a reference to the DutyCycleOut control request to update periodically
-        self.left_out = DutyCycleOut(output=0)
-        self.right_out = DutyCycleOut(output=0)
+        self.left_out = controls.DutyCycleOut(output=0)
+        self.right_out = controls.DutyCycleOut(output=0)
 
         # Keep a reference to an Xbox Controller for teleop control
         self.joy = wpilib.XboxController(0)

@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import TalonFX, TalonFXConfiguration, PositionVoltage
+from phoenix6 import hardware, controls, configs
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -16,10 +16,10 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the motor controllers used
-        self.talonfx = TalonFX(1, "canivore")
-        self.position_request = PositionVoltage(0)
+        self.talonfx = hardware.TalonFX(1, "canivore")
+        self.position_request = controls.PositionVoltage(0)
 
-        cfg = TalonFXConfiguration()
+        cfg = configs.TalonFXConfiguration()
         # Set PID gains
         cfg.slot0.k_p = 10
         cfg.slot0.k_d = 0.2

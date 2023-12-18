@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer
-from phoenix6 import TalonFX
+from phoenix6 import hardware
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -16,7 +16,7 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the motor controllers used
-        self.talonfx = TalonFX(1, "canivore")
+        self.talonfx = hardware.TalonFX(1, "canivore")
 
         self.timer = Timer()
         self.timer.start()
