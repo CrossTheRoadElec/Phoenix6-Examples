@@ -43,7 +43,7 @@ public class Telemetry {
     private final DoublePublisher velocityX = driveStats.getDoubleTopic("Velocity X").publish();
     private final DoublePublisher velocityY = driveStats.getDoubleTopic("Velocity Y").publish();
     private final DoublePublisher speed = driveStats.getDoubleTopic("Speed").publish();
-    private final DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
+    private final DoublePublisher odomFreq = driveStats.getDoubleTopic("Odometry Frequency").publish();
 
     /* Keep a reference of the last pose to calculate the speeds */
     private Pose2d m_lastPose = new Pose2d();
@@ -98,7 +98,7 @@ public class Telemetry {
         speed.set(velocities.getNorm());
         velocityX.set(velocities.getX());
         velocityY.set(velocities.getY());
-        odomPeriod.set(1.0 / state.OdometryPeriod);
+        odomFreq.set(1.0 / state.OdometryPeriod);
 
         /* Telemeterize the module's states */
         for (int i = 0; i < 4; ++i) {
