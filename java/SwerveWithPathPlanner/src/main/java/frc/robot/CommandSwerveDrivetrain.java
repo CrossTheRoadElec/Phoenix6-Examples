@@ -53,10 +53,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             (speeds)->this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
             new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0),
                                             new PIDConstants(10, 0, 0),
-                                            1,
-                                            1,
-                                            new ReplanningConfig(),
-                                            0.004),
+                                            1, // TODO: Max module speed. Adjust this for your specific robot
+                                            1, // TODO: Distance from center of robot to furthest module. Adjust this for your specific robot
+                                            new ReplanningConfig()),
             this); // Subsystem for requirements
     }
 
