@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import hardware, unmanaged, controls
+from phoenix6 import hardware, controls
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -45,11 +45,6 @@ class MyRobot(wpilib.TimedRobot):
 
             print("")
 
-    def _simulationPeriodic(self):
-        """"""
-        # If the driver station is enabled, then feed enable for phoenix devices
-        if wpilib.DriverStation.isEnabled():
-            unmanaged.feed_enable(100)
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)
