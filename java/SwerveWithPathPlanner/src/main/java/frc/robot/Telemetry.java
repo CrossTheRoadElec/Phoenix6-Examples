@@ -11,10 +11,6 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,8 +19,6 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
     private final double MaxSpeed;
-    private final DoubleArrayLogEntry logEntry;
-    private final DoubleLogEntry odomEntry;
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
@@ -34,8 +28,6 @@ public class Telemetry {
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
         SignalLogger.start();
-        logEntry = new DoubleArrayLogEntry(DataLogManager.getLog(), "odometry");
-        odomEntry = new DoubleLogEntry(DataLogManager.getLog(), "odom period");
     }
 
     /* What to publish over networktables for telemetry */
@@ -117,8 +109,7 @@ public class Telemetry {
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
 
-        long timestamp = (long)(Timer.getFPGATimestamp() * 1000000);
-        logEntry.append(new double[] {pose.getX(), pose.getY(), pose.getRotation().getDegrees()}, timestamp);
-        odomEntry.append(state.OdometryPeriod, timestamp);
+        SignalLogger.writeDoubleArray("odometry", new double[] {pose.getX(), pose.getY(), pose.getRotation().getDegrees()});
+        SignalLogger.writeDouble("odom period", state.OdometryPeriod, "seconds");
     }
 }
