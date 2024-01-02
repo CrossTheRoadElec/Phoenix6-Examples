@@ -23,13 +23,10 @@ class TalonFXSimProfile extends SimProfile {
      * 
      * @param falcon
      *                        The TalonFX device
-     * @param accelToFullTime
-     *                        The time the motor takes to accelerate from 0 to full,
-     *                        in seconds
-     * @param fullVel
-     *                        The maximum motor velocity, in rotations per second
-     * @param sensorPhase
-     *                        The phase of the TalonFX sensors
+     * @param pigeon
+     *                        The Pigeon 2 associated with the TalonFX
+     * @param rotorInertia
+     *                        Rotational Inertia of the mechanism at the rotor
      */
     public TalonFXSimProfile(final TalonFX falcon, final Pigeon2 pigeon, final double rotorInertia) {
         this._falcon = falcon;

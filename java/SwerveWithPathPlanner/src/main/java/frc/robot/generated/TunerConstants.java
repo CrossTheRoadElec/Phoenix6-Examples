@@ -56,8 +56,8 @@ public class TunerConstants {
 
 
     // These are only used for simulation
-    private static double kSteerInertia = 0.00001;
-    private static double kDriveInertia = 0.001;
+    private static final double kSteerInertia = 0.00001;
+    private static final double kDriveInertia = 0.001;
 
     private static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
             .withPigeon2Id(kPigeonId)
