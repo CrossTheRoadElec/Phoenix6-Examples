@@ -15,7 +15,6 @@ def ROBOT_MAIN_CLASS = "frc.robot.Main"
 deploy {
     targets {
         roborio(getTargetTypeClass('RoboRIO')) {
-            checkImage = false
             // Team number is loaded either from the .wpilib/wpilib_preferences.json
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
