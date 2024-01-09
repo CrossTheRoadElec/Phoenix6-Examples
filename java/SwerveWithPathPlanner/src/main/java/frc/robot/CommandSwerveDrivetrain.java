@@ -62,6 +62,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                                             TunerConstants.kSpeedAt12VoltsMps,
                                             driveBaseRadius,
                                             new ReplanningConfig()),
+            ()->false, // Change this if the path needs to be flipped on red vs blue
             this); // Subsystem for requirements
     }
 
