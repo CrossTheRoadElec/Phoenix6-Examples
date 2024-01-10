@@ -1,7 +1,10 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -18,7 +21,11 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
+import frc.robot.sysid.SysIdSwerveRotation;
+import frc.robot.sysid.SysIdSwerveSteerGains;
+import frc.robot.sysid.SysIdSwerveTranslation;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
@@ -30,6 +37,46 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private double m_lastSimTime;
 
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+    private final SysIdSwerveTranslation translationCharacterization = new SysIdSwerveTranslation();
+    private final SysIdSwerveRotation rotationCharacterization = new SysIdSwerveRotation();
+    private final SysIdSwerveSteerGains steerCharacterization = new SysIdSwerveSteerGains();
+    private SysIdRoutine m_SysIdRoutineTranslation =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                Volts.of(7),
+                null,
+                (state)->SignalLogger.writeString("state", state.toString())
+            ),
+            new SysIdRoutine.Mechanism(
+                (volts)->setControl(translationCharacterization.withVolts(volts)),
+                null,
+                this));
+
+    private SysIdRoutine m_SysIdRoutineRotation =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                Volts.of(7),
+                null,
+                (state)->SignalLogger.writeString("state", state.toString())
+            ),
+            new SysIdRoutine.Mechanism(
+                (volts)->setControl(rotationCharacterization.withVolts(volts)),
+                null,
+                this));
+    private SysIdRoutine m_SysIdRoutineSteer =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                Volts.of(7),
+                null,
+                (state)->SignalLogger.writeString("state", state.toString())
+            ),
+            new SysIdRoutine.Mechanism(
+                (volts)->setControl(steerCharacterization.withVolts(volts)),
+                null,
+                this));
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -72,6 +119,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public Command getAutoPath(String pathName) {
         return new PathPlannerAuto(pathName);
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return m_SysIdRoutineSteer.quasistatic(direction);
+    }
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return m_SysIdRoutineSteer.dynamic(direction);
     }
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
