@@ -23,9 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
-import frc.robot.sysid.SysIdSwerveRotation;
-import frc.robot.sysid.SysIdSwerveSteerGains;
-import frc.robot.sysid.SysIdSwerveTranslation;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
@@ -37,9 +34,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private double m_lastSimTime;
 
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
-    private final SysIdSwerveTranslation translationCharacterization = new SysIdSwerveTranslation();
-    private final SysIdSwerveRotation rotationCharacterization = new SysIdSwerveRotation();
-    private final SysIdSwerveSteerGains steerCharacterization = new SysIdSwerveSteerGains();
+    private final SwerveRequest.SysIdSwerveTranslation translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
+    private final SwerveRequest.SysIdSwerveRotation rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+    private final SwerveRequest.SysIdSwerveSteerGains steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
+
+    /* Use one of these sysidroutines for your particular test */
     private SysIdRoutine m_SysIdRoutineTranslation =
         new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -121,6 +120,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return new PathPlannerAuto(pathName);
     }
 
+    /* Both the sysid commands are specific to one particular sysid routine, change which one you're trying to characterize */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return m_SysIdRoutineSteer.quasistatic(direction);
     }

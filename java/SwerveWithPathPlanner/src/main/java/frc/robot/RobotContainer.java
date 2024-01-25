@@ -8,8 +8,12 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 
@@ -28,6 +32,11 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+  /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+  private final Rotation2d blueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
+  /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+  private final Rotation2d redAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
 
   /* Path follower */
   private Command runAuto = drivetrain.getAutoPath("Tests");
@@ -64,6 +73,12 @@ public class RobotContainer {
     joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
     joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+    /* When we get alliance data from Driver Station, forward it to the drivetrain so it knows what perspective is forward for operator control */
+    new Trigger(() -> DriverStation.getAlliance().isPresent())
+        .whileTrue(new RunCommand(() -> drivetrain.setOperatorPerspectiveForward(
+            DriverStation.getAlliance().get() == Alliance.Red ? redAlliancePerspectiveRotation
+                : blueAlliancePerspectiveRotation)));
   }
 
   public RobotContainer() {
