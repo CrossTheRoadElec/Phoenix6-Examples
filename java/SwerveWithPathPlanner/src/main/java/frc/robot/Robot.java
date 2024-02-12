@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-
-import com.ctre.phoenix6.SignalLogger;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,13 +22,11 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     m_robotContainer.drivetrain.getDaqThread().setThreadPriority(99);
-
-    SignalLogger.start();
   }
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
-    if(UseLimelight) {    
+    if (UseLimelight) {    
       var lastResult = LimelightHelpers.getLatestResults("limelight").targetingResults;
 
       Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
