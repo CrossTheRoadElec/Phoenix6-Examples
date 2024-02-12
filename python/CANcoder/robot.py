@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer
-from phoenix6 import hardware, unmanaged
+from phoenix6 import hardware
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -20,6 +20,7 @@ class MyRobot(wpilib.TimedRobot):
 
         self.timer = Timer()
         self.timer.start()
+        self.controller = wpilib.XboxController(0)
 
     def teleopPeriodic(self):
         """Every 100ms, print the status of the StatusSignal"""
@@ -39,12 +40,6 @@ class MyRobot(wpilib.TimedRobot):
             print(f"Velocity is {vel} with {vel.timestamp.get_latency()} seconds of latency")
 
             print("")
-
-    def _simulationPeriodic(self):
-        """"""
-        # If the driver station is enabled, then feed enable for phoenix devices
-        if wpilib.DriverStation.isEnabled():
-            unmanaged.feed_enable(100)
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

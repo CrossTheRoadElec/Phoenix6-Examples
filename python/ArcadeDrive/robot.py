@@ -3,7 +3,7 @@
     This is a demo program for arcade drive in Python with Phoenix 6
 """
 import wpilib
-from phoenix6 import hardware, controls, unmanaged
+from phoenix6 import hardware, controls, configs
 
 
 class MyRobot(wpilib.TimedRobot):
@@ -21,6 +21,13 @@ class MyRobot(wpilib.TimedRobot):
         self.rear_left_motor = hardware.TalonFX(1, canivore_name)
         self.front_right_motor = hardware.TalonFX(2, canivore_name)
         self.rear_right_motor = hardware.TalonFX(3, canivore_name)
+
+        cfg = configs.TalonFXConfiguration()
+        cfg.motor_output.inverted = configs.config_groups.InvertedValue.COUNTER_CLOCKWISE_POSITIVE
+        self.front_left_motor.configurator.apply(cfg)
+
+        cfg.motor_output.inverted = configs.config_groups.InvertedValue.CLOCKWISE_POSITIVE
+        self.front_right_motor.configurator.apply(cfg)
 
         # Configure the rear motors to follow the front motors
         follow_left_request = controls.Follower(0, False)
@@ -45,13 +52,6 @@ class MyRobot(wpilib.TimedRobot):
         # And set the DutyCycleOut to the motor controllers
         self.front_left_motor.set_control(self.left_out.with_output(throttle + wheel))
         self.front_right_motor.set_control(self.right_out.with_output(throttle - wheel))
-
-    def _simulationPeriodic(self):
-        """"""
-        # If the driver station is enabled, then feed enable for phoenix devices
-        if wpilib.DriverStation.isEnabled():
-            unmanaged.feed_enable(100)
-
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

@@ -59,12 +59,6 @@ class MyRobot(wpilib.TimedRobot):
             )
             print(f"Latency compensated position is {latency_compensated_pos}")
 
-    def _simulationPeriodic(self):
-        """"""
-        # If the driver station is enabled, then feed enable for phoenix devices
-        if wpilib.DriverStation.isEnabled():
-            unmanaged.feed_enable(100)
-
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

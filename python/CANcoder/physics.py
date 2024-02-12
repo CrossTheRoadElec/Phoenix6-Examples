@@ -20,8 +20,11 @@ class PhysicsEngine:
 
         # Create a DCMotorSim for physics sim
         self.motor_sim = sim.DCMotorSim(DCMotor.krakenX60FOC(1), 1, 0.01)
-        # Keep a reference to the motor sim state so we can update it
-        self.talon_sim = robot.talonfx.sim_state
+        # Keep a reference to the cancoder sim state so we can update it
+        self.cancoder_sim = robot.cancoder.sim_state
+
+        # Keep a reference to the controller so we can drive a simulated motor
+        self.controller = robot.controller
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
@@ -36,8 +39,8 @@ class PhysicsEngine:
         if DriverStation.isEnabled():
             unmanaged.feed_enable(100)
 
-        self.talon_sim.set_supply_voltage(RobotController.getBatteryVoltage())
-        self.motor_sim.setInputVoltage(self.talon_sim.motor_voltage)
+        self.cancoder_sim.set_supply_voltage(RobotController.getBatteryVoltage())
+        self.motor_sim.setInputVoltage(self.controller.getLeftY() * 12)
         self.motor_sim.update(tm_diff)
-        self.talon_sim.set_raw_rotor_position(radiansToRotations(self.motor_sim.getAngularPosition()))
-        self.talon_sim.set_rotor_velocity(radiansToRotations(self.motor_sim.getAngularVelocity()))
+        self.cancoder_sim.set_raw_position(radiansToRotations(self.motor_sim.getAngularPosition()))
+        self.cancoder_sim.set_velocity(radiansToRotations(self.motor_sim.getAngularVelocity()))

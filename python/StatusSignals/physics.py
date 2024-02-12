@@ -21,7 +21,7 @@ class PhysicsEngine:
         # Create a DCMotorSim for physics sim
         self.motor_sim = sim.DCMotorSim(DCMotor.krakenX60FOC(1), 1, 0.01)
         # Keep a reference to the motor sim state so we can update it
-        self.talon_sim = robot.talonfx.sim_state
+        self.talon_sim = robot.motor.sim_state
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
