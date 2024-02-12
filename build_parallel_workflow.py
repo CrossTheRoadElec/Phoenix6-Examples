@@ -63,7 +63,7 @@ jobs:
         pip install 'robotpy' phoenix6
     - name: Test ${{{{ matrix.project-name }}}}
       run: |
-        cd "python/${{{{ matrix.project-name }}}}" && python3 robot.py test
+        cd "python/${{{{ matrix.project-name }}}}" && python3 -m robotpy test
 """
 
 PROJECT_MATRIX_TEMPLATE = """
@@ -81,7 +81,7 @@ for project_dir in PROJECTS_TO_SEARCH:
     # Find every project in here and build up an array of strings to generate the workflow file
     for project in os.listdir(project_dir):
         project_matrix.append(PROJECT_MATRIX_TEMPLATE.format(project_name=project, project_dir=f"{project_dir}/{project}"))
-        
+
 python_project_matrix = []
 for project_dir in PYTHON_PROJECTS_TO_SEARCH:
     # Find every project in here and build up an array of strings to generate the workflow file
