@@ -53,7 +53,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private SysIdRoutine SysIdRoutineTranslation = new SysIdRoutine(
             new SysIdRoutine.Config(
                     null,
-                    Volts.of(7),
+                    Volts.of(4),
                     null,
                     (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -64,7 +64,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SysIdRoutine SysIdRoutineRotation = new SysIdRoutine(
             new SysIdRoutine.Config(
                     null,
-                    Volts.of(7),
+                    Volts.of(4),
                     null,
                     (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism(
