@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
     configs.Slot1.kD = 2; // A change of 1 rotation per second results in 2 amps output
     // Peak output of 130 amps
     configs.TorqueCurrent.PeakForwardTorqueCurrent = 130;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = 130;
+    configs.TorqueCurrent.PeakReverseTorqueCurrent = -130;
 
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
