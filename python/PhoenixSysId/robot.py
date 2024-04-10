@@ -23,6 +23,8 @@ class MyRobot(TimedCommandRobot):
         """
         self.container = RobotContainer()
 
+        self.autonomousCommand = None
+
     def disabledInit(self) -> None:
         """This function is called once each time the robot enters Disabled mode."""
         pass

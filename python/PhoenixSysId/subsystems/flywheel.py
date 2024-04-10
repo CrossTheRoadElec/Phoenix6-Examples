@@ -1,7 +1,6 @@
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
 from wpilib.sysid import SysIdRoutineLog
-from wpimath.units import volts
 
 from phoenix6 import configs, controls, hardware, BaseStatusSignal, SignalLogger
 
@@ -9,7 +8,7 @@ from constants import Constants
 
 from typing import Callable
 
-class FlywheelMechanism:
+class FlywheelMechanism(Subsystem):
     def __init__(self) -> None:
         self.motor_to_test = hardware.TalonFX(Constants.kTalonFxId, Constants.kCANbus)
         self.joystick_control = controls.DutyCycleOut(0)
@@ -24,7 +23,7 @@ class FlywheelMechanism:
                 recordState = lambda state: SignalLogger.write_string("state", SysIdRoutineLog.stateEnumToString(state))
             ),
             SysIdRoutine.Mechanism(
-                lambda volts: self.motor.set_control(self.voltage_req.with_output(volts)),
+                lambda volts: self.motor_to_test.set_control(self.sys_id_control.with_output(volts)),
                 lambda log: None,
                 self
             )

@@ -6,7 +6,7 @@ from phoenix6 import SignalLogger
 
 from subsystems.flywheel import FlywheelMechanism
 
-class SysIdRoutineBot:
+class RobotContainer:
     def __init__(self) -> None:
         self.joystick = CommandXboxController(0)
         self.mechanism = FlywheelMechanism()
@@ -46,4 +46,4 @@ class SysIdRoutineBot:
         Scheduled during :meth:`.Robot.autonomousInit`.
         """
 
-        return cmd.print("No autonomous command configured")
+        return cmd.print_("No autonomous command configured")
