@@ -23,7 +23,7 @@ public class FlywheelMechanism extends SubsystemBase {
     private final DutyCycleOut m_joystickControl = new DutyCycleOut(0);
     private final VoltageOut m_sysidControl = new VoltageOut(0);
 
-    private SysIdRoutine m_SysIdRoutine =
+    private final SysIdRoutine m_SysIdRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,         // Default ramp rate is acceptable
@@ -40,6 +40,7 @@ public class FlywheelMechanism extends SubsystemBase {
         setName("Flywheel");
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
+        // Set any necessary configs in the Feedback group here
         m_motorToTest.getConfigurator().apply(cfg);
 
         /* Speed up signals for better charaterization data */
@@ -48,9 +49,10 @@ public class FlywheelMechanism extends SubsystemBase {
             m_motorToTest.getVelocity(),
             m_motorToTest.getMotorVoltage());
 
-        /* Optimize out the other signals, since they're not particularly helpful for us */
+        /* Optimize out the other signals, since they're not useful for SysId */
         m_motorToTest.optimizeBusUtilization();
 
+        /* Start the signal logger */
         SignalLogger.start();
     }
 
