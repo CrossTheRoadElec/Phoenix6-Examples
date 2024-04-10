@@ -26,11 +26,11 @@ public class RobotContainer {
 
         /* Manually start logging with left bumper before running any tests,
          * and stop logging with right bumper after we're done with ALL tests.
-         * This isn't necessary, but is convenient to reduce the size of the hoot file */
+         * This isn't necessary but is convenient to reduce the size of the hoot file */
         m_joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
         m_joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-        /**
+        /*
          * Joystick Y = quasistatic forward
          * Joystick A = quasistatic reverse
          * Joystick B = dynamic forward

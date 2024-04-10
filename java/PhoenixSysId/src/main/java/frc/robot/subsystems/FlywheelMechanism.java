@@ -19,20 +19,20 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
 public class FlywheelMechanism extends SubsystemBase {
-    private final TalonFX m_motorToTest = new TalonFX(Constants.TALON_FX_ID, Constants.CANBUS);
+    private final TalonFX m_motorToTest = new TalonFX(Constants.kTalonFxId, Constants.kCANbus);
     private final DutyCycleOut m_joystickControl = new DutyCycleOut(0);
-    private final VoltageOut m_sysidControl = new VoltageOut(0);
+    private final VoltageOut m_sysIdControl = new VoltageOut(0);
 
-    private final SysIdRoutine m_SysIdRoutine =
+    private final SysIdRoutine m_sysIdRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                null,         // Default ramp rate is acceptable
-                Volts.of(4), // Reduce dynamic voltage to 4 to prevent motor brownout
-                null,          // Default timeout is acceptable
+                null,         // Use default ramp rate (1 V/s)
+                Volts.of(4), // Reduce dynamic voltage to 4 to prevent brownout
+                null,          // Use default timeout (10 s)
                                        // Log state with Phoenix SignalLogger class
                 (state)->SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism(
-                (Measure<Voltage> volts)-> m_motorToTest.setControl(m_sysidControl.withOutput(volts.in(Volts))),
+                (Measure<Voltage> volts)-> m_motorToTest.setControl(m_sysIdControl.withOutput(volts.in(Volts))),
                 null,
                 this));
 
@@ -43,7 +43,7 @@ public class FlywheelMechanism extends SubsystemBase {
         // Set any necessary configs in the Feedback group here
         m_motorToTest.getConfigurator().apply(cfg);
 
-        /* Speed up signals for better charaterization data */
+        /* Speed up signals for better characterization data */
         BaseStatusSignal.setUpdateFrequencyForAll(250,
             m_motorToTest.getPosition(),
             m_motorToTest.getVelocity(),
@@ -60,9 +60,9 @@ public class FlywheelMechanism extends SubsystemBase {
         return run(()->m_motorToTest.setControl(m_joystickControl.withOutput(output.getAsDouble())));
     }
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_SysIdRoutine.quasistatic(direction);
+        return m_sysIdRoutine.quasistatic(direction);
     }
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_SysIdRoutine.dynamic(direction);
+        return m_sysIdRoutine.dynamic(direction);
     }
 }
