@@ -27,6 +27,8 @@ jobs:
             directory: 'cpp/CANcoder'
           - project-name: 'CommandBasedDrive'
             directory: 'cpp/CommandBasedDrive'
+          - project-name: 'ControlRequestLimits'
+            directory: 'cpp/ControlRequestLimits'
           - project-name: 'CurrentLimits'
             directory: 'cpp/CurrentLimits'
           - project-name: 'Falcon500ArcadeDrive'
