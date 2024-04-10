@@ -7,12 +7,12 @@ package frc.robot;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
-import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
+import com.ctre.phoenix6.signals.MagnetHealthValue;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -24,75 +24,81 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(0, "*"); 
+    private final TalonFX m_fx = new TalonFX(0, "*"); 
+    private final CANcoder m_cc = new CANcoder(1, "*");
 
-  private final DutyCycleOut m_out = new DutyCycleOut(0);
+    private final DutyCycleOut m_out = new DutyCycleOut(0);
 
-  private final XboxController m_joystick = new XboxController(0);
+    private final XboxController m_joystick = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  @Override
-  public void robotInit() {
-    TalonFXConfiguration configs = new TalonFXConfiguration();
+    @Override
+    public void robotInit() {
+        TalonFXConfiguration configs = new TalonFXConfiguration();
 
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    configs.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANcoder;
-    configs.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
-    configs.HardwareLimitSwitch.ForwardLimitRemoteSensorID = 1;
-    configs.HardwareLimitSwitch.ForwardLimitEnable = true;
-    /* Retry config apply up to 5 times, report if failure */
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = m_fx.getConfigurator().apply(configs);
-      if (status.isOK()) break;
+        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        configs.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANcoder;
+        configs.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
+        configs.HardwareLimitSwitch.ForwardLimitRemoteSensorID = 1;
+        configs.HardwareLimitSwitch.ForwardLimitEnable = true;
+        /* Retry config apply up to 5 times, report if failure */
+        StatusCode status = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5; ++i) {
+            status = m_fx.getConfigurator().apply(configs);
+            if (status.isOK()) break;
+        }
+        if (!status.isOK()) {
+            System.out.println("Could not apply configs, error code: " + status.toString());
+        }
     }
-    if(!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
+
+    @Override
+    public void robotPeriodic() {
     }
-  }
 
-  @Override
-  public void robotPeriodic() {
-  }
+    @Override
+    public void autonomousInit() {}
 
-  @Override
-  public void autonomousInit() {}
+    @Override
+    public void autonomousPeriodic() {}
 
-  @Override
-  public void autonomousPeriodic() {}
+    @Override
+    public void teleopInit() {}
 
-  @Override
-  public void teleopInit() {}
+    @Override
+    public void teleopPeriodic() {
+        m_fx.setControl(m_out.withOutput(m_joystick.getLeftY())
+                             .withLimitForwardMotion(m_joystick.getLeftBumper())
+                             .withLimitReverseMotion(m_joystick.getRightBumper()));
+    }
 
-  @Override
-  public void teleopPeriodic() {
-    m_fx.setControl(m_out.withOutput(m_joystick.getLeftY())
-                         .withLimitForwardMotion(m_joystick.getLeftBumper())
-                         .withLimitReverseMotion(m_joystick.getRightBumper()));
-  }
+    @Override
+    public void disabledInit() {}
 
-  @Override
-  public void disabledInit() {}
+    @Override
+    public void disabledPeriodic() {}
 
-  @Override
-  public void disabledPeriodic() {}
+    @Override
+    public void testInit() {}
 
-  @Override
-  public void testInit() {}
+    @Override
+    public void testPeriodic() {}
 
-  @Override
-  public void testPeriodic() {}
+    @Override
+    public void simulationInit() {}
 
-  @Override
-  public void simulationInit() {}
+    @Override
+    public void simulationPeriodic() {
+        var fxSim = m_fx.getSimState();
+        fxSim.setForwardLimit(m_joystick.getAButton());
+        fxSim.setReverseLimit(m_joystick.getBButton());
 
-  @Override
-  public void simulationPeriodic() {
-    var simstate = m_fx.getSimState();
-    simstate.setForwardLimit(m_joystick.getAButton());
-    simstate.setReverseLimit(m_joystick.getBButton());
-  }
+        var ccSim = m_cc.getSimState();
+        ccSim.setMagnetHealth(m_joystick.getYButton()
+            ? MagnetHealthValue.Magnet_Green
+            : MagnetHealthValue.Magnet_Red);
+    }
 }
