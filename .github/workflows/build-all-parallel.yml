@@ -37,6 +37,8 @@ jobs:
             directory: 'cpp/FusedCANcoder'
           - project-name: 'MotionMagic'
             directory: 'cpp/MotionMagic'
+          - project-name: 'PhoenixSysId'
+            directory: 'cpp/PhoenixSysId'
           - project-name: 'Pigeon2'
             directory: 'cpp/Pigeon2'
           - project-name: 'PositionClosedLoop'
@@ -102,7 +104,7 @@ jobs:
       matrix:
         python_version: ['3.9', '3.10', '3.11']
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        project-name: ['ArcadeDrive', 'CANcoder', 'PositionClosedLoop', 'StatusSignals', 'TalonFX']
+        project-name: ['ArcadeDrive', 'CANcoder', 'PhoenixSysId', 'PositionClosedLoop', 'StatusSignals', 'TalonFX']
 
     runs-on: ${{ matrix.os }}
 
@@ -114,7 +116,7 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install -U pip
-        pip install 'robotpy' phoenix6
+        pip install robotpy robotpy_commands_v2 phoenix6
     - name: Test ${{ matrix.project-name }}
       run: |
         cd "python/${{ matrix.project-name }}" && python3 -m robotpy test
