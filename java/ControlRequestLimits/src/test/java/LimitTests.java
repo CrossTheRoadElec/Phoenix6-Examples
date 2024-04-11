@@ -290,7 +290,7 @@ public class LimitTests {
         for (int i = 0; i < 20; ++i) {
             talonfx.getSimState().setRawRotorPosition(0); // Set position/velocity so we can drive in the desired direction
             talonfx.getSimState().setRotorVelocity(0);
-            Timer.delay(0.01); /* Delay just enough for things like motion magic to ramp */
+            Timer.delay(0.02); /* Delay just enough for things like motion magic to ramp */
         }
         BaseStatusSignal.waitForAll(1, appliedMotorVoltage, forwardLimitStatus, reverseLimitStatus);
 
