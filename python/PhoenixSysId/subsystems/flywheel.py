@@ -44,7 +44,7 @@ class FlywheelMechanism(Subsystem):
         # Optimize out the other signals, since they're not useful for SysId
         self.motor_to_test.optimize_bus_utilization()
 
-        # Star the signal logger
+        # Start the signal logger
         SignalLogger.start()
 
     def joystick_drive_command(self, output: Callable[[], float]) -> Command:
