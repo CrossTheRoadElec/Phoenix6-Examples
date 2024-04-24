@@ -21,6 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - project-name: 'ArcadeDrive'
+            directory: 'cpp/ArcadeDrive'
           - project-name: 'BasicLatencyCompensation'
             directory: 'cpp/BasicLatencyCompensation'
           - project-name: 'CANcoder'
@@ -31,8 +33,6 @@ jobs:
             directory: 'cpp/ControlRequestLimits'
           - project-name: 'CurrentLimits'
             directory: 'cpp/CurrentLimits'
-          - project-name: 'Falcon500ArcadeDrive'
-            directory: 'cpp/Falcon500ArcadeDrive'
           - project-name: 'FusedCANcoder'
             directory: 'cpp/FusedCANcoder'
           - project-name: 'MotionMagic'
@@ -49,6 +49,8 @@ jobs:
             directory: 'cpp/VelocityClosedLoop'
           - project-name: 'WaitForAll'
             directory: 'cpp/WaitForAll'
+          - project-name: 'ArcadeDrive'
+            directory: 'java/ArcadeDrive'
           - project-name: 'BasicLatencyCompensation'
             directory: 'java/BasicLatencyCompensation'
           - project-name: 'CANcoder'
@@ -59,8 +61,6 @@ jobs:
             directory: 'java/ControlRequestLimits'
           - project-name: 'CurrentLimits'
             directory: 'java/CurrentLimits'
-          - project-name: 'Falcon500ArcadeDrive'
-            directory: 'java/Falcon500ArcadeDrive'
           - project-name: 'FusedCANcoder'
             directory: 'java/FusedCANcoder'
           - project-name: 'MotionMagic'

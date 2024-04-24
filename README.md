@@ -11,10 +11,10 @@ This repository contains examples of robot code utilizing WPILib and the Phoenix
 
 ## Usage Examples
 
+- ArcadeDrive
+    - Arcade drive using WPILib timed based
 - CommandBasedDrive
     - Arcade drive using WPILib command based
-- Falcon500ArcadeDrive
-    - Arcade drive using WPILib timed based
 - PositionClosedLoop
     - Demonstrates using the TalonFX closed loop position functionality
 - VelocityClosedLoop
