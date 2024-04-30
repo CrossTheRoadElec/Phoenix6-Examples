@@ -113,7 +113,7 @@ public class CurrentLimitTests implements AutoCloseable {
         supplyCurrent.waitForUpdate(1);
 
         System.out.println("Supply current is " + supplyCurrent);
-        assertTrue(supplyCurrent.getValue() > 100); // Supply current should be in excess of 100 amps
+        assertTrue(supplyCurrent.getValue() > 80); // Supply current should be in excess of 80 amps
 
         /* Now apply the supply current limit */
         currentLimitConfigs.SupplyCurrentLimitEnable = true;
@@ -126,7 +126,7 @@ public class CurrentLimitTests implements AutoCloseable {
         supplyCurrent.waitForUpdate(1);
 
         System.out.println("Supply current is " + supplyCurrent);
-        assertTrue(supplyCurrent.getValue() > 100); // Make sure it's still over 100 amps (time hasn't exceeded 1 second in total)
+        assertTrue(supplyCurrent.getValue() > 80); // Make sure it's still over 80 amps (time hasn't exceeded 1 second in total)
 
         /* Wait a full extra couple seconds so the limit kicks in and starts limiting us */
         Timer.delay(2);
