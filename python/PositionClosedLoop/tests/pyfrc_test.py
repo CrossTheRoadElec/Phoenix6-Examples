@@ -23,6 +23,9 @@ def assert_almost_equal(a: float, b: float, range_val: float):
 # PID loop means we should be kinda fast, let's target 10ms
 LOOP_PERIOD = 0.01
 def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
+    feed_enable(0.2)
+    sleep(0.1)
+
     start_time = 0
     while start_time < time:
         feed_enable(0.1)
@@ -57,7 +60,7 @@ def test_position_closed_loop():
     target_control = controls.PositionVoltage(position=1.0)
     talonfx.set_control(target_control)
 
-    wait_with_sim(1, talonfx, motorsim)
+    wait_with_sim(2, talonfx, motorsim)
 
     # Verify position is close to target
     pos.wait_for_update(1)
