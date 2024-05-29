@@ -28,6 +28,9 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
         feed_enable(0.1)
         start_time += LOOP_PERIOD
 
+        print(fx.sim_state.motor_voltage)
+        print(fx.get_control_mode())
+
         dcmotorsim.setInputVoltage(fx.sim_state.motor_voltage)
         dcmotorsim.update(LOOP_PERIOD)
         fx.sim_state.set_raw_rotor_position(radiansToRotations(dcmotorsim.getAngularPosition()))
