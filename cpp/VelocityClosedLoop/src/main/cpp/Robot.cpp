@@ -55,10 +55,10 @@ void Robot::TeleopPeriodic() {
 
   if (m_joystick.GetLeftBumper()) {
     /* Use voltage velocity */
-    m_fx.SetControl(m_voltageVelocity.WithVelocity(desiredRotationsPerSecond));
+    m_fx.SetControl(m_velocityVoltage.WithVelocity(desiredRotationsPerSecond));
   } else if (m_joystick.GetRightBumper()) {
     /* Use torque velocity */
-    m_fx.SetControl(m_torqueVelocity.WithVelocity(desiredRotationsPerSecond));
+    m_fx.SetControl(m_velocityTorque.WithVelocity(desiredRotationsPerSecond));
   } else {
     /* Disable the motor instead */
     m_fx.SetControl(m_brake);

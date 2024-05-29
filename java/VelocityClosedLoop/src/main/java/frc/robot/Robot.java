@@ -29,9 +29,9 @@ public class Robot extends TimedRobot {
 
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, use slot 0 */
-  private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0).withSlot(0);
+  private final VelocityVoltage m_velocityVoltage = new VelocityVoltage(0).withSlot(0);
   /* Start at velocity 0, use slot 1 */
-  private final VelocityTorqueCurrentFOC m_torqueVelocity = new VelocityTorqueCurrentFOC(0).withSlot(1);
+  private final VelocityTorqueCurrentFOC m_velocityTorque = new VelocityTorqueCurrentFOC(0).withSlot(1);
   /* Keep a neutral out so we can disable the motor */
   private final NeutralOut m_brake = new NeutralOut();
 
@@ -102,10 +102,10 @@ public class Robot extends TimedRobot {
 
     if (m_joystick.getLeftBumper()) {
       /* Use voltage velocity */
-      m_fx.setControl(m_voltageVelocity.withVelocity(desiredRotationsPerSecond));
+      m_fx.setControl(m_velocityVoltage.withVelocity(desiredRotationsPerSecond));
     } else if (m_joystick.getRightBumper()) {
       /* Use torque velocity */
-      m_fx.setControl(m_torqueVelocity.withVelocity(desiredRotationsPerSecond));
+      m_fx.setControl(m_velocityTorque.withVelocity(desiredRotationsPerSecond));
     } else {
       /* Disable the motor instead */
       m_fx.setControl(m_brake);
