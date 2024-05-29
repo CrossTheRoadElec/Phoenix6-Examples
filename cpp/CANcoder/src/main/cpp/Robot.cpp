@@ -18,8 +18,7 @@ void Robot::RobotInit() {
   cancoder.GetConfigurator().Apply(toApply);
 
   /* Speed up signals to an appropriate rate */
-  cancoder.GetPosition().SetUpdateFrequency(100_Hz);
-  cancoder.GetVelocity().SetUpdateFrequency(100_Hz);
+  BaseStatusSignal::SetUpdateFrequencyForAll(100_Hz, cancoder.GetPosition(), cancoder.GetVelocity());
 }
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */

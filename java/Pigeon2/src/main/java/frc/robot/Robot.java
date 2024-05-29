@@ -47,8 +47,7 @@ public class Robot extends TimedRobot {
     pidgey.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
-    pidgey.getYaw().setUpdateFrequency(100);
-    pidgey.getGravityVectorZ().setUpdateFrequency(100);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, pidgey.getYaw(), pidgey.getGravityVectorZ());
   }
 
   @Override

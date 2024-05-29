@@ -46,8 +46,7 @@ public class Robot extends TimedRobot {
     cancoder.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
-    cancoder.getPosition().setUpdateFrequency(100);
-    cancoder.getVelocity().setUpdateFrequency(100);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, cancoder.getPosition(), cancoder.getVelocity());
   }
 
   @Override
