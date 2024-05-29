@@ -9,6 +9,14 @@
 #include <frc/XboxController.h>
 
 class Robot : public frc::TimedRobot {
+  ctre::phoenix6::hardware::TalonFX m_fx{0, "canivore"};
+  ctre::phoenix6::controls::DutyCycleOut m_output{0};
+  ctre::phoenix6::configs::CurrentLimitsConfigs m_currentLimits{};
+  
+  frc::XboxController m_joystick{0};
+
+  int printCount = 0;
+
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -27,12 +35,4 @@ class Robot : public frc::TimedRobot {
 
   void SimulationInit() override;
   void SimulationPeriodic() override;
-
-  ctre::phoenix6::hardware::TalonFX m_fx{0, "canivore"};
-  ctre::phoenix6::controls::DutyCycleOut m_output{0};
-  ctre::phoenix6::configs::CurrentLimitsConfigs m_currentLimits{};
-  
-  frc::XboxController m_joystick{0};
-
-  int printCount = 0;
 };

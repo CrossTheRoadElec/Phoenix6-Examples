@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -102,9 +103,10 @@ public class DriveSubsystem extends SubsystemBase {
          * Setting all these signals to 100hz means they get sent at the same time if
          * they're all on a CANivore
          */
-        m_pigeon2.getYaw().setUpdateFrequency(100);
-        m_leftLeader.getPosition().setUpdateFrequency(100);
-        m_rightLeader.getPosition().setUpdateFrequency(100);
+        BaseStatusSignal.setUpdateFrequencyForAll(100,
+            m_leftLeader.getPosition(),
+            m_rightLeader.getPosition(),
+            m_pigeon2.getYaw());
 
         /*
          * Set the update frequency of the main requests to 0 so updates are sent
