@@ -22,10 +22,10 @@ void Robot::RobotInit() {
   
   /* Torque-based velocity does not require a feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
   configs.Slot1.kS = 2.5; // To account for friction, add 2.5 A of static feedforward
-  configs.Slot1.kP = 5; // An error of 1 rotation per second results in 5 amps output
+  configs.Slot1.kP = 5; // An error of 1 rotation per second results in 5 A output
   configs.Slot1.kI = 0; // No output for integrated error
   configs.Slot1.kD = 0; // No output for error derivative
-  // Peak output of 40 amps
+  // Peak output of 40 A
   configs.TorqueCurrent.PeakForwardTorqueCurrent = 40;
   configs.TorqueCurrent.PeakReverseTorqueCurrent = -40;
 
@@ -54,10 +54,10 @@ void Robot::TeleopPeriodic() {
   auto desiredRotationsPerSecond = joyValue * 50_tps; // Go for plus/minus 50 rotations per second
 
   if (m_joystick.GetLeftBumper()) {
-    /* Use voltage velocity */
+    /* Use velocity voltage */
     m_fx.SetControl(m_velocityVoltage.WithVelocity(desiredRotationsPerSecond));
   } else if (m_joystick.GetRightBumper()) {
-    /* Use torque velocity */
+    /* Use velocity torque */
     m_fx.SetControl(m_velocityTorque.WithVelocity(desiredRotationsPerSecond));
   } else {
     /* Disable the motor instead */

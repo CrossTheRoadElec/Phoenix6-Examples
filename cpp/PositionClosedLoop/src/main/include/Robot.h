@@ -9,9 +9,16 @@
 #include <frc/XboxController.h>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenix6::hardware::TalonFX m_fx{0};
-  ctre::phoenix6::controls::PositionVoltage m_voltagePosition{0_tr, 0_tps, true, 0_V, 0, false};
-  ctre::phoenix6::controls::PositionTorqueCurrentFOC m_torquePosition{0_tr, 0_tps, 0_A, 1, false};
+  ctre::phoenix6::hardware::TalonFX m_fx{1, "canivore"};
+
+  /* Be able to switch which control request to use based on a button press */
+  /* Start at position 0, use slot 0 */
+  ctre::phoenix6::controls::PositionVoltage m_positionVoltage =
+      ctre::phoenix6::controls::PositionVoltage{0_tr}.WithSlot(0);
+  /* Start at position 0, use slot 1 */
+  ctre::phoenix6::controls::PositionTorqueCurrentFOC m_positionTorque =
+      ctre::phoenix6::controls::PositionTorqueCurrentFOC{0_tr}.WithSlot(1);
+  /* Keep a brake request so we can disable the motor */
   ctre::phoenix6::controls::StaticBrake m_brake{};
 
   frc::XboxController m_joystick{0};

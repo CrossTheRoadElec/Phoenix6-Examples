@@ -59,10 +59,10 @@ public class Robot extends TimedRobot {
 
     /* Torque-based velocity does not require a velocity feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
     configs.Slot1.kS = 2.5; // To account for friction, add 2.5 A of static feedforward
-    configs.Slot1.kP = 5; // An error of 1 rotation per second results in 5 amps output
+    configs.Slot1.kP = 5; // An error of 1 rotation per second results in 5 A output
     configs.Slot1.kI = 0; // No output for integrated error
     configs.Slot1.kD = 0; // No output for error derivative
-    // Peak output of 40 amps
+    // Peak output of 40 A
     configs.TorqueCurrent.PeakForwardTorqueCurrent = 40;
     configs.TorqueCurrent.PeakReverseTorqueCurrent = -40;
 
@@ -101,10 +101,10 @@ public class Robot extends TimedRobot {
     double desiredRotationsPerSecond = joyValue * 50; // Go for plus/minus 50 rotations per second
 
     if (m_joystick.getLeftBumper()) {
-      /* Use voltage velocity */
+      /* Use velocity voltage */
       m_fx.setControl(m_velocityVoltage.withVelocity(desiredRotationsPerSecond));
     } else if (m_joystick.getRightBumper()) {
-      /* Use torque velocity */
+      /* Use velocity torque */
       m_fx.setControl(m_velocityTorque.withVelocity(desiredRotationsPerSecond));
     } else {
       /* Disable the motor instead */

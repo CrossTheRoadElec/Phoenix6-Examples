@@ -17,6 +17,7 @@ class MyRobot(wpilib.TimedRobot):
 
         canbusName = "canivore"
 
+        # Keep a reference to all the motor controllers used
         self.talonfx = hardware.TalonFX(0, canbusName)
         self.talonfx_follower = hardware.TalonFX(1, canbusName)
 
@@ -44,10 +45,10 @@ class MyRobot(wpilib.TimedRobot):
 
         # Torque-based velocity does not require a velocity feed forward, as torque will accelerate the rotor up to the desired velocity by itself
         cfg.slot1.k_s = 2.5 # To account for friction, add 2.5 A of static feedforward
-        cfg.slot1.k_p = 5 # An error of 1 rotation per second results in 5 amps output
+        cfg.slot1.k_p = 5 # An error of 1 rotation per second results in 5 A output
         cfg.slot1.k_i = 0 # No output for integrated error
         cfg.slot1.k_d = 0 # No output for error derivative
-        # Peak output of 40 amps
+        # Peak output of 40 A
         cfg.torque_current.peak_forward_torque_current = 40
         cfg.torque_current.peak_reverse_torque_current = -40
 
@@ -74,10 +75,10 @@ class MyRobot(wpilib.TimedRobot):
         desired_rotations_per_second = joy_value * 50
 
         if self.joystick.getLeftBumper():
-            # Use voltage velocity
+            # Use velocity voltage
             self.talonfx.set_control(self.velocity_voltage.with_velocity(desired_rotations_per_second))
         elif self.joystick.getRightBumper():
-            # Use torque velocity
+            # Use velocity torque
             self.talonfx.set_control(self.velocity_torque.with_velocity(desired_rotations_per_second))
         else:
             # Disable the motor instead

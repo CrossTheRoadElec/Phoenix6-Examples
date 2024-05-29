@@ -44,7 +44,7 @@ def test_position_closed_loop():
     talonfx.sim_state.set_supply_voltage(12)
 
     cfg = configs.TalonFXConfiguration()
-    cfg.slot0.k_p = 2
+    cfg.slot0.k_p = 2.4
     cfg.slot0.k_d = 0.1
     assert talonfx.configurator.apply(cfg).is_ok()
     assert talonfx.set_position(FIRST_SET).is_ok()
