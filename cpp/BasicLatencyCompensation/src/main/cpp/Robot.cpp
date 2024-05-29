@@ -4,6 +4,8 @@
 
 #include "Robot.h"
 
+using namespace ctre::phoenix6;
+
 void Robot::RobotInit() {}
 void Robot::RobotPeriodic() {
   /* Perform basic latency compensation based on latency and current derivative */

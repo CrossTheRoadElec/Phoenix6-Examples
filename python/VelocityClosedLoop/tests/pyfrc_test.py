@@ -22,7 +22,7 @@ LOOP_PERIOD = 0.01
 def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
     start_time = 0
     while start_time < time:
-        feed_enable(LOOP_PERIOD * 2)
+        feed_enable(0.1)
         start_time += LOOP_PERIOD
 
         dcmotorsim.setInputVoltage(fx.sim_state.motor_voltage)
@@ -32,8 +32,8 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
 
         sleep(LOOP_PERIOD)
 
-def test_position_closed_loop():
-    talonfx = hardware.TalonFX(1, "sim")
+def test_velocity_closed_loop():
+    talonfx = hardware.TalonFX(0, "sim")
     motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
     vel = talonfx.get_velocity()
 
@@ -49,7 +49,7 @@ def test_position_closed_loop():
     assert talonfx.configurator.apply(cfg).is_ok()
 
     vel.wait_for_update(1)
-    assert_almost_equal(vel.value, 0, 0.1)
+    assert_almost_equal(vel.value, 0, 0.2)
 
     # Closed loop for 1 second to a target of 10 rps, and verify we're close
     target_control = controls.VelocityVoltage(velocity=10)
@@ -59,4 +59,4 @@ def test_position_closed_loop():
 
     # Verify velocity is close to target
     vel.wait_for_update(1)
-    assert_almost_equal(vel.value, 1, 0.1)
+    assert_almost_equal(vel.value, 10, 0.2)

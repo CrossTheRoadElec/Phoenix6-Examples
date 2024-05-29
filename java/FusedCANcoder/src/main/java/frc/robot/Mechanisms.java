@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;

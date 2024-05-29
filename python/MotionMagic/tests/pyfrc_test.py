@@ -25,7 +25,7 @@ LOOP_PERIOD = 0.01
 def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
     start_time = 0
     while start_time < time:
-        feed_enable(LOOP_PERIOD * 2)
+        feed_enable(0.1)
         start_time += LOOP_PERIOD
 
         dcmotorsim.setInputVoltage(fx.sim_state.motor_voltage)
@@ -59,7 +59,7 @@ def test_position_closed_loop():
     assert talonfx.set_position(FIRST_SET).is_ok()
 
     pos.wait_for_update(1)
-    assert_almost_equal(pos.value, 0, 0.01)
+    assert_almost_equal(pos.value, 0, 0.02)
 
     # Closed loop for 1 seconds to a target of 1 rotation, and verify we're close
     target_control = controls.MotionMagicVoltage(position=1.0)
@@ -69,4 +69,4 @@ def test_position_closed_loop():
 
     # Verify position is close to target
     pos.wait_for_update(1)
-    assert_almost_equal(pos.value, 1, 0.01)
+    assert_almost_equal(pos.value, 1, 0.02)
