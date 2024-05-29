@@ -4,6 +4,8 @@
 '''
 
 from time import sleep
+from robot import MyRobot
+
 from pyfrc.tests import *
 from phoenix6 import hardware, configs, controls
 from phoenix6.unmanaged import feed_enable
@@ -20,6 +22,9 @@ def assert_almost_equal(a: float, b: float, range_val: float):
 # PID loop means we should be kinda fast, let's target 10ms
 LOOP_PERIOD = 0.01
 def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
+    feed_enable(0.2)
+    sleep(0.1)
+
     start_time = 0
     while start_time < time:
         feed_enable(0.1)
@@ -32,31 +37,32 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
 
         sleep(LOOP_PERIOD)
 
-def test_velocity_closed_loop():
-    talonfx = hardware.TalonFX(0, "sim")
-    motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
-    vel = talonfx.get_velocity()
+def test_velocity_closed_loop(control, robot: MyRobot):
+    with control.run_robot():
+        talonfx = robot.talonfx
+        motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
+        vel = talonfx.get_velocity()
 
-    talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
-    talonfx.sim_state.set_rotor_velocity(radiansToRotations(motorsim.getAngularVelocity()))
-    talonfx.sim_state.set_supply_voltage(12)
+        talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
+        talonfx.sim_state.set_rotor_velocity(radiansToRotations(motorsim.getAngularVelocity()))
+        talonfx.sim_state.set_supply_voltage(12)
 
-    cfg = configs.TalonFXConfiguration()
-    cfg.slot0.k_v = 0.12
-    cfg.slot0.k_p = 0.11
-    cfg.slot0.k_i = 0
-    cfg.slot0.k_d = 0
-    assert talonfx.configurator.apply(cfg).is_ok()
+        cfg = configs.TalonFXConfiguration()
+        cfg.slot0.k_v = 0.12
+        cfg.slot0.k_p = 0.11
+        cfg.slot0.k_i = 0
+        cfg.slot0.k_d = 0
+        assert talonfx.configurator.apply(cfg).is_ok()
 
-    vel.wait_for_update(1)
-    assert_almost_equal(vel.value, 0, 0.2)
+        vel.wait_for_update(1)
+        assert_almost_equal(vel.value, 0, 0.2)
 
-    # Closed loop for 1 second to a target of 10 rps, and verify we're close
-    target_control = controls.VelocityVoltage(velocity=10)
-    talonfx.set_control(target_control)
+        # Closed loop for 1 second to a target of 10 rps, and verify we're close
+        target_control = controls.VelocityVoltage(velocity=10)
+        talonfx.set_control(target_control)
 
-    wait_with_sim(1, talonfx, motorsim)
+        wait_with_sim(2, talonfx, motorsim)
 
-    # Verify velocity is close to target
-    vel.wait_for_update(1)
-    assert_almost_equal(vel.value, 10, 0.2)
+        # Verify velocity is close to target
+        vel.wait_for_update(1)
+        assert_almost_equal(vel.value, 10, 0.2)

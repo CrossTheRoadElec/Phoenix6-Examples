@@ -4,6 +4,8 @@
 '''
 
 from time import sleep
+from robot import MyRobot
+
 from pyfrc.tests import *
 from phoenix6 import hardware, configs, controls
 from phoenix6.unmanaged import feed_enable
@@ -23,6 +25,9 @@ def assert_almost_equal(a: float, b: float, range_val: float):
 # PID loop means we should be kinda fast, let's target 10ms
 LOOP_PERIOD = 0.01
 def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
+    feed_enable(0.2)
+    sleep(0.1)
+
     start_time = 0
     while start_time < time:
         feed_enable(0.1)
@@ -35,30 +40,31 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
 
         sleep(LOOP_PERIOD)
 
-def test_position_closed_loop():
-    talonfx = hardware.TalonFX(1, "sim")
-    motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
-    pos = talonfx.get_position()
+def test_position_closed_loop(control, robot: MyRobot):
+    with control.run_robot():
+        talonfx = robot.talonfx
+        motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
+        pos = talonfx.get_position()
 
-    talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
-    talonfx.sim_state.set_supply_voltage(12)
+        talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
+        talonfx.sim_state.set_supply_voltage(12)
 
-    cfg = configs.TalonFXConfiguration()
-    cfg.slot0.k_p = 2.4
-    cfg.slot0.k_i = 0
-    cfg.slot0.k_d = 0.1
-    assert talonfx.configurator.apply(cfg).is_ok()
-    assert talonfx.set_position(FIRST_SET).is_ok()
+        cfg = configs.TalonFXConfiguration()
+        cfg.slot0.k_p = 2.4
+        cfg.slot0.k_i = 0
+        cfg.slot0.k_d = 0.1
+        assert talonfx.configurator.apply(cfg).is_ok()
+        assert talonfx.set_position(FIRST_SET).is_ok()
 
-    pos.wait_for_update(1)
-    assert_almost_equal(pos.value, 0, 0.02)
+        pos.wait_for_update(1)
+        assert_almost_equal(pos.value, 0, 0.02)
 
-    # Closed loop for 1 seconds to a target of 1 rotation, and verify we're close
-    target_control = controls.PositionVoltage(position=1.0)
-    talonfx.set_control(target_control)
+        # Closed loop for 1 seconds to a target of 1 rotation, and verify we're close
+        target_control = controls.PositionVoltage(position=1.0)
+        talonfx.set_control(target_control)
 
-    wait_with_sim(1, talonfx, motorsim)
+        wait_with_sim(2, talonfx, motorsim)
 
-    # Verify position is close to target
-    pos.wait_for_update(1)
-    assert_almost_equal(pos.value, 1, 0.02)
+        # Verify position is close to target
+        pos.wait_for_update(1)
+        assert_almost_equal(pos.value, 1, 0.02)
