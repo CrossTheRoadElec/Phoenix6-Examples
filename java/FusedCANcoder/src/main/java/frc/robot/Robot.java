@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -74,22 +75,27 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     if (printCount++ > 10) {
       printCount = 0;
+
+      BaseStatusSignal.refreshAll(
+        f_fusedSensorOutOfSync,
+        sf_fusedSensorOutOfSync,
+        f_remoteSensorInvalid,
+        sf_remoteSensorInvalid,
+        fx_pos, fx_vel,
+        cc_pos, cc_vel);
+
       // If any faults happen, print them out. Sticky faults will always be present if live-fault occurs
-      f_fusedSensorOutOfSync.refresh();
-      sf_fusedSensorOutOfSync.refresh();
-      f_remoteSensorInvalid.refresh();
-      sf_remoteSensorInvalid.refresh();
       boolean anyFault = sf_fusedSensorOutOfSync.getValue() || sf_remoteSensorInvalid.getValue();
-      if(anyFault) {
+      if (anyFault) {
         System.out.println("A fault has occurred:");
         /* If we're live, indicate live, otherwise if we're sticky indicate sticky, otherwise do nothing */
-        if(f_fusedSensorOutOfSync.getValue()) {
+        if (f_fusedSensorOutOfSync.getValue()) {
           System.out.println("Fused sensor out of sync live-faulted");
         } else if (sf_fusedSensorOutOfSync.getValue()) {
           System.out.println("Fused sensor out of sync sticky-faulted");
         }
         /* If we're live, indicate live, otherwise if we're sticky indicate sticky, otherwise do nothing */
-        if(f_remoteSensorInvalid.getValue()) {
+        if (f_remoteSensorInvalid.getValue()) {
           System.out.println("Missing remote sensor live-faulted");
         } else if (sf_remoteSensorInvalid.getValue()) {
           System.out.println("Missing remote sensor sticky-faulted");
@@ -102,8 +108,6 @@ public class Robot extends TimedRobot {
       }
 
       /* Print out current position and velocity */
-      fx_pos.refresh(); fx_vel.refresh();
-      cc_pos.refresh(); cc_vel.refresh();
       System.out.println("FX Position: " + fx_pos + " FX Vel: " + fx_vel);
       System.out.println("CC Position: " + cc_pos + " CC Vel: " + cc_vel);
       System.out.println("");
@@ -122,7 +126,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    m_fx.setControl(m_dutyCycleControl.withOutput(m_joystick.getLeftY()));
+    double output = m_joystick.getLeftY();
+    if (Math.abs(output) < 0.1) output = 0;
+    m_fx.setControl(m_dutyCycleControl.withOutput(output));
   }
 
   @Override

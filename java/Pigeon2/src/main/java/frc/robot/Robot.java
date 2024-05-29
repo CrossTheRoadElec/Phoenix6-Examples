@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -47,8 +48,7 @@ public class Robot extends TimedRobot {
     pidgey.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
-    pidgey.getYaw().setUpdateFrequency(100);
-    pidgey.getGravityVectorZ().setUpdateFrequency(100);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, pidgey.getYaw(), pidgey.getGravityVectorZ());
   }
 
   @Override

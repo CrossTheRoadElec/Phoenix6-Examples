@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -106,14 +107,16 @@ public class Robot extends TimedRobot {
 
         TalonFXConfiguration fxCfg = new TalonFXConfiguration();
         fxCfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        do {
+        for (int i = 0; i < 5; ++i) {
             returnCode = leftFX.getConfigurator().apply(fxCfg);
-        } while(!returnCode.isOK());
+            if (returnCode.isOK()) break;
+        }
 
         fxCfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        do {
+        for (int i = 0; i < 5; ++i) {
             returnCode = rightFX.getConfigurator().apply(fxCfg);
-        } while(!returnCode.isOK());
+            if (returnCode.isOK()) break;
+        };
 
         CANcoderConfiguration ccCfg = new CANcoderConfiguration();
         ccCfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
@@ -129,9 +132,10 @@ public class Robot extends TimedRobot {
          * Setting all these signals to 100hz means they get sent at the same time if
          * they're all on a CANivore
          */
-        imu.getYaw().setUpdateFrequency(100);
-        leftFX.getPosition().setUpdateFrequency(100);
-        rightFX.getPosition().setUpdateFrequency(100);
+        BaseStatusSignal.setUpdateFrequencyForAll(100,
+            leftFX.getPosition(),
+            rightFX.getPosition(),
+            imu.getYaw());
 
         /* Publish field pose data to read back from */
         SmartDashboard.putData("Field", m_field);

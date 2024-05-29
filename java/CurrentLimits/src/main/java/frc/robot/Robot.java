@@ -34,14 +34,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    /* Configure the Talon to use a supply limit of 1 amps IF we exceed 4 amps for over 1 second */
+    /* Configure the Talon FX to use a supply limit of 60 amps IF we exceed 80 amps for over 0.1 seconds */
     TalonFXConfiguration toConfigure = new TalonFXConfiguration();
-    m_currentLimits.SupplyCurrentLimit = 1; // Limit to 1 amps
-    m_currentLimits.SupplyCurrentThreshold = 4; // If we exceed 4 amps
-    m_currentLimits.SupplyTimeThreshold = 1.0; // For at least 1 second
+    m_currentLimits.SupplyCurrentLimit = 60; // Limit to 1 amps
+    m_currentLimits.SupplyCurrentThreshold = 80; // If we exceed 4 amps
+    m_currentLimits.SupplyTimeThreshold = 0.1; // For at least 0.1 seconds
     m_currentLimits.SupplyCurrentLimitEnable = true; // And enable it
 
-    m_currentLimits.StatorCurrentLimit = 20; // Limit stator to 20 amps
+    m_currentLimits.StatorCurrentLimit = 120; // Limit stator current to 120 amps
     m_currentLimits.StatorCurrentLimitEnable = true; // And enable it
 
     toConfigure.CurrentLimits = m_currentLimits;
@@ -54,20 +54,20 @@ public class Robot extends TimedRobot {
     /* Tie output of joystick to output of motor for current limit testing */
     m_fx.setControl(m_output.withOutput(m_joystick.getLeftY()));
 
-    if(m_joystick.getAButtonPressed()) {
+    if (m_joystick.getAButtonPressed()) {
       /* Toggle the supply limit enable */
       m_currentLimits.SupplyCurrentLimitEnable ^= true;
       System.out.println("Setting supply limit to " + m_currentLimits.SupplyCurrentLimitEnable);
       m_fx.getConfigurator().apply(m_currentLimits);
     }
-    if(m_joystick.getBButtonPressed()) {
+    if (m_joystick.getBButtonPressed()) {
       /* Toggle the stator limit enable */
       m_currentLimits.StatorCurrentLimitEnable ^= true;
       System.out.println("Setting stator limit to " + m_currentLimits.StatorCurrentLimitEnable);
       m_fx.getConfigurator().apply(m_currentLimits);
     }
 
-    if(printCount++ > 20) {
+    if (printCount++ > 20) {
       printCount= 0;
       System.out.println("Supply current: " + m_fx.getSupplyCurrent());
       System.out.println("Stator current: " + m_fx.getStatorCurrent());

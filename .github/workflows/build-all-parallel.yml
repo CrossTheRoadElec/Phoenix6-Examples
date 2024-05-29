@@ -104,7 +104,7 @@ jobs:
       matrix:
         python_version: ['3.9', '3.10', '3.11']
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        project-name: ['ArcadeDrive', 'CANcoder', 'PhoenixSysId', 'PositionClosedLoop', 'StatusSignals', 'TalonFX']
+        project-name: ['ArcadeDrive', 'CANcoder', 'MotionMagic', 'PhoenixSysId', 'PositionClosedLoop', 'StatusSignals', 'TalonFX', 'VelocityClosedLoop']
 
     runs-on: ${{ matrix.os }}
 

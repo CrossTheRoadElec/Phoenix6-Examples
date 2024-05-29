@@ -9,6 +9,11 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 
 class Robot : public frc::TimedRobot {
+  ctre::phoenix6::hardware::TalonFX m_motor{1, "canivore"};
+  ctre::phoenix6::controls::MotionMagicVoltage m_mmReq{0_tr};
+  frc::XboxController m_joystick{0};
+  int m_printCount = 0;
+
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -27,8 +32,4 @@ class Robot : public frc::TimedRobot {
 
   void SimulationInit() override;
   void SimulationPeriodic() override;
-  ctre::phoenix6::hardware::TalonFX m_motor{1, "rio"};
-  ctre::phoenix6::controls::MotionMagicVoltage m_mmReq{0_tr};
-  frc::XboxController m_joystick{0};
-  int m_printCount = 0;
 };

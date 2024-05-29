@@ -37,16 +37,24 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
 
 def test_position_closed_loop():
     talonfx = hardware.TalonFX(1, "sim")
-    motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
+    motorsim = DCMotorSim(DCMotor.falcon500FOC(1), 1.0, 0.001)
     pos = talonfx.get_position()
 
     talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
     talonfx.sim_state.set_supply_voltage(12)
 
     cfg = configs.TalonFXConfiguration()
-    cfg.slot0.k_p = 2.4
+    cfg.feedback.sensor_to_mechanism_ratio = 12.8
+    cfg.motion_magic.motion_magic_cruise_velocity = 5
+    cfg.motion_magic.motion_magic_acceleration = 10
+    cfg.motion_magic.motion_magic_jerk = 100
+
+    cfg.slot0.k_v = 0.12
+    cfg.slot0.k_a = 0.01
+    cfg.slot0.k_p = 60
     cfg.slot0.k_i = 0
-    cfg.slot0.k_d = 0.1
+    cfg.slot0.k_d = 0.5
+
     assert talonfx.configurator.apply(cfg).is_ok()
     assert talonfx.set_position(FIRST_SET).is_ok()
 
@@ -54,7 +62,7 @@ def test_position_closed_loop():
     assert_almost_equal(pos.value, 0, 0.02)
 
     # Closed loop for 1 seconds to a target of 1 rotation, and verify we're close
-    target_control = controls.PositionVoltage(position=1.0)
+    target_control = controls.MotionMagicVoltage(position=1.0)
     talonfx.set_control(target_control)
 
     wait_with_sim(1, talonfx, motorsim)

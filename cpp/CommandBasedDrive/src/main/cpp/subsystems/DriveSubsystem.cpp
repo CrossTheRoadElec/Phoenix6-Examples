@@ -24,17 +24,17 @@ DriveSubsystem::DriveSubsystem()
 
     /* Make sure all critical signals are synchronized */
     /* Setting all these signals to 100hz means they get sent at the same time if they're all on a CANivore */
-    m_pigeon2.GetYaw().SetUpdateFrequency(100_Hz);
-    m_leftLeader.GetPosition().SetUpdateFrequency(100_Hz);
-    m_rightLeader.GetPosition().SetUpdateFrequency(100_Hz);
+    BaseStatusSignal::SetUpdateFrequencyForAll(100_Hz,
+        m_leftLeader.GetPosition(),
+        m_rightLeader.GetPosition(),
+        m_pigeon2.GetYaw());
 
     /* Set the update frequency of the main requests to 0 so updates are sent immediately in the arcadeDrive method */
     m_leftOut.UpdateFreqHz = 0_Hz;
     m_rightOut.UpdateFreqHz = 0_Hz;
     
     /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if (ctre::phoenix6::IsSimulation())
-    {
+    if (ctre::phoenix6::IsSimulation()) {
         m_leftOut.EnableFOC = false;
         m_rightOut.EnableFOC = false;
     }

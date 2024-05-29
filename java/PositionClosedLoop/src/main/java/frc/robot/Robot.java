@@ -22,13 +22,13 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(0, "canivore");
-  
+  private final TalonFX m_fx = new TalonFX(1, "canivore");
+
   /* Be able to switch which control request to use based on a button press */
-  /* Start at position 0, enable FOC, no feed forward, use slot 0 */
-  private final PositionVoltage m_voltagePosition = new PositionVoltage(0, 0, true, 0, 0, false, false, false);
-  /* Start at position 0, no feed forward, use slot 1 */
-  private final PositionTorqueCurrentFOC m_torquePosition = new PositionTorqueCurrentFOC(0, 0, 0, 1, false, false, false);
+  /* Start at position 0, use slot 0 */
+  private final PositionVoltage m_positionVoltage = new PositionVoltage(0).withSlot(0);
+  /* Start at position 0, use slot 1 */
+  private final PositionTorqueCurrentFOC m_positionTorque = new PositionTorqueCurrentFOC(0).withSlot(1);
   /* Keep a brake request so we can disable the motor */
   private final NeutralOut m_brake = new NeutralOut();
 
@@ -43,17 +43,19 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Slot0.kP = 2.4; // An error of 0.5 rotations results in 1.2 volts output
-    configs.Slot0.kD = 0.1; // A change of 1 rotation per second results in 0.1 volts output
-    // Peak output of 8 volts
+    configs.Slot0.kP = 2.4; // An error of 1 rotation results in 2.4 V output
+    configs.Slot0.kI = 0; // No output for integrated error
+    configs.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
+    // Peak output of 8 V
     configs.Voltage.PeakForwardVoltage = 8;
     configs.Voltage.PeakReverseVoltage = -8;
-    
-    configs.Slot1.kP = 40; // An error of 1 rotations results in 40 amps output
-    configs.Slot1.kD = 2; // A change of 1 rotation per second results in 2 amps output
-    // Peak output of 130 amps
-    configs.TorqueCurrent.PeakForwardTorqueCurrent = 130;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = -130;
+
+    configs.Slot1.kP = 40; // An error of 1 rotation results in 40 A output
+    configs.Slot1.kI = 0; // No output for integrated error
+    configs.Slot1.kD = 2; // A velocity of 1 rps results in 2 A output
+    // Peak output of 120 A
+    configs.TorqueCurrent.PeakForwardTorqueCurrent = 120;
+    configs.TorqueCurrent.PeakReverseTorqueCurrent = -120;
 
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -61,7 +63,7 @@ public class Robot extends TimedRobot {
       status = m_fx.getConfigurator().apply(configs);
       if (status.isOK()) break;
     }
-    if(!status.isOK()) {
+    if (!status.isOK()) {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
 
@@ -89,15 +91,14 @@ public class Robot extends TimedRobot {
     if (Math.abs(desiredRotations) <= 0.1) { // Joystick deadzone
       desiredRotations = 0;
     }
+
     if (m_joystick.getLeftBumper()) {
-      /* Use voltage position */
-      m_fx.setControl(m_voltagePosition.withPosition(desiredRotations));
-    }
-    else if (m_joystick.getRightBumper()) {
-      /* Use torque position */
-      m_fx.setControl(m_torquePosition.withPosition(desiredRotations));
-    }
-    else {
+      /* Use position voltage */
+      m_fx.setControl(m_positionVoltage.withPosition(desiredRotations));
+    } else if (m_joystick.getRightBumper()) {
+      /* Use position torque */
+      m_fx.setControl(m_positionTorque.withPosition(desiredRotations));
+    } else {
       /* Disable the motor instead */
       m_fx.setControl(m_brake);
     }

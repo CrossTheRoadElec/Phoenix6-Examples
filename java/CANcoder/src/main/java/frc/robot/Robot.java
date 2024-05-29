@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -46,8 +47,7 @@ public class Robot extends TimedRobot {
     cancoder.getConfigurator().apply(toApply);
 
     /* Speed up signals to an appropriate rate */
-    cancoder.getPosition().setUpdateFrequency(100);
-    cancoder.getVelocity().setUpdateFrequency(100);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, cancoder.getPosition(), cancoder.getVelocity());
   }
 
   @Override

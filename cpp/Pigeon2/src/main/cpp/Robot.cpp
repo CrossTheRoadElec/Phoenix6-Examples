@@ -18,8 +18,7 @@ void Robot::RobotInit() {
   pidgey.GetConfigurator().Apply(toApply);
 
   /* Speed up signals to an appropriate rate */
-  pidgey.GetYaw().SetUpdateFrequency(100_Hz);
-  pidgey.GetGravityVectorZ().SetUpdateFrequency(100_Hz);
+  BaseStatusSignal::SetUpdateFrequencyForAll(100_Hz, pidgey.GetYaw(), pidgey.GetGravityVectorZ());
 }
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */

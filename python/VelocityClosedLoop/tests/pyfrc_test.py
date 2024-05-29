@@ -11,9 +11,6 @@ from wpilib.simulation import DCMotorSim
 from wpimath.system.plant import DCMotor
 from wpimath.units import radiansToRotations
 
-FIRST_SET = 0
-SECOND_SET = 4.8
-
 def assert_almost_equal(a: float, b: float, range_val: float):
     """
     Assert that a is within range of b
@@ -35,30 +32,31 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
 
         sleep(LOOP_PERIOD)
 
-def test_position_closed_loop():
-    talonfx = hardware.TalonFX(1, "sim")
+def test_velocity_closed_loop():
+    talonfx = hardware.TalonFX(0, "sim")
     motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
-    pos = talonfx.get_position()
+    vel = talonfx.get_velocity()
 
     talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
+    talonfx.sim_state.set_rotor_velocity(radiansToRotations(motorsim.getAngularVelocity()))
     talonfx.sim_state.set_supply_voltage(12)
 
     cfg = configs.TalonFXConfiguration()
-    cfg.slot0.k_p = 2.4
+    cfg.slot0.k_v = 0.12
+    cfg.slot0.k_p = 0.11
     cfg.slot0.k_i = 0
-    cfg.slot0.k_d = 0.1
+    cfg.slot0.k_d = 0
     assert talonfx.configurator.apply(cfg).is_ok()
-    assert talonfx.set_position(FIRST_SET).is_ok()
 
-    pos.wait_for_update(1)
-    assert_almost_equal(pos.value, 0, 0.02)
+    vel.wait_for_update(1)
+    assert_almost_equal(vel.value, 0, 0.2)
 
-    # Closed loop for 1 seconds to a target of 1 rotation, and verify we're close
-    target_control = controls.PositionVoltage(position=1.0)
+    # Closed loop for 1 second to a target of 10 rps, and verify we're close
+    target_control = controls.VelocityVoltage(velocity=10)
     talonfx.set_control(target_control)
 
     wait_with_sim(1, talonfx, motorsim)
 
-    # Verify position is close to target
-    pos.wait_for_update(1)
-    assert_almost_equal(pos.value, 1, 0.02)
+    # Verify velocity is close to target
+    vel.wait_for_update(1)
+    assert_almost_equal(vel.value, 10, 0.2)

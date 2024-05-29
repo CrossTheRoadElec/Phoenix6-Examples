@@ -21,9 +21,12 @@ class Robot : public frc::TimedRobot {
 
   frc::XboxController m_joystick{0};
 
-  ctre::phoenix6::StatusSignal<units::turn_t>& m_ccpos = m_cc.GetPosition();
-  ctre::phoenix6::StatusSignal<units::turn_t>& m_fxpos = m_fx.GetPosition();
-  ctre::phoenix6::StatusSignal<units::degree_t>& m_p2yaw = m_p2.GetYaw();
+  ctre::phoenix6::StatusSignal<units::turn_t> &m_ccpos = m_cc.GetPosition();
+  ctre::phoenix6::StatusSignal<units::turn_t> &m_fxpos = m_fx.GetPosition();
+  ctre::phoenix6::StatusSignal<units::degree_t> &m_p2yaw = m_p2.GetYaw();
+  ctre::phoenix6::StatusSignal<units::turns_per_second_t> &m_ccvel = m_cc.GetVelocity();
+  ctre::phoenix6::StatusSignal<units::turns_per_second_t> &m_fxvel = m_fx.GetVelocity();
+  ctre::phoenix6::StatusSignal<units::degrees_per_second_t> &m_p2yawRate = m_p2.GetAngularVelocityZWorld();
 
  public:
   void RobotInit() override;

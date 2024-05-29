@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -62,10 +63,10 @@ public class Mechanisms {
 
 
   public void update(StatusSignal<Double> fxRotorPosition, StatusSignal<Double> fxPosition, StatusSignal<Double> cancoderPosition) {
-    
-    rotorArm.setAngle(fxRotorPosition.refresh().getValue() * 360);
-    mechanismArm.setAngle(fxPosition.refresh().getValue() * 360);
-    ccArm.setAngle(cancoderPosition.refresh().getValue() * 360);
+    BaseStatusSignal.refreshAll(fxRotorPosition, fxPosition, cancoderPosition);
+    rotorArm.setAngle(fxRotorPosition.getValue() * 360);
+    mechanismArm.setAngle(fxPosition.getValue() * 360);
+    ccArm.setAngle(cancoderPosition.getValue() * 360);
     SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 }

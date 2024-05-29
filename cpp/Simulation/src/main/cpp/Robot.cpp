@@ -16,16 +16,14 @@ void Robot::RobotInit()
   configs::TalonFXConfiguration fxCfg{};
   fxCfg.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
   int retryCount = 5;
-  for(int i = 0; i < retryCount; ++i)
-  {
+  for (int i = 0; i < retryCount; ++i) {
     returnCode = leftFX.GetConfigurator().Apply(fxCfg);
     if (returnCode.IsOK()) break;
   }
 
   fxCfg.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
   retryCount = 5;
-  for(int i = 0; i < retryCount; ++i)
-  {
+  for (int i = 0; i < retryCount; ++i) {
     returnCode = rightFX.GetConfigurator().Apply(fxCfg);
     if (returnCode.IsOK()) break;
   }
@@ -44,9 +42,10 @@ void Robot::RobotInit()
    * Setting all these signals to 100hz means they get sent at the same time if
    * they're all on a CANivore
    */
-  imu.GetYaw().SetUpdateFrequency(100_Hz);
-  leftFX.GetPosition().SetUpdateFrequency(100_Hz);
-  rightFX.GetPosition().SetUpdateFrequency(100_Hz);
+  BaseStatusSignal::SetUpdateFrequencyForAll(100_Hz,
+      leftFX.GetPosition(),
+      rightFX.GetPosition(),
+      imu.GetYaw());
 
   /* Publish field pose data to read back from */
   frc::SmartDashboard::PutData("Field", &m_field);
@@ -64,8 +63,7 @@ void Robot::RobotPeriodic()
                     rotationsToMeters(rightSensor.GetPosition().GetValue()));
   m_field.SetRobotPose(m_odometry.GetPose());
 
-  if (++printCount >= 50)
-  {
+  if (++printCount >= 50) {
     printCount = 0;
     std::cout << "Left FX: " << leftFX.GetPosition() << std::endl;
     std::cout << "Right FX: " << rightFX.GetPosition() << std::endl;
