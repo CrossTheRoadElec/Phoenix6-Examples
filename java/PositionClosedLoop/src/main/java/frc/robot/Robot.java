@@ -50,9 +50,9 @@ public class Robot extends TimedRobot {
     configs.Voltage.PeakForwardVoltage = 8;
     configs.Voltage.PeakReverseVoltage = -8;
 
-    configs.Slot1.kP = 40; // An error of 1 rotation results in 40 A output
+    configs.Slot1.kP = 60; // An error of 1 rotation results in 60 A output
     configs.Slot1.kI = 0; // No output for integrated error
-    configs.Slot1.kD = 2; // A velocity of 1 rps results in 2 A output
+    configs.Slot1.kD = 6; // A velocity of 1 rps results in 6 A output
     // Peak output of 120 A
     configs.TorqueCurrent.PeakForwardTorqueCurrent = 120;
     configs.TorqueCurrent.PeakReverseTorqueCurrent = -120;

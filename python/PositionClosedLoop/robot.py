@@ -36,9 +36,9 @@ class MyRobot(wpilib.TimedRobot):
         cfg.voltage.peak_forward_voltage = 8
         cfg.voltage.peak_reverse_voltage = -8
 
-        cfg.slot1.k_p = 40; # An error of 1 rotation results in 40 A output
+        cfg.slot1.k_p = 60; # An error of 1 rotation results in 60 A output
         cfg.slot1.k_i = 0; # No output for integrated error
-        cfg.slot1.k_d = 2; # A velocity of 1 rps results in 2 A output
+        cfg.slot1.k_d = 6; # A velocity of 1 rps results in 6 A output
         # Peak output of 120 A
         cfg.torque_current.peak_forward_torque_current = 120
         cfg.torque_current.peak_reverse_torque_current = -120
