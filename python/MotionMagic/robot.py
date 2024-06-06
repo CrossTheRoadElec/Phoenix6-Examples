@@ -23,12 +23,13 @@ class MyRobot(wpilib.TimedRobot):
 
         cfg = configs.TalonFXConfiguration()
 
+        # Configure gear ratio
         fdb = cfg.feedback
-        fdb.sensor_to_mechanism_ratio = 12.8
+        fdb.sensor_to_mechanism_ratio = 12.8 # 12.8 rotor rotations per mechanism rotation
 
         # Configure Motion Magic
         mm = cfg.motion_magic
-        mm.motion_magic_cruise_velocity = 5 # 5 rotations per second cruise
+        mm.motion_magic_cruise_velocity = 5 # 5 (mechanism) rotations per second cruise
         mm.motion_magic_acceleration = 10 # Take approximately 0.5 seconds to reach max vel
         # Take apprximately 0.1 seconds to reach max accel
         mm.motion_magic_jerk = 100

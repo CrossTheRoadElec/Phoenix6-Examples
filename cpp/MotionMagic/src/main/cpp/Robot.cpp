@@ -19,12 +19,13 @@ void Robot::SimulationPeriodic() {
 void Robot::RobotInit() {
   configs::TalonFXConfiguration cfg{};
 
+  /* Configure gear ratio */
   configs::FeedbackConfigs &fdb = cfg.Feedback;
-  fdb.SensorToMechanismRatio = 12.8;
+  fdb.SensorToMechanismRatio = 12.8; // 12.8 rotor rotations per mechanism rotation
 
   /* Configure Motion Magic */
   configs::MotionMagicConfigs &mm = cfg.MotionMagic;
-  mm.MotionMagicCruiseVelocity = 5; // 5 rotations per second cruise
+  mm.MotionMagicCruiseVelocity = 5; // 5 (mechanism) rotations per second cruise
   mm.MotionMagicAcceleration = 10; // Take approximately 0.5 seconds to reach max vel
   // Take approximately 0.1 seconds to reach max accel 
   mm.MotionMagicJerk = 100;

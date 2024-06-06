@@ -49,12 +49,13 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     TalonFXConfiguration cfg = new TalonFXConfiguration();
 
+    /* Configure gear ratio */
     FeedbackConfigs fdb = cfg.Feedback;
-    fdb.SensorToMechanismRatio = 12.8;
+    fdb.SensorToMechanismRatio = 12.8; // 12.8 rotor rotations per mechanism rotation
 
     /* Configure Motion Magic */
     MotionMagicConfigs mm = cfg.MotionMagic;
-    mm.MotionMagicCruiseVelocity = 5; // 5 rotations per second cruise
+    mm.MotionMagicCruiseVelocity = 5; // 5 (mechanism) rotations per second cruise
     mm.MotionMagicAcceleration = 10; // Take approximately 0.5 seconds to reach max vel
     // Take approximately 0.1 seconds to reach max accel 
     mm.MotionMagicJerk = 100;
