@@ -11,9 +11,10 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import choreo.Choreo;
 import choreo.auto.AutoFactory;
-import choreo.auto.AutoFactory.ChoreoAutoBindings;
+import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,7 +24,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.generated.TunerConstants;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -41,8 +41,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedOperatorPerspective = false;
 
-    private final SwerveRequest.ApplyChassisSpeeds AutoRequest = new SwerveRequest.ApplyChassisSpeeds();
-    private AutoFactory factory;
+    /* Path Follower PID Controllers */
+    private final PIDController xController = new PIDController(10, 0, 0);
+    private final PIDController yController = new PIDController(10, 0, 0);
+    private final PIDController thetaController = new PIDController(7, 0, 0);
 
     private final SwerveRequest.SysIdSwerveTranslation TranslationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveRotation RotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
@@ -86,7 +88,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
-        configureChoreo();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -94,25 +95,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
-        configureChoreo();
         if (Utils.isSimulation()) {
             startSimThread();
         }
-    }
-
-    private void configureChoreo() {
-        factory = Choreo.createAutoFactory(this,
-            ()->this.getState().Pose, null,
-            (speeds)->this.setControl(AutoRequest.withSpeeds(speeds)),
-            ()-> DriverStation.getAlliance().orElse(Alliance.Blue)==Alliance.Red,
-            new ChoreoAutoBindings());
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    public Command forwardAuto() {
+    public Command forwardAuto(AutoFactory factory) {
       var loop = factory.newLoop("Forward Auto");
       var forward = factory.trajectory("Forward", loop);
       loop.enabled()
@@ -136,6 +128,15 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    public ChassisSpeeds choreoController(Pose2d currentPose, SwerveSample sample) {
+        return ChassisSpeeds.fromFieldRelativeSpeeds(
+            new ChassisSpeeds(
+                xController.calculate(currentPose.getX(), sample.x) + sample.vx,
+                yController.calculate(currentPose.getY(), sample.y) + sample.vy,
+                thetaController.calculate(currentPose.getRotation().getRadians(), sample.heading) + sample.omega
+            ), currentPose.getRotation());
     }
 
     private void startSimThread() {
