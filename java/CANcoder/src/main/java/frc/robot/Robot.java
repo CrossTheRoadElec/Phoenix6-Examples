@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -103,7 +105,7 @@ public class Robot extends TimedRobot {
     /**
      * When we teleop init, set the position of the Pigeon2 and wait for the setter to take affect.
      */
-    cancoder.setPosition(0.4, 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
+    cancoder.setPosition(Rotations.of(0.4), 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
     cancoder.getPosition().waitForUpdate(0.1); // And wait up to 100 ms for the position to take affect
     System.out.println("Set the position to 0.4 rotations, we are currently at " + cancoder.getPosition()); // Use java's implicit toString operator
   }

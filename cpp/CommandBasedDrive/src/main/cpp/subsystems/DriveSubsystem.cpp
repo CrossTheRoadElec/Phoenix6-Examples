@@ -171,7 +171,7 @@ void DriveSubsystem::SimulationPeriodic()
 units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
 {
     /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches / 1_rad;
     /* Every rotation of the wheel travels this many inches */
     /* Now apply gear ratio to input rotations */
     auto gearedRotations = rotations / kGearRatio;
@@ -182,7 +182,7 @@ units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
 units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
 {
     /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches / 1_rad;
     /* Every rotation of the wheel travels this many inches */
     /* Now apply wheel rotations to input meters */
     auto wheelRotations = meters / circumference;
@@ -193,7 +193,7 @@ units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
 units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per_second_t rotations)
 {
     /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches / 1_rad;
     /* Every rotation of the wheel travels this many inches */
     /* Now apply gear ratio to input rotations */
     auto gearedRotations = rotations / kGearRatio;
@@ -204,7 +204,7 @@ units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per
 units::turns_per_second_t DriveSubsystem::metersToRotationsVel(units::meters_per_second_t meters)
 {
     /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
+    constexpr auto circumference = kWheelRadiusInches / 1_rad;
     /* Every rotation of the wheel travels this many inches */
     /* Now apply wheel rotations to input meters */
     auto wheelRotations = meters / circumference;

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.Utils;
@@ -19,6 +21,11 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -53,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
      * characterization/introduction.html#introduction-to-robot-characterization
      */
     private final double kGearRatio = 10.71;
-    private final double kWheelRadiusInches = 3;
+    private final Distance kWheelRadius = Inches.of(3);
 
     /* Simulation model of the drivetrain */
     private final DifferentialDrivetrainSim m_driveSim = new DifferentialDrivetrainSim(
@@ -61,7 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
         kGearRatio, // Standard AndyMark Gearing reduction.
         2.1, // MOI of 2.1 kg m^2 (from CAD model).
         26.5, // Mass of the robot is 26.5 kg.
-        Units.inchesToMeters(kWheelRadiusInches), // Robot uses 3" radius (6" diameter) wheels.
+        kWheelRadius.in(Meters), // Robot uses 3" radius (6" diameter) wheels.
         0.546, // Distance between wheels is _ meters.
 
         /*
@@ -162,8 +169,8 @@ public class DriveSubsystem extends SubsystemBase {
          * real values on the robot itself.
          */
         m_odometry.update(m_pigeon2.getRotation2d(),
-                rotationsToMeters(m_leftLeader.getPosition().getValue()),
-                rotationsToMeters(m_rightLeader.getPosition().getValue()));
+                rotationsToMeters(m_leftLeader.getPosition().getValue()).in(Meters),
+                rotationsToMeters(m_rightLeader.getPosition().getValue()).in(Meters));
         m_field.setRobotPose(m_odometry.getPoseMeters());
     }
 
@@ -198,28 +205,28 @@ public class DriveSubsystem extends SubsystemBase {
 
         /* Update all of our sensors. */
         m_leftSimState.setRawRotorPosition(
-            metersToRotations(m_driveSim.getLeftPositionMeters())
+            metersToRotations(Meters.of(m_driveSim.getLeftPositionMeters()))
         );
         m_leftSimState.setRotorVelocity(
             // This is OK, since the time base is the same
-            metersToRotations(m_driveSim.getLeftVelocityMetersPerSecond())
+            metersToRotations(Meters.of(m_driveSim.getLeftVelocityMetersPerSecond()))
         );
         m_rightSimState.setRawRotorPosition(
-            metersToRotations(m_driveSim.getRightPositionMeters())
+            metersToRotations(Meters.of(m_driveSim.getRightPositionMeters()))
         );
         m_rightSimState.setRotorVelocity(
             // This is OK, since the time base is the same
-            metersToRotations(m_driveSim.getRightVelocityMetersPerSecond())
+            metersToRotationsVel(Meters.of(m_driveSim.getRightVelocityMetersPerSecond()))
         );
         m_leftFollowerSimState.setRawRotorPosition(
-            metersToRotations(m_driveSim.getLeftPositionMeters())
+            metersToRotations(Meters.of(m_driveSim.getLeftPositionMeters()))
         );
         m_leftFollowerSimState.setRotorVelocity(
             // This is OK, since the time base is the same
-            metersToRotations(m_driveSim.getLeftVelocityMetersPerSecond())
+            metersToRotations(Meters.of(m_driveSim.getLeftVelocityMetersPerSecond()))
         );
         m_rightFollowerSimState.setRawRotorPosition(
-            metersToRotations(m_driveSim.getRightPositionMeters())
+            metersToRotations(Meters.of(m_driveSim.getRightPositionMeters()))
         );
         m_rightFollowerSimState.setRotorVelocity(
             // This is OK, since the time base is the same
@@ -296,27 +303,31 @@ public class DriveSubsystem extends SubsystemBase {
         cfg.setYaw(48);
     }
 
-    private double rotationsToMeters(double rotations) {
-        /* Get circumference of wheel */
-        final double circumference = this.kWheelRadiusInches * 2 * Math.PI;
-        /* Every rotation of the wheel travels this many inches */
-        /* So now get the meters traveled per rotation */
-        final double metersPerWheelRotation = Units.inchesToMeters(circumference);
-        /* Now apply gear ratio to input rotations */
-        double gearedRotations = rotations / this.kGearRatio;
-        /* And multiply geared rotations by meters per rotation */
-        return gearedRotations * metersPerWheelRotation;
+    private Distance rotationsToMeters(Angle rotations) {
+        /* Apply gear ratio to input rotations */
+        var gearedRadians = rotations.in(Radians) / this.kGearRatio;
+        /* Then multiply the wheel radius by radians of rotation to get distance */
+        return this.kWheelRadius.times(gearedRadians);
     }
 
-    private double metersToRotations(double meters) {
-        /* Get circumference of wheel */
-        final double circumference = this.kWheelRadiusInches * 2 * Math.PI;
-        /* Every rotation of the wheel travels this many inches */
-        /* So now get the rotations per meter traveled */
-        final double wheelRotationsPerMeter = 1.0 / Units.inchesToMeters(circumference);
-        /* Now apply wheel rotations to input meters */
-        double wheelRotations = wheelRotationsPerMeter * meters;
-        /* And multiply by gear ratio to get rotor rotations */
-        return wheelRotations * this.kGearRatio;
+    private Angle metersToRotations(Distance meters) {
+        /* Divide the distance by the wheel radius to get radians */
+        var wheelRadians = meters.in(Meters) / this.kWheelRadius.in(Meters);
+        /* Then multiply by gear ratio to get rotor rotations */
+        return Radians.of(wheelRadians * this.kGearRatio);
+    }
+
+    private LinearVelocity rotationsToMetersVel(AngularVelocity rotations) {
+        /* Apply gear ratio to input rotations */
+        var gearedRotations = rotations.divide(this.kGearRatio);
+        /* Then multiply the wheel radius by radians of rotation to get distance */
+        return this.kWheelRadius.per(Second).times(gearedRotations.in(RadiansPerSecond));
+    }
+
+    private AngularVelocity metersToRotationsVel(LinearVelocity meters) {
+        /* Divide the distance by the wheel radius to get radians */
+        var wheelRadians = meters.in(MetersPerSecond) / this.kWheelRadius.in(Meters);
+        /* Then multiply by gear ratio to get rotor rotations */
+        return RadiansPerSecond.of(wheelRadians * this.kGearRatio);
     }
 }

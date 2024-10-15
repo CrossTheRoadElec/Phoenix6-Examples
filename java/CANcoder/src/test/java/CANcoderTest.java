@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
 
@@ -31,10 +32,10 @@ public class CANcoderTest {
 
         retryConfigApply(()->cfg.setPosition(firstSet));
         System.out.println("First set: " + posGetter.waitForUpdate(1) + " vs " + firstSet);
-        assertEquals(posGetter.getValue(), firstSet, SET_DELTA);
+        assertEquals(posGetter.getValue().in(Rotations), firstSet, SET_DELTA);
         retryConfigApply(()->cfg.setPosition(secondSet));
-        System.out.println("First set: " + posGetter.waitForUpdate(1) + " vs " + firstSet);
-        assertEquals(posGetter.getValue(), secondSet, SET_DELTA);
+        System.out.println("Second set: " + posGetter.waitForUpdate(1) + " vs " + secondSet);
+        assertEquals(posGetter.getValue().in(Rotations), secondSet, SET_DELTA);
     }
 
     private void retryConfigApply(Supplier<StatusCode> toApply) {

@@ -8,11 +8,11 @@
 void Robot::RobotInit() {}
 void Robot::RobotPeriodic() {
 
-  if(m_joystick.GetLeftBumper()) {
+  if(m_joystick.GetLeftBumperButton()) {
     m_waitForAllTimeout = 0.1_s;
     std::cout << "Timeout is now at " << m_waitForAllTimeout.value() << std::endl;
   }
-  if(m_joystick.GetRightBumper()) {
+  if(m_joystick.GetRightBumperButton()) {
     m_waitForAllTimeout = 0_s;
     std::cout << "Timeout is now at " << m_waitForAllTimeout.value() << std::endl;
   }
