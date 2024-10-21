@@ -10,7 +10,7 @@ from pyfrc.tests import *
 from phoenix6 import hardware, configs, controls
 from phoenix6.unmanaged import feed_enable
 from wpilib.simulation import DCMotorSim
-from wpimath.system.plant import DCMotor
+from wpimath.system.plant import DCMotor, LinearSystemId
 from wpimath.units import radiansToRotations
 
 FIRST_SET = 0
@@ -43,7 +43,8 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim):
 def test_position_closed_loop(control, robot: MyRobot):
     with control.run_robot():
         talonfx = robot.talonfx
-        motorsim = DCMotorSim(DCMotor.krakenX60FOC(1), 1.0, 0.001)
+        gearbox = DCMotor.krakenX60FOC(1)
+        motorsim = DCMotorSim.DCMotorSim(LinearSystemId.DCMotorSystem(gearbox, 0.01, 1.0), gearbox)
         pos = talonfx.get_position()
 
         talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
