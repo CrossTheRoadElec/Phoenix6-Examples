@@ -44,7 +44,7 @@ def test_position_closed_loop(control, robot: MyRobot):
     with control.run_robot():
         talonfx = robot.talonfx
         gearbox = DCMotor.krakenX60FOC(1)
-        motorsim = DCMotorSim.DCMotorSim(LinearSystemId.DCMotorSystem(gearbox, 0.01, 1.0), gearbox)
+        motorsim = DCMotorSim(LinearSystemId.DCMotorSystem(gearbox, 0.01, 1.0), gearbox)
         pos = talonfx.get_position()
 
         talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
