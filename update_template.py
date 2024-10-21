@@ -43,7 +43,10 @@ def update_templates(template_dirs, del_exclusions):
                 
                 if not to_keep:
                     print("Removing", full_path)
-                    os.remove(full_path)
+                    try:
+                        os.remove(full_path)
+                    except:
+                        print("WARNING: Failed to remove", full_path)
 
             for dir in dirs:
                 full_dir_path = os.path.join(root, dir)
