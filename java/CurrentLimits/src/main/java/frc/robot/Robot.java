@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -36,9 +38,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     /* Configure the Talon FX to use a supply limit of 60 amps IF we exceed 80 amps for over 0.1 seconds */
     TalonFXConfiguration toConfigure = new TalonFXConfiguration();
-    m_currentLimits.SupplyCurrentLimit = 60; // Limit to 1 amps
-    m_currentLimits.SupplyCurrentThreshold = 80; // If we exceed 4 amps
-    m_currentLimits.SupplyTimeThreshold = 0.1; // For at least 0.1 seconds
+    m_currentLimits.SupplyCurrentLowerLimit = 60; // Limit to 60 amps
+    m_currentLimits.SupplyCurrentLimit = 80; // If we exceed 80 amps
+    m_currentLimits.SupplyCurrentLowerTime = 0.1; // For at least 0.1 seconds
     m_currentLimits.SupplyCurrentLimitEnable = true; // And enable it
 
     m_currentLimits.StatorCurrentLimit = 120; // Limit stator current to 120 amps

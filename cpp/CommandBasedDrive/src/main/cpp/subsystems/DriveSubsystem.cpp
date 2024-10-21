@@ -34,7 +34,7 @@ DriveSubsystem::DriveSubsystem()
     m_rightOut.UpdateFreqHz = 0_Hz;
     
     /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if (ctre::phoenix6::IsSimulation()) {
+    if (utils::IsSimulation()) {
         m_leftOut.EnableFOC = false;
         m_rightOut.EnableFOC = false;
     }

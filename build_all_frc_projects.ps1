@@ -3,7 +3,10 @@ $Levels = '/*' * $Depth
 
 $ErrorActionPreference = "Stop"
 
-Get-ChildItem -Directory "./$Levels" -Exclude ".github" |
+$exclude_list = @(".github", "automation")
+$starting_location = Get-Location
+
+Get-ChildItem -Directory "./$Levels" -Exclude $exclude_list |
     ForEach-Object {
         Push-Location $_.FullName
         echo "Building example $_"

@@ -100,10 +100,10 @@ public class Robot extends TimedRobot {
 
     double desiredRotationsPerSecond = joyValue * 50; // Go for plus/minus 50 rotations per second
 
-    if (m_joystick.getLeftBumper()) {
+    if (m_joystick.getLeftBumperButton()) {
       /* Use velocity voltage */
       m_fx.setControl(m_velocityVoltage.withVelocity(desiredRotationsPerSecond));
-    } else if (m_joystick.getRightBumper()) {
+    } else if (m_joystick.getRightBumperButton()) {
       /* Use velocity torque */
       m_fx.setControl(m_velocityTorque.withVelocity(desiredRotationsPerSecond));
     } else {

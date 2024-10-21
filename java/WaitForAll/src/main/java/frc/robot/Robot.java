@@ -10,6 +10,8 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -26,16 +28,16 @@ public class Robot extends TimedRobot {
                                                                   // selectively power it to completely test this example 
   private final TalonFX m_motor2 = new TalonFX(0, "rio"); // Pick the RIO bus to force a failure we can detect
 
-  private final StatusSignal<Double> m_canbus1signal1 = m_motor1.getPosition();
-  private final StatusSignal<Double> m_canbus1signal2 = m_motor1.getVelocity();
+  private final StatusSignal<Angle> m_canbus1signal1 = m_motor1.getPosition();
+  private final StatusSignal<AngularVelocity> m_canbus1signal2 = m_motor1.getVelocity();
   private final StatusSignal<ControlModeValue> m_canbus1signal3 = m_motor1.getControlMode();
-  private final StatusSignal<Double> m_canbus1signal4 = m_pigdey.getYaw();
-  private final StatusSignal<Double> m_canbus1signal5 = m_pigdey.getRoll();
+  private final StatusSignal<Angle> m_canbus1signal4 = m_pigdey.getYaw();
+  private final StatusSignal<Angle> m_canbus1signal5 = m_pigdey.getRoll();
   
-  private final StatusSignal<Double> m_canbus2signal1 = m_motor2.getPosition();
+  private final StatusSignal<Angle> m_canbus2signal1 = m_motor2.getPosition();
   
-  private final StatusSignal<Double> m_canbus1transcient1 = m_transcientMotor.getPosition();
-  private final StatusSignal<Double> m_canbus1transcient2 = m_transcientMotor.getVelocity();
+  private final StatusSignal<Angle> m_canbus1transcient1 = m_transcientMotor.getPosition();
+  private final StatusSignal<AngularVelocity> m_canbus1transcient2 = m_transcientMotor.getVelocity();
 
   private final StatusSignal<?>[] m_signalsAcrossCANbuses = new StatusSignal<?>[]{
     m_canbus1signal1,
@@ -68,11 +70,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    if(m_joystick.getLeftBumper()){
+    if(m_joystick.getLeftBumperButton()){
       m_waitForAllTimeout = 0.1;
       System.out.println("Timeout is now at " + m_waitForAllTimeout);
     }
-    if(m_joystick.getRightBumper()){
+    if(m_joystick.getRightBumperButton()){
       m_waitForAllTimeout = 0;
       System.out.println("Timeout is now at " + m_waitForAllTimeout);
     }

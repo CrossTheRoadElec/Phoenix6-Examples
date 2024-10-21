@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -11,8 +11,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -32,7 +31,7 @@ public class FlywheelMechanism extends SubsystemBase {
                                        // Log state with Phoenix SignalLogger class
                 (state)->SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism(
-                (Measure<Voltage> volts)-> m_motorToTest.setControl(m_sysIdControl.withOutput(volts.in(Volts))),
+                (Voltage volts)-> m_motorToTest.setControl(m_sysIdControl.withOutput(volts.in(Volts))),
                 null,
                 this));
 

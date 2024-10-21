@@ -209,41 +209,41 @@ public class DriveSubsystem extends SubsystemBase {
         );
         m_leftSimState.setRotorVelocity(
             // This is OK, since the time base is the same
-            metersToRotations(Meters.of(m_driveSim.getLeftVelocityMetersPerSecond()))
+            metersToRotationsVel(MetersPerSecond.of(m_driveSim.getLeftVelocityMetersPerSecond()))
         );
         m_rightSimState.setRawRotorPosition(
             metersToRotations(Meters.of(m_driveSim.getRightPositionMeters()))
         );
         m_rightSimState.setRotorVelocity(
             // This is OK, since the time base is the same
-            metersToRotationsVel(Meters.of(m_driveSim.getRightVelocityMetersPerSecond()))
+            metersToRotationsVel(MetersPerSecond.of(m_driveSim.getRightVelocityMetersPerSecond()))
         );
         m_leftFollowerSimState.setRawRotorPosition(
             metersToRotations(Meters.of(m_driveSim.getLeftPositionMeters()))
         );
         m_leftFollowerSimState.setRotorVelocity(
             // This is OK, since the time base is the same
-            metersToRotations(Meters.of(m_driveSim.getLeftVelocityMetersPerSecond()))
+            metersToRotationsVel(MetersPerSecond.of(m_driveSim.getLeftVelocityMetersPerSecond()))
         );
         m_rightFollowerSimState.setRawRotorPosition(
             metersToRotations(Meters.of(m_driveSim.getRightPositionMeters()))
         );
         m_rightFollowerSimState.setRotorVelocity(
             // This is OK, since the time base is the same
-            metersToRotations(m_driveSim.getRightVelocityMetersPerSecond())
+            metersToRotationsVel(MetersPerSecond.of(m_driveSim.getRightVelocityMetersPerSecond()))
         );
         m_pigeon2SimState.setRawYaw(m_driveSim.getHeading().getDegrees());
     }
 
-    public StatusSignal<Double> getYaw() {
+    public StatusSignal<Angle> getYaw() {
         return m_pigeon2.getYaw();
     }
 
-    public StatusSignal<Double> getLeftPos() {
+    public StatusSignal<Angle> getLeftPos() {
         return m_leftLeader.getPosition();
     }
 
-    public StatusSignal<Double> getRightPos() {
+    public StatusSignal<Angle> getRightPos() {
         return m_rightLeader.getPosition();
     }
 
