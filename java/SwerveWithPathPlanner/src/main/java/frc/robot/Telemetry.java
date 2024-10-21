@@ -2,7 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -75,21 +75,24 @@ public class Telemetry {
             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
     };
 
-    /* Accept the swerve drive state and telemeterize it to smartdashboard */
+    private final double[] m_poseArray = new double[3];
+
+    /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
     public void telemeterize(SwerveDriveState state) {
         /* Telemeterize the pose */
         Pose2d pose = state.Pose;
+        m_poseArray[0] = pose.getX();
+        m_poseArray[1] = pose.getY();
+        m_poseArray[2] = pose.getRotation().getDegrees();
+
         fieldTypePub.set("Field2d");
-        fieldPub.set(new double[] {
-            pose.getX(),
-            pose.getY(),
-            pose.getRotation().getDegrees()
-        });
+        fieldPub.set(m_poseArray);
 
         /* Telemeterize the robot's general speeds */
         double currentTime = Utils.getCurrentTimeSeconds();
         double diffTime = currentTime - lastTime;
         lastTime = currentTime;
+
         Translation2d distanceDiff = pose.minus(m_lastPose).getTranslation();
         m_lastPose = pose;
 
@@ -109,7 +112,7 @@ public class Telemetry {
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
 
-        SignalLogger.writeDoubleArray("odometry", new double[] {pose.getX(), pose.getY(), pose.getRotation().getDegrees()});
+        SignalLogger.writeDoubleArray("odometry", m_poseArray);
         SignalLogger.writeDouble("odom period", state.OdometryPeriod, "seconds");
     }
 }
