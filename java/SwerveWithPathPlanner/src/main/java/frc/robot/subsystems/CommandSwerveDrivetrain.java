@@ -180,24 +180,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     private void configureAutoBuilder() {
-        double driveBaseRadius = 0;
-        for (var moduleLocation : m_moduleLocations) {
-            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
-        }
-
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                () -> this.getState().Pose,   // Supplier of current robot pose
-                this::seedFieldRelative,      // Consumer for seeding pose against auto
-                () -> this.getState().Speeds, // Supplier of current robot speeds
+                () -> getState().Pose,   // Supplier of current robot pose
+                this::seedFieldRelative, // Consumer for seeding pose against auto
+                () -> getState().Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
-                (speeds, feedforwards) -> this.setControl(
+                (speeds, feedforwards) -> setControl(
                     m_applyRobotSpeeds.withSpeeds(speeds)
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),
-                new PPHolonomicDriveController(new PIDConstants(10, 0, 0), new PIDConstants(10, 0, 0)),
+                new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(10, 0, 0),
+                    // PID constants for rotation
+                    new PIDConstants(10, 0, 0)
+                ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,

@@ -9,9 +9,11 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -39,7 +41,7 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     /* Path follower */
-    private Command runAuto = new PathPlannerAuto("Tests");
+    private final SendableChooser<Command> autoChooser;
 
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
@@ -80,10 +82,13 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+
+        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
     public Command getAutonomousCommand() {
         /* First put the drivetrain into auto run mode, then run the auto */
-        return runAuto;
+        return autoChooser.getSelected();
     }
 }
