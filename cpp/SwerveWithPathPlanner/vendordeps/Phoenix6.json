@@ -1,8 +1,8 @@
 {
-    "fileName": "Phoenix6.json",
+    "fileName": "Phoenix6-frc2025-beta-latest.json",
     "name": "CTRE-Phoenix (v6)",
     "version": "25.0.0-beta-1",
-    "frcYear": 2025,
+    "frcYear": "2025",
     "uuid": "e995de00-2c64-4df5-8831-c1441420ff19",
     "mavenUrls": [
         "https://maven.ctr-electronics.com/release/"
@@ -13,6 +13,11 @@
             "uuid": "3fcf3402-e646-4fa6-971e-18afe8173b1a",
             "errorMessage": "The combined Phoenix-6-And-5 vendordep is no longer supported. Please remove the vendordep and instead add both the latest Phoenix 6 vendordep and Phoenix 5 vendordep.",
             "offlineFileName": "Phoenix6And5.json"
+        },
+        {
+            "uuid": "e7900d8d-826f-4dca-a1ff-182f658e98af",
+            "errorMessage": "Users can not have both the replay and regular Phoenix 6 vendordeps in their robot program.",
+            "offlineFileName": "Phoenix6-replay-frc2025-beta-latest.json"
         }
     ],
     "javaDependencies": [
