@@ -183,5 +183,5 @@ ctre_sim/
 /.cache
 compile_commands.json
 
-# Python
-__pycache__
+# Python cache
+__pycache__/
