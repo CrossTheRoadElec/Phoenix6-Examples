@@ -19,7 +19,9 @@ TEMPLATE_DIRS: dict[str, str] = {
 # List of globs to ignore for deletion
 DEL_EXCLUSIONS: list = [
     r'src.(\/*|\\)',
-    r'.*.py$'
+    r'.*.py$',
+    r'tuner-project.json',
+    r'(?i)pathplanner.*.json.*'
 ]
 
 
