@@ -10,8 +10,6 @@
 #include "networktables/NetworkTableValue.h"
 #include <wpinet/PortForwarder.h>
 #include "wpi/json.h"
-//#include <unistd.h>
-//#include <curl/curl.h>
 #include <chrono>
 #include <iostream>
 #include <optional>
@@ -23,6 +21,8 @@
 #include <frc/geometry/Pose3d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Rotation3d.h>
+//#include <unistd.h>
+//#include <curl/curl.h>
 // #include <sys/socket.h>
 // #include <netinet/in.h>
 // #include <arpa/inet.h>
