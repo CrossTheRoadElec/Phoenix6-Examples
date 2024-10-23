@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.sim.PhysicsSim.SimProfile;
@@ -35,7 +36,8 @@ class TalonFXSimProfile extends SimProfile {
         this._falcon = falcon;
         this._canCoder = canCoder;
         this._gearRatio = gearRatio;
-        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), gearRatio, rotorInertia);
+        var gearbox = DCMotor.getKrakenX60Foc(1);
+        this._motorSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(gearbox, rotorInertia, gearRatio), gearbox);
     }
 
     /**

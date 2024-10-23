@@ -17,8 +17,8 @@ void Robot::RobotInit() {
   configs.Slot0.kI = 0; // No output for integrated error
   configs.Slot0.kD = 0; // No output for error derivative
   // Peak output of 8 volts
-  configs.Voltage.PeakForwardVoltage = 8;
-  configs.Voltage.PeakReverseVoltage = -8;
+  configs.Voltage.PeakForwardVoltage = 8_V;
+  configs.Voltage.PeakReverseVoltage = -8_V;
   
   /* Torque-based velocity does not require a feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
   configs.Slot1.kS = 2.5; // To account for friction, add 2.5 A of static feedforward
@@ -26,8 +26,8 @@ void Robot::RobotInit() {
   configs.Slot1.kI = 0; // No output for integrated error
   configs.Slot1.kD = 0; // No output for error derivative
   // Peak output of 40 A
-  configs.TorqueCurrent.PeakForwardTorqueCurrent = 40;
-  configs.TorqueCurrent.PeakReverseTorqueCurrent = -40;
+  configs.TorqueCurrent.PeakForwardTorqueCurrent = 40_A;
+  configs.TorqueCurrent.PeakReverseTorqueCurrent = -40_A;
 
   /* Retry config apply up to 5 times, report if failure */
   ctre::phoenix::StatusCode status = ctre::phoenix::StatusCode::StatusCodeNotInitialized;
@@ -53,10 +53,10 @@ void Robot::TeleopPeriodic() {
 
   auto desiredRotationsPerSecond = joyValue * 50_tps; // Go for plus/minus 50 rotations per second
 
-  if (m_joystick.GetLeftBumper()) {
+  if (m_joystick.GetLeftBumperButton()) {
     /* Use velocity voltage */
     m_fx.SetControl(m_velocityVoltage.WithVelocity(desiredRotationsPerSecond));
-  } else if (m_joystick.GetRightBumper()) {
+  } else if (m_joystick.GetRightBumperButton()) {
     /* Use velocity torque */
     m_fx.SetControl(m_velocityTorque.WithVelocity(desiredRotationsPerSecond));
   } else {

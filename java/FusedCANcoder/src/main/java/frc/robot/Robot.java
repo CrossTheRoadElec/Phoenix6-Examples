@@ -15,6 +15,8 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.sim.PhysicsSim;
@@ -35,11 +37,11 @@ public class Robot extends TimedRobot {
   private final StatusSignal<Boolean> f_remoteSensorInvalid = m_fx.getFault_RemoteSensorDataInvalid();
   private final StatusSignal<Boolean> sf_remoteSensorInvalid = m_fx.getStickyFault_RemoteSensorDataInvalid();
 
-  private final StatusSignal<Double> fx_pos = m_fx.getPosition();
-  private final StatusSignal<Double> fx_vel = m_fx.getVelocity();
-  private final StatusSignal<Double> cc_pos = m_cc.getPosition();
-  private final StatusSignal<Double> cc_vel = m_cc.getVelocity();
-  private final StatusSignal<Double> fx_rotorPos = m_fx.getRotorPosition();
+  private final StatusSignal<Angle> fx_pos = m_fx.getPosition();
+  private final StatusSignal<AngularVelocity> fx_vel = m_fx.getVelocity();
+  private final StatusSignal<Angle> cc_pos = m_cc.getPosition();
+  private final StatusSignal<AngularVelocity> cc_vel = m_cc.getVelocity();
+  private final StatusSignal<Angle> fx_rotorPos = m_fx.getRotorPosition();
 
   private final DutyCycleOut m_dutyCycleControl = new DutyCycleOut(0);
 

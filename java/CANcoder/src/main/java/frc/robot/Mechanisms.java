@@ -2,6 +2,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.StatusSignal;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,8 +38,8 @@ public class Mechanisms {
                                                                        6, 
                                                                        new Color8Bit(Color.kAliceBlue)));
 
-  public void update(StatusSignal<Double> angle) {
+  public void update(StatusSignal<Angle> angle) {
     SmartDashboard.putData("mech2d", mech); // Creates a mech2d window in GUI
-    wrist.setAngle(angle.getValue() * 360); // Converts 1 rotation to 360 degrees
+    wrist.setAngle(new Rotation2d(angle.getValue())); // Converts 1 rotation to 360 degrees
   }
 }

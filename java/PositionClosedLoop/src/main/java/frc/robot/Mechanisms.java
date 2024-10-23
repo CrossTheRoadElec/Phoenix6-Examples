@@ -1,7 +1,10 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.StatusSignal;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,8 +38,8 @@ public class Mechanisms {
      * features of our products in simulation using our examples out of the box. Users may modify to have a 
      * display interface that they find more intuitive or visually appealing.
      */                            
-    public void update(StatusSignal<Double> position) {
-        distanceBar.setLength(position.getValue()/30); // Divide by 30 to scale motion to fit in the window 
+    public void update(StatusSignal<Angle> position) {
+        distanceBar.setLength(position.getValue().in(Rotations)/30); // Divide by 30 to scale motion to fit in the window 
         SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
     }                             
 }

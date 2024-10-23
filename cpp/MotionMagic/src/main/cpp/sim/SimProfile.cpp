@@ -7,11 +7,11 @@ units::second_t SimProfile::GetPeriod()
 {
     // set the start time if not yet running
     if (!_running) {
-        _lastTime = GetCurrentTimeSeconds();
+        _lastTime = utils::GetCurrentTimeSeconds();
         _running = true;
     }
 
-    double now = GetCurrentTimeSeconds();
+    double now = utils::GetCurrentTimeSeconds();
     double period = now - _lastTime;
     _lastTime = now;
 

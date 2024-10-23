@@ -154,9 +154,9 @@ void Robot::SimulationPeriodic()
    * If a bumper is pressed, trigger the forward limit switch to test it,
    * if a trigger is pressed, trigger the reverse limit switch
    */
-  leftSim.SetForwardLimit(joystick.GetLeftBumper());
+  leftSim.SetForwardLimit(joystick.GetLeftBumperButton());
   leftSim.SetReverseLimit(joystick.GetLeftTriggerAxis() > 0.5);
-  rightSim.SetForwardLimit(joystick.GetRightBumper());
+  rightSim.SetForwardLimit(joystick.GetRightBumperButton());
   rightSim.SetReverseLimit(joystick.GetRightTriggerAxis() > 0.5);
 }
 

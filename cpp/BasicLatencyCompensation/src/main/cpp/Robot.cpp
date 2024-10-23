@@ -28,12 +28,12 @@ void Robot::RobotPeriodic() {
   }
   m_fx.SetControl(m_dutycycle.WithOutput(m_joystick.GetLeftY()));
 
-  if (m_joystick.GetLeftBumperPressed()) {
+  if (m_joystick.GetLeftBumperButtonPressed()) {
     /* Speed up the signals to reduce the latency */
     /* Make them 1000 Hz (1 ms) for this example */
     BaseStatusSignal::SetUpdateFrequencyForAll(1000_Hz, m_fxpos, m_ccpos, m_p2yaw);
   }
-  if (m_joystick.GetRightBumperPressed()) {
+  if (m_joystick.GetRightBumperButtonPressed()) {
     /* Slow down the signals to increase the latency */
     /* Make them 10 Hz (100 ms) for this example */
     BaseStatusSignal::SetUpdateFrequencyForAll(10_Hz, m_fxpos, m_ccpos, m_p2yaw);

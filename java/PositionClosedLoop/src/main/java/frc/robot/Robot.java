@@ -92,10 +92,10 @@ public class Robot extends TimedRobot {
       desiredRotations = 0;
     }
 
-    if (m_joystick.getLeftBumper()) {
+    if (m_joystick.getLeftBumperButton()) {
       /* Use position voltage */
       m_fx.setControl(m_positionVoltage.withPosition(desiredRotations));
-    } else if (m_joystick.getRightBumper()) {
+    } else if (m_joystick.getRightBumperButton()) {
       /* Use position torque */
       m_fx.setControl(m_positionTorque.withPosition(desiredRotations));
     } else {

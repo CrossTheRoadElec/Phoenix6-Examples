@@ -1,3 +1,4 @@
+import static edu.wpi.first.units.Units.Rotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Supplier;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.units.measure.Angle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,8 +34,8 @@ public class FusedCANcoderTests {
 
     @Test
     public void testIndividualPos() {
-        final double TALON_POSITION = 0.4;
-        final double CANCODER_POSITION = -3.1;
+        final Angle TALON_POSITION = Rotations.of(0.4);
+        final Angle CANCODER_POSITION = Rotations.of(-3.1);
 
         /* Factory-default Talon and CANcoder */
         retryConfigApply(()->talon.getConfigurator().apply(new TalonFXConfiguration()));
@@ -64,14 +66,14 @@ public class FusedCANcoderTests {
 
         System.out.println("Talon Pos vs expected: " + talonPos + " vs " + TALON_POSITION);
         System.out.println("CANcoder Pos vs expected: " + cancoderPos + " vs " + CANCODER_POSITION);
-        assertEquals(talonPos.getValue(), TALON_POSITION, SET_DELTA);
-        assertEquals(cancoderPos.getValue(), CANCODER_POSITION, SET_DELTA);
+        assertEquals(talonPos.getValue().in(Rotations), TALON_POSITION.in(Rotations), SET_DELTA);
+        assertEquals(cancoderPos.getValue().in(Rotations), CANCODER_POSITION.in(Rotations), SET_DELTA);
     }
 
     @Test
     public void testFusedCANcoderPos() {
-        final double TALON_POSITION = 0.4;
-        final double CANCODER_POSITION = -3.1;
+        final Angle TALON_POSITION = Rotations.of(0.4);
+        final Angle CANCODER_POSITION = Rotations.of(-3.1);
 
         /* Configure Talon to use Fused CANcoder, factory default CANcoder */
         var configs = new TalonFXConfiguration();
@@ -109,14 +111,14 @@ public class FusedCANcoderTests {
         /* Make sure Talon matches CANcoder, since it should be using CANcoder's position */
         System.out.println("Talon Pos vs expected: " + talonPos + " vs " + CANCODER_POSITION);
         System.out.println("CANcoder Pos vs expected: " + cancoderPos + " vs " + CANCODER_POSITION);
-        assertEquals(talonPos.getValue(), CANCODER_POSITION, SET_DELTA);
-        assertEquals(cancoderPos.getValue(), CANCODER_POSITION, SET_DELTA);
+        assertEquals(talonPos.getValue().in(Rotations), CANCODER_POSITION.in(Rotations), SET_DELTA);
+        assertEquals(cancoderPos.getValue().in(Rotations), CANCODER_POSITION.in(Rotations), SET_DELTA);
     }
 
     @Test
     public void testRemoteCANcoderPos() {
-        final double TALON_POSITION = 0.4;
-        final double CANCODER_POSITION = -3.1;
+        final Angle TALON_POSITION = Rotations.of(0.4);
+        final Angle CANCODER_POSITION = Rotations.of(-3.1);
 
         /* Configure Talon to use Fused CANcoder, factory default CANcoder */
         var configs = new TalonFXConfiguration();
@@ -154,8 +156,8 @@ public class FusedCANcoderTests {
         /* Make sure Talon matches CANcoder, since it should be using CANcoder's position */
         System.out.println("Talon Pos vs expected: " + talonPos + " vs " + CANCODER_POSITION);
         System.out.println("CANcoder Pos vs expected: " + cancoderPos + " vs " + CANCODER_POSITION);
-        assertEquals(talonPos.getValue(), CANCODER_POSITION, SET_DELTA);
-        assertEquals(cancoderPos.getValue(), CANCODER_POSITION, SET_DELTA);
+        assertEquals(talonPos.getValue().in(Rotations), CANCODER_POSITION.in(Rotations), SET_DELTA);
+        assertEquals(cancoderPos.getValue().in(Rotations), CANCODER_POSITION.in(Rotations), SET_DELTA);
     }
 
 

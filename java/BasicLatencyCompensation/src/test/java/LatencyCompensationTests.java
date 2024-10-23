@@ -1,3 +1,6 @@
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,6 +10,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.StatusCode;
 
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Time;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,8 +33,8 @@ public class LatencyCompensationTests {
     
     @Test
     public void testLatencyCompensator() {
-        final double position = 35;
-        final double velocity = 24;
+        final Angle position = Rotations.of(35);
+        final AngularVelocity velocity = RotationsPerSecond.of(24);
         /* Initialize by making all the positions 0 */
         talonfx.setPosition(0);
         cancoder.setPosition(0);
@@ -61,19 +67,19 @@ public class LatencyCompensationTests {
             Thread.sleep(10);
         }catch(Exception ex) {}
         /* Calculate how much latency we'd expect */
-        double talonLatency = talonPos.getTimestamp().getLatency();
-        double compensatedTalonPos = position + (velocity * talonLatency);
-        double cancoderLatency = cancoderPos.getTimestamp().getLatency();
-        double compensatedCANcoderPos = position + (velocity * cancoderLatency);
+        Time talonLatency = Seconds.of(talonPos.getTimestamp().getLatency());
+        Angle compensatedTalonPos = position.plus(velocity.times(talonLatency));
+        Time cancoderLatency = Seconds.of(cancoderPos.getTimestamp().getLatency());
+        Angle compensatedCANcoderPos = position.plus(velocity.times(cancoderLatency));
 
         /* Calculate compensated values before the assert to avoid timing issue related to it */
-        double functionCompensatedTalon = BaseStatusSignal.getLatencyCompensatedValue(talonPos, talonVel);
-        double functionCompensatedCANcoder = BaseStatusSignal.getLatencyCompensatedValue(cancoderPos, cancoderVel);
+        var functionCompensatedTalon = BaseStatusSignal.getLatencyCompensatedValue(talonPos, talonVel);
+        var functionCompensatedCANcoder = BaseStatusSignal.getLatencyCompensatedValue(cancoderPos, cancoderVel);
 
         /* Assert the two methods match */
         System.out.println("Talon Pos: " + compensatedTalonPos + " - " + functionCompensatedTalon);
         System.out.println("CANcoder Pos: " + compensatedCANcoderPos + " - " + functionCompensatedCANcoder);
-        assertEquals(compensatedTalonPos, functionCompensatedTalon, DOUBLE_DELTA);
-        assertEquals(compensatedCANcoderPos, functionCompensatedCANcoder, DOUBLE_DELTA);
+        assertEquals(compensatedTalonPos.in(Rotations), functionCompensatedTalon.in(Rotations), DOUBLE_DELTA);
+        assertEquals(compensatedCANcoderPos.in(Rotations), functionCompensatedCANcoder.in(Rotations), DOUBLE_DELTA);
     }
 }

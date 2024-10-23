@@ -22,7 +22,7 @@ void Robot::RobotInit() {
   rightFollower.GetConfigurator().Apply(rightConfiguration);
     
   /* Currently in simulation, we do not support FOC, so disable it while simulating */
-  if (ctre::phoenix6::IsSimulation())
+  if (utils::IsSimulation())
   {
     leftOut.EnableFOC = false;
     rightOut.EnableFOC = false;

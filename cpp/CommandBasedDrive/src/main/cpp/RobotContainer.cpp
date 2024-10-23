@@ -24,7 +24,7 @@ void RobotContainer::ConfigureButtonBindings()
 {
   // Configure your button bindings here
   frc2::Trigger{[this]()
-                { return m_joystick.GetLeftBumper(); }}
+                { return m_joystick.GetLeftBumperButton(); }}
       .WhileTrue(&m_driveStraightCommand);
 }
 
