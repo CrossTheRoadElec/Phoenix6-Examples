@@ -471,8 +471,8 @@ namespace LimelightHelpers
         units::time::second_t timestamp = units::time::second_t((poseEntry.GetLastChange() / 1000000.0) - (latency / 1000.0));
 
         std::vector<RawFiducial> rawFiducials;
-        int valsPerFiducial = 7;
-        int expectedTotalVals = 11 + valsPerFiducial * tagCount;
+        constexpr int valsPerFiducial = 7;
+        size_t expectedTotalVals = 11 + valsPerFiducial * tagCount;
         
         if (poseArray.size() == expectedTotalVals) 
         {
