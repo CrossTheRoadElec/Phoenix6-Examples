@@ -13,28 +13,21 @@ void Robot::RobotInit() {
   configs::TalonFXConfiguration rightConfiguration{};
 
   /* User can optionally change the configs, or leave it alone to perform a factory default */
-  leftConfiguration.MotorOutput.Inverted = false;
-  rightConfiguration.MotorOutput.Inverted = true;
+  leftConfiguration.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
+  rightConfiguration.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
 
   leftLeader.GetConfigurator().Apply(leftConfiguration);
   leftFollower.GetConfigurator().Apply(leftConfiguration);
   rightLeader.GetConfigurator().Apply(rightConfiguration);
   rightFollower.GetConfigurator().Apply(rightConfiguration);
-    
-  /* Currently in simulation, we do not support FOC, so disable it while simulating */
-  if (ctre::phoenix6::IsSimulation())
-  {
-    leftOut.EnableFOC = false;
-    rightOut.EnableFOC = false;
-  }
 
   /* Set up followers to follow leaders */
   leftFollower.SetControl(controls::Follower{leftLeader.GetDeviceID(), false});
   rightFollower.SetControl(controls::Follower{rightLeader.GetDeviceID(), false});
 }
+
 void Robot::RobotPeriodic() {
-  if (++printCount >= 10)
-  {
+  if (++printCount >= 10) {
     printCount = 0;
     std::cout << "Left out: " << leftLeader.Get() << std::endl;
     std::cout << "Right out: " << rightLeader.Get() << std::endl;
@@ -55,8 +48,7 @@ void Robot::TeleopPeriodic() {
   /* Set output to control frames */
   leftOut.Output = fwd + rot;
   rightOut.Output = fwd - rot;
-  if (!joystick.GetAButton())
-  {
+  if (!joystick.GetAButton()) {
     /* And set them to the motors */
     leftLeader.SetControl(leftOut);
     rightLeader.SetControl(rightOut);

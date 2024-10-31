@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -47,15 +49,15 @@ public class Robot extends TimedRobot {
     configs.Slot0.kI = 0; // No output for integrated error
     configs.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
     // Peak output of 8 V
-    configs.Voltage.PeakForwardVoltage = 8;
-    configs.Voltage.PeakReverseVoltage = -8;
+    configs.Voltage.withPeakForwardVoltage(Volts.of(8))
+      .withPeakReverseVoltage(Volts.of(-8));
 
     configs.Slot1.kP = 60; // An error of 1 rotation results in 60 A output
     configs.Slot1.kI = 0; // No output for integrated error
     configs.Slot1.kD = 6; // A velocity of 1 rps results in 6 A output
     // Peak output of 120 A
-    configs.TorqueCurrent.PeakForwardTorqueCurrent = 120;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = -120;
+    configs.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(120))
+      .withPeakReverseTorqueCurrent(Amps.of(-120));
 
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -92,10 +94,10 @@ public class Robot extends TimedRobot {
       desiredRotations = 0;
     }
 
-    if (m_joystick.getLeftBumper()) {
+    if (m_joystick.getLeftBumperButton()) {
       /* Use position voltage */
       m_fx.setControl(m_positionVoltage.withPosition(desiredRotations));
-    } else if (m_joystick.getRightBumper()) {
+    } else if (m_joystick.getRightBumperButton()) {
       /* Use position torque */
       m_fx.setControl(m_positionTorque.withPosition(desiredRotations));
     } else {

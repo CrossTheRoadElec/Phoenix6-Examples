@@ -3,9 +3,9 @@
 
 using namespace ctre::phoenix6;
 
-void PhysicsSim::AddTalonFX(hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia) {
-    TalonFXSimProfile *simFalcon = new TalonFXSimProfile(falcon, rotorInertia);
-    _simProfiles.push_back(simFalcon);
+void PhysicsSim::AddTalonFX(hardware::TalonFX& talonFX, units::kilogram_square_meter_t rotorInertia) {
+    TalonFXSimProfile *simTalonFX = new TalonFXSimProfile(talonFX, rotorInertia);
+    _simProfiles.push_back(simTalonFX);
 }
 
 void PhysicsSim::Run() {

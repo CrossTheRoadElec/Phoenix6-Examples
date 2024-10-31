@@ -25,10 +25,10 @@ void Robot::RobotInit() {
 
   /* Configure Motion Magic */
   configs::MotionMagicConfigs &mm = cfg.MotionMagic;
-  mm.MotionMagicCruiseVelocity = 5; // 5 (mechanism) rotations per second cruise
-  mm.MotionMagicAcceleration = 10; // Take approximately 0.5 seconds to reach max vel
+  mm.MotionMagicCruiseVelocity = 5_tps; // 5 (mechanism) rotations per second cruise
+  mm.MotionMagicAcceleration = 10_tr_per_s_sq; // Take approximately 0.5 seconds to reach max vel
   // Take approximately 0.1 seconds to reach max accel 
-  mm.MotionMagicJerk = 100;
+  mm.MotionMagicJerk = 100_tr_per_s_cu;
 
   configs::Slot0Configs &slot0 = cfg.Slot0;
   slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
@@ -48,7 +48,7 @@ void Robot::RobotInit() {
   }
 }
 void Robot::RobotPeriodic() {
-  if (m_printCount++ > 10) {
+  if (++m_printCount >= 10) {
     m_printCount = 0;
     std::cout << "Pos: " << m_motor.GetPosition() << std::endl;
     std::cout << "Vel: " << m_motor.GetVelocity() << std::endl;

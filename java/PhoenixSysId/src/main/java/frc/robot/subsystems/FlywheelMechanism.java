@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -11,8 +11,6 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -30,11 +28,14 @@ public class FlywheelMechanism extends SubsystemBase {
                 Volts.of(4), // Reduce dynamic voltage to 4 to prevent brownout
                 null,          // Use default timeout (10 s)
                                        // Log state with Phoenix SignalLogger class
-                (state)->SignalLogger.writeString("state", state.toString())),
+                state -> SignalLogger.writeString("state", state.toString())
+            ),
             new SysIdRoutine.Mechanism(
-                (Measure<Voltage> volts)-> m_motorToTest.setControl(m_sysIdControl.withOutput(volts.in(Volts))),
+                volts -> m_motorToTest.setControl(m_sysIdControl.withOutput(volts)),
                 null,
-                this));
+                this
+            )
+        );
 
     public FlywheelMechanism() {
         setName("Flywheel");
@@ -57,7 +58,7 @@ public class FlywheelMechanism extends SubsystemBase {
     }
 
     public Command joystickDriveCommand(DoubleSupplier output) {
-        return run(()->m_motorToTest.setControl(m_joystickControl.withOutput(output.getAsDouble())));
+        return run(() -> m_motorToTest.setControl(m_joystickControl.withOutput(output.getAsDouble())));
     }
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutine.quasistatic(direction);

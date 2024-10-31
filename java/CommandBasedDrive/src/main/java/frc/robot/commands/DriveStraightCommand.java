@@ -1,18 +1,21 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.StatusSignal;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveStraightCommand extends Command {
-    private final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
+    private static final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
     private final DoubleSupplier m_throttle;
     private final DriveSubsystem m_drivebase;
-    private final StatusSignal<Double> m_yawGetter;
+    private final StatusSignal<Angle> m_yawGetter;
     private double m_holdYaw = 0;
 
     /**
@@ -37,7 +40,7 @@ public class DriveStraightCommand extends Command {
      */
     private void driveStraightExecution() {
         /* Get our current yaw and find the error from the yaw we want to hold */
-        final double err = m_holdYaw - m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
+        final double err = m_holdYaw - m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue().in(Degrees);
         /* Simple P-loop, where 30 degrees off corresponds to 100% output */
         final double kP = 1.0 / 30;
         double correction = err * kP;
@@ -48,7 +51,7 @@ public class DriveStraightCommand extends Command {
     @Override
     public void initialize() {
         /* On initialize, latch the current yaw and begin correction */
-        m_holdYaw = m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue();
+        m_holdYaw = m_yawGetter.waitForUpdate(MAX_UPDATE_PERIOD).getValue().in(Degrees);
         /* Update as fast as possible, the waitForUpdate will manage the loop period */
         m_driveStraightThread.startPeriodic(0);
     }

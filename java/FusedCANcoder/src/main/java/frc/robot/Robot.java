@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -15,6 +17,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.sim.PhysicsSim;
@@ -30,16 +33,16 @@ public class Robot extends TimedRobot {
   private final TalonFX m_fx = new TalonFX(1, canBusName);
   private final CANcoder m_cc = new CANcoder(1, canBusName);
 
-  private final StatusSignal<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync();
-  private final StatusSignal<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync();
-  private final StatusSignal<Boolean> f_remoteSensorInvalid = m_fx.getFault_RemoteSensorDataInvalid();
-  private final StatusSignal<Boolean> sf_remoteSensorInvalid = m_fx.getStickyFault_RemoteSensorDataInvalid();
+  private final StatusSignal<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync(false);
+  private final StatusSignal<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync(false);
+  private final StatusSignal<Boolean> f_remoteSensorInvalid = m_fx.getFault_RemoteSensorDataInvalid(false);
+  private final StatusSignal<Boolean> sf_remoteSensorInvalid = m_fx.getStickyFault_RemoteSensorDataInvalid(false);
 
-  private final StatusSignal<Double> fx_pos = m_fx.getPosition();
-  private final StatusSignal<Double> fx_vel = m_fx.getVelocity();
-  private final StatusSignal<Double> cc_pos = m_cc.getPosition();
-  private final StatusSignal<Double> cc_vel = m_cc.getVelocity();
-  private final StatusSignal<Double> fx_rotorPos = m_fx.getRotorPosition();
+  private final StatusSignal<Angle> fx_pos = m_fx.getPosition(false);
+  private final StatusSignal<AngularVelocity> fx_vel = m_fx.getVelocity(false);
+  private final StatusSignal<Angle> cc_pos = m_cc.getPosition(false);
+  private final StatusSignal<AngularVelocity> cc_vel = m_cc.getVelocity(false);
+  private final StatusSignal<Angle> fx_rotorPos = m_fx.getRotorPosition(false);
 
   private final DutyCycleOut m_dutyCycleControl = new DutyCycleOut(0);
 
@@ -59,7 +62,7 @@ public class Robot extends TimedRobot {
     CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
     cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    cc_cfg.MagnetSensor.MagnetOffset = 0.4;
+    cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.4));
     m_cc.getConfigurator().apply(cc_cfg);
 
     TalonFXConfiguration fx_cfg = new TalonFXConfiguration();
@@ -73,7 +76,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    if (printCount++ > 10) {
+    if (++printCount >= 10) {
       printCount = 0;
 
       BaseStatusSignal.refreshAll(
@@ -82,7 +85,8 @@ public class Robot extends TimedRobot {
         f_remoteSensorInvalid,
         sf_remoteSensorInvalid,
         fx_pos, fx_vel,
-        cc_pos, cc_vel);
+        cc_pos, cc_vel
+      );
 
       // If any faults happen, print them out. Sticky faults will always be present if live-fault occurs
       boolean anyFault = sf_fusedSensorOutOfSync.getValue() || sf_remoteSensorInvalid.getValue();

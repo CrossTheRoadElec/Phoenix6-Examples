@@ -13,15 +13,15 @@ void Robot::RobotInit() {
   configs.Slot0.kI = 0; // No output for integrated error
   configs.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
   // Peak output of 8 V
-  configs.Voltage.PeakForwardVoltage = 8;
-  configs.Voltage.PeakReverseVoltage = -8;
+  configs.Voltage.PeakForwardVoltage = 8_V;
+  configs.Voltage.PeakReverseVoltage = -8_V;
 
   configs.Slot1.kP = 60; // An error of 1 rotations results in 60 A output
   configs.Slot1.kI = 0; // No output for integrated error
   configs.Slot1.kD = 6; // A velocity of 1 rps results in 6 A output
   // Peak output of 120 amps
-  configs.TorqueCurrent.PeakForwardTorqueCurrent = 120;
-  configs.TorqueCurrent.PeakReverseTorqueCurrent = -120;
+  configs.TorqueCurrent.PeakForwardTorqueCurrent = 120_A;
+  configs.TorqueCurrent.PeakReverseTorqueCurrent = -120_A;
 
   /* Retry config apply up to 5 times, report if failure */
   ctre::phoenix::StatusCode status = ctre::phoenix::StatusCode::StatusCodeNotInitialized;
@@ -48,10 +48,10 @@ void Robot::TeleopPeriodic() {
     desiredRotations = 0_tr;
   }
 
-  if (m_joystick.GetLeftBumper()) {
+  if (m_joystick.GetLeftBumperButton()) {
     /* Use position voltage */
     m_fx.SetControl(m_positionVoltage.WithPosition(desiredRotations));
-  } else if (m_joystick.GetRightBumper()) {
+  } else if (m_joystick.GetRightBumperButton()) {
     /* Use position torque */
     m_fx.SetControl(m_positionTorque.WithPosition(desiredRotations));
   } else {

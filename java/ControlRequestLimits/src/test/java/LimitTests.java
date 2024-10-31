@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -162,68 +163,66 @@ public class LimitTests {
             limitForward = request::withLimitForwardMotion;
             limitReverse = request::withLimitReverseMotion;
         }},
-
-        /* TorqueCurrentFOC is not yet supported in sim, so don't unit test them */
-        // new ControlRequestTest<TorqueCurrentFOC>(new TorqueCurrentFOC(0)) {{
-        //     direction = dir -> {
-        //         if (dir == DriveDirection.Zero) request.Output = 0;
-        //         if (dir == DriveDirection.Forward) request.Output = 1;
-        //         if (dir == DriveDirection.Reverse) request.Output = -1;
-        //     };
-        //     limitForward = request::withLimitForwardMotion;
-        //     limitReverse = request::withLimitReverseMotion;
-        // }},
-        // new ControlRequestTest<PositionTorqueCurrentFOC>(new PositionTorqueCurrentFOC(0)) {{
-        //     direction = dir -> {
-        //         if (dir == DriveDirection.Zero) request.Position = 0;
-        //         if (dir == DriveDirection.Forward) request.Position = 1;
-        //         if (dir == DriveDirection.Reverse) request.Position = -1;
-        //     };
-        //     limitForward = request::withLimitForwardMotion;
-        //     limitReverse = request::withLimitReverseMotion;
-        // }},
-        // new ControlRequestTest<VelocityTorqueCurrentFOC>(new VelocityTorqueCurrentFOC(0)) {{
-        //     direction = dir -> {
-        //         if (dir == DriveDirection.Zero) request.Velocity = 0;
-        //         if (dir == DriveDirection.Forward) request.Velocity = 1;
-        //         if (dir == DriveDirection.Reverse) request.Velocity = -1;
-        //     };
-        //     limitForward = request::withLimitForwardMotion;
-        //     limitReverse = request::withLimitReverseMotion;
-        // }},
-        // new ControlRequestTest<MotionMagicTorqueCurrentFOC>(new MotionMagicTorqueCurrentFOC(0)) {{
-        //     direction = dir -> {
-        //         if (dir == DriveDirection.Zero) request.Position = 0;
-        //         if (dir == DriveDirection.Forward) request.Position = 1;
-        //         if (dir == DriveDirection.Reverse) request.Position = -1;
-        //     };
-        //     limitForward = request::withLimitForwardMotion;
-        //     limitReverse = request::withLimitReverseMotion;
-        // }},
-        // new ControlRequestTest<DynamicMotionMagicTorqueCurrentFOC>(new DynamicMotionMagicTorqueCurrentFOC(0, 0, 0, 0)) {{
-        //     direction = dir -> {
-        //         if (dir == DriveDirection.Zero) {
-        //             request.Position = 0;
-        //             request.Velocity = 10000;
-        //             request.Acceleration = 10000;
-        //             request.Jerk = 0;
-        //         }
-        //         if (dir == DriveDirection.Forward) {
-        //             request.Position = 1;
-        //             request.Velocity = 10000;
-        //             request.Acceleration = 10000;
-        //             request.Jerk = 0;
-        //         }
-        //         if (dir == DriveDirection.Reverse) {
-        //             request.Position = -1;
-        //             request.Velocity = 10000;
-        //             request.Acceleration = 10000;
-        //             request.Jerk = 0;
-        //         }
-        //     };
-        //     limitForward = request::withLimitForwardMotion;
-        //     limitReverse = request::withLimitReverseMotion;
-        // }},
+        new ControlRequestTest<TorqueCurrentFOC>(new TorqueCurrentFOC(0)) {{
+            direction = dir -> {
+                if (dir == DriveDirection.Zero) request.Output = 0;
+                if (dir == DriveDirection.Forward) request.Output = 1;
+                if (dir == DriveDirection.Reverse) request.Output = -1;
+            };
+            limitForward = request::withLimitForwardMotion;
+            limitReverse = request::withLimitReverseMotion;
+        }},
+        new ControlRequestTest<PositionTorqueCurrentFOC>(new PositionTorqueCurrentFOC(0)) {{
+            direction = dir -> {
+                if (dir == DriveDirection.Zero) request.Position = 0;
+                if (dir == DriveDirection.Forward) request.Position = 1;
+                if (dir == DriveDirection.Reverse) request.Position = -1;
+            };
+            limitForward = request::withLimitForwardMotion;
+            limitReverse = request::withLimitReverseMotion;
+        }},
+        new ControlRequestTest<VelocityTorqueCurrentFOC>(new VelocityTorqueCurrentFOC(0)) {{
+            direction = dir -> {
+                if (dir == DriveDirection.Zero) request.Velocity = 0;
+                if (dir == DriveDirection.Forward) request.Velocity = 1;
+                if (dir == DriveDirection.Reverse) request.Velocity = -1;
+            };
+            limitForward = request::withLimitForwardMotion;
+            limitReverse = request::withLimitReverseMotion;
+        }},
+        new ControlRequestTest<MotionMagicTorqueCurrentFOC>(new MotionMagicTorqueCurrentFOC(0)) {{
+            direction = dir -> {
+                if (dir == DriveDirection.Zero) request.Position = 0;
+                if (dir == DriveDirection.Forward) request.Position = 1;
+                if (dir == DriveDirection.Reverse) request.Position = -1;
+            };
+            limitForward = request::withLimitForwardMotion;
+            limitReverse = request::withLimitReverseMotion;
+        }},
+        new ControlRequestTest<DynamicMotionMagicTorqueCurrentFOC>(new DynamicMotionMagicTorqueCurrentFOC(0, 0, 0, 0)) {{
+            direction = dir -> {
+                if (dir == DriveDirection.Zero) {
+                    request.Position = 0;
+                    request.Velocity = 10000;
+                    request.Acceleration = 10000;
+                    request.Jerk = 0;
+                }
+                if (dir == DriveDirection.Forward) {
+                    request.Position = 1;
+                    request.Velocity = 10000;
+                    request.Acceleration = 10000;
+                    request.Jerk = 0;
+                }
+                if (dir == DriveDirection.Reverse) {
+                    request.Position = -1;
+                    request.Velocity = 10000;
+                    request.Acceleration = 10000;
+                    request.Jerk = 0;
+                }
+            };
+            limitForward = request::withLimitForwardMotion;
+            limitReverse = request::withLimitReverseMotion;
+        }},
     };
 
     @BeforeEach
@@ -302,24 +301,24 @@ public class LimitTests {
         System.out.println("Reverse Limit is " + reverseLimit + " with fault " + reverseLimitStatus);
         switch(direction) {
             case Zero:
-                assertEquals(appliedMotorVoltage.getValue(), 0, SET_DELTA);
+                assertEquals(appliedMotorVoltage.getValue().in(Volts), 0, SET_DELTA);
                 assertFalse(forwardLimitStatus.getValue());
                 assertFalse(reverseLimitStatus.getValue());
                 break;
             case Forward:
                 if (forwardLimit) {
-                    assertEquals(appliedMotorVoltage.getValue(), 0, SET_DELTA);
+                    assertEquals(appliedMotorVoltage.getValue().in(Volts), 0, SET_DELTA);
                 } else {
-                    assertTrue(appliedMotorVoltage.getValue() > SET_DELTA);
+                    assertTrue(appliedMotorVoltage.getValue().in(Volts) > SET_DELTA);
                 }
                 assertTrue(forwardLimitStatus.getValue() == forwardLimit);
                 assertFalse(reverseLimitStatus.getValue());
                 break;
             case Reverse:
                 if (reverseLimit) {
-                    assertEquals(appliedMotorVoltage.getValue(), 0, SET_DELTA);
+                    assertEquals(appliedMotorVoltage.getValue().in(Volts), 0, SET_DELTA);
                 } else {
-                    assertTrue(appliedMotorVoltage.getValue() < -SET_DELTA);
+                    assertTrue(appliedMotorVoltage.getValue().in(Volts) < -SET_DELTA);
                 }
                 assertTrue(reverseLimitStatus.getValue() == reverseLimit);
                 assertFalse(forwardLimitStatus.getValue());

@@ -11,19 +11,19 @@
 class TalonFXSimProfile : public SimProfile {
     static constexpr units::ohm_t kMotorResistance = 2_mOhm; // Assume 2mOhm resistance for voltage drop calculation
     frc::sim::DCMotorSim _motorSim;
-    ctre::phoenix6::hardware::TalonFX& _falcon;
+    ctre::phoenix6::sim::TalonFXSimState& _talonFXSim;
 
 
 public:
     /**
      * Creates a new simulation profile for a TalonFX device.
      * 
-     * @param falcon
+     * @param talonFX
      *                        The TalonFX device
      * @param rotorInertia
      *                        Rotational inertia at the Rotor
      */
-    TalonFXSimProfile(ctre::phoenix6::hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia);
+    TalonFXSimProfile(ctre::phoenix6::hardware::TalonFX& talonFX, units::kilogram_square_meter_t rotorInertia);
 
     /**
      * Runs the simulation profile.

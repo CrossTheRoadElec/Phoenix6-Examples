@@ -154,48 +154,50 @@ void Robot::SimulationPeriodic()
    * If a bumper is pressed, trigger the forward limit switch to test it,
    * if a trigger is pressed, trigger the reverse limit switch
    */
-  leftSim.SetForwardLimit(joystick.GetLeftBumper());
+  leftSim.SetForwardLimit(joystick.GetLeftBumperButton());
   leftSim.SetReverseLimit(joystick.GetLeftTriggerAxis() > 0.5);
-  rightSim.SetForwardLimit(joystick.GetRightBumper());
+  rightSim.SetForwardLimit(joystick.GetRightBumperButton());
   rightSim.SetReverseLimit(joystick.GetRightTriggerAxis() > 0.5);
 }
 
 units::meter_t Robot::rotationsToMeters(units::turn_t rotations)
 {
-  /* Get circumference of wheel */
-  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
-  /* Every rotation of the wheel travels this many inches */
-  /* Now multiply rotations by meters per rotation */
-  return rotations * circumference;
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
+    /* Now apply gear ratio to input rotations */
+    auto gearedRotations = rotations / kGearRatio;
+    /* And multiply geared rotations by meters per rotation */
+    return gearedRotations * wheelDistancePerRad;
 }
 
 units::turn_t Robot::metersToRotations(units::meter_t meters)
 {
-  /* Get circumference of wheel */
-  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
-  /* Every rotation of the wheel travels this many inches */
-  /* Now apply wheel rotations to input meters */
-  auto wheelRotations = meters / circumference;
-  return wheelRotations;
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
+    /* Now get wheel rotations from input meters */
+    auto wheelRadians = meters / wheelDistancePerRad;
+    /* And multiply by gear ratio to get rotor rotations */
+    return wheelRadians * kGearRatio;
 }
 
 units::meters_per_second_t Robot::rotationsToMetersVel(units::turns_per_second_t rotations)
 {
-  /* Get circumference of wheel */
-  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
-  /* Every rotation of the wheel travels this many inches */
-  /* Now multiply rotations by meters per rotation */
-  return rotations * circumference;
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
+    /* Now apply gear ratio to input rotations */
+    auto gearedRotations = rotations / kGearRatio;
+    /* And multiply geared rotations by meters per rotation */
+    return gearedRotations * wheelDistancePerRad;
 }
 
 units::turns_per_second_t Robot::metersToRotationsVel(units::meters_per_second_t meters)
 {
-  /* Get circumference of wheel */
-  constexpr auto circumference = kWheelRadiusInches * 2 * 3.14159 / 1_tr;
-  /* Every rotation of the wheel travels this many inches */
-  /* Now apply wheel rotations to input meters */
-  auto wheelRotations = meters / circumference;
-  return wheelRotations;
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
+    /* Now get wheel rotations from input meters */
+    auto wheelRadians = meters / wheelDistancePerRad;
+    /* And multiply by gear ratio to get rotor rotations */
+    return wheelRadians * kGearRatio;
 }
 
 #ifndef RUNNING_FRC_TESTS

@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -24,9 +27,11 @@ import frc.robot.sim.PhysicsSim;
 public class Robot extends TimedRobot {
   private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private static final String canBusName = "rio";
-  private final TalonFX talonFX = new TalonFX(2, canBusName);
-  private final CANcoder cancoder = new CANcoder(1, canBusName);
+  private final CANBus kCANBus = new CANBus("rio");
+
+  private final TalonFX talonFX = new TalonFX(2, kCANBus);
+  private final CANcoder cancoder = new CANcoder(1, kCANBus);
+
   private final DutyCycleOut fwdOut = new DutyCycleOut(0);
   private final XboxController controller = new XboxController(0);
 
@@ -65,19 +70,21 @@ public class Robot extends TimedRobot {
       System.out.println("Position is " + pos.toString() + " with " + pos.getTimestamp().getLatency() + " seconds of latency");
 
       /**
-       * Get the velocity StatusSignalValue
+       * Get the velocity StatusSignalValue without refreshing
        */
-      var vel = cancoder.getVelocity();
+      var vel = cancoder.getVelocity(false);
       /* This time wait for the signal to reduce latency */
       vel.waitForUpdate(PRINT_PERIOD); // Wait up to our period
       /**
        * This uses the explicit getValue and getUnits functions to print, even though it's not
        * necessary for the ostream print
        */
-      System.out.println("Velocity is " +
-                         vel.getValue() + " " +
-                         vel.getUnits() + " with " +
-                         vel.getTimestamp().getLatency() + " seconds of latency");
+      System.out.println(
+        "Velocity is " +
+        vel.getValue() + " " +
+        vel.getUnits() + " with " +
+        vel.getTimestamp().getLatency() + " seconds of latency"
+      );
       /**
        * Notice when running this example that the second print's latency is always shorter than the first print's latency.
        * This is because we explicitly wait for the signal using the waitForUpdate() method instead of using the refresh()
@@ -103,7 +110,7 @@ public class Robot extends TimedRobot {
     /**
      * When we teleop init, set the position of the Pigeon2 and wait for the setter to take affect.
      */
-    cancoder.setPosition(0.4, 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
+    cancoder.setPosition(Rotations.of(0.4), 0.1); // Set our position to .4 rotations and wait up to 100 ms for the setter to take affect
     cancoder.getPosition().waitForUpdate(0.1); // And wait up to 100 ms for the position to take affect
     System.out.println("Set the position to 0.4 rotations, we are currently at " + cancoder.getPosition()); // Use java's implicit toString operator
   }

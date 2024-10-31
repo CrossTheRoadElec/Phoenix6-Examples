@@ -19,7 +19,7 @@ void Robot::RobotPeriodic() {
   auto p2CompensatedYaw = BaseStatusSignal::GetLatencyCompensatedValue(m_p2yaw, m_p2yawRate);
 
   /* Print out both values so it shows how they perform */
-  if (m_printCount++ > 10 && m_joystick.GetAButton()) {
+  if (++m_printCount >= 10 && m_joystick.GetAButton()) {
     m_printCount = 0;
     printf("CANcoder: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_ccpos.GetValue().value(), ccCompensatedPos.value(), (m_ccpos.GetValue() - ccCompensatedPos).value());
     printf("Talon FX: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_fxpos.GetValue().value(), fxCompensatedPos.value(), (m_fxpos.GetValue() - fxCompensatedPos).value());
@@ -28,12 +28,12 @@ void Robot::RobotPeriodic() {
   }
   m_fx.SetControl(m_dutycycle.WithOutput(m_joystick.GetLeftY()));
 
-  if (m_joystick.GetLeftBumperPressed()) {
+  if (m_joystick.GetLeftBumperButtonPressed()) {
     /* Speed up the signals to reduce the latency */
     /* Make them 1000 Hz (1 ms) for this example */
     BaseStatusSignal::SetUpdateFrequencyForAll(1000_Hz, m_fxpos, m_ccpos, m_p2yaw);
   }
-  if (m_joystick.GetRightBumperPressed()) {
+  if (m_joystick.GetRightBumperButtonPressed()) {
     /* Slow down the signals to increase the latency */
     /* Make them 10 Hz (100 ms) for this example */
     BaseStatusSignal::SetUpdateFrequencyForAll(10_Hz, m_fxpos, m_ccpos, m_p2yaw);

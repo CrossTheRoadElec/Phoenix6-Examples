@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import hardware, controls, configs, StatusCode
+from phoenix6 import CANBus, configs, controls, hardware, StatusCode
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -15,11 +15,11 @@ class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
         """Robot initialization function"""
 
-        canbusName = "canivore"
+        self.canbus = CANBus("canivore")
 
         # Keep a reference to all the motor controllers used
-        self.talonfx = hardware.TalonFX(0, canbusName)
-        self.talonfx_follower = hardware.TalonFX(1, canbusName)
+        self.talonfx = hardware.TalonFX(0, self.canbus)
+        self.talonfx_follower = hardware.TalonFX(1, self.canbus)
 
         # Be able to switch which control request to use based on a button press
         # Start at velocity 0, use slot 0

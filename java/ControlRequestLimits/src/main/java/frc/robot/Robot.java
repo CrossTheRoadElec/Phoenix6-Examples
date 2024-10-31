@@ -70,9 +70,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        m_fx.setControl(m_out.withOutput(m_joystick.getLeftY())
-                             .withLimitForwardMotion(m_joystick.getLeftBumper())
-                             .withLimitReverseMotion(m_joystick.getRightBumper()));
+        m_fx.setControl(
+            m_out.withOutput(m_joystick.getLeftY())
+                .withLimitForwardMotion(m_joystick.getLeftBumperButton())
+                .withLimitReverseMotion(m_joystick.getRightBumperButton())
+        );
     }
 
     @Override

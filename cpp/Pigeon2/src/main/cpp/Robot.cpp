@@ -22,8 +22,9 @@ void Robot::RobotInit() {
 }
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
-  if (frc::Timer::GetFPGATimestamp() - currentTime > print_period) {
+  if (frc::Timer::GetFPGATimestamp() - currentTime >= print_period) {
     currentTime += print_period;
+
     /**
      * GetYaw automatically calls Refresh(), no need to manually refresh.
      *
@@ -34,9 +35,9 @@ void Robot::RobotPeriodic() {
     std::cout << "Yaw is " << yaw << " with " << yaw.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
 
     /**
-     * Get the Gravity Vector Z component StatusSignalValue
+     * Get the Gravity Vector Z component StatusSignalValue without refreshing
      */
-    auto &gravityZ = pidgey.GetGravityVectorZ();
+    auto &gravityZ = pidgey.GetGravityVectorZ(false);
     /* This time wait for the signal to reduce latency */
     gravityZ.WaitForUpdate(print_period); // Wait up to our period
     /**

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -55,10 +57,10 @@ public class Robot extends TimedRobot {
 
     /* Configure Motion Magic */
     MotionMagicConfigs mm = cfg.MotionMagic;
-    mm.MotionMagicCruiseVelocity = 5; // 5 (mechanism) rotations per second cruise
-    mm.MotionMagicAcceleration = 10; // Take approximately 0.5 seconds to reach max vel
-    // Take approximately 0.1 seconds to reach max accel 
-    mm.MotionMagicJerk = 100;
+    mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(5)) // 5 (mechanism) rotations per second cruise
+      .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(10)) // Take approximately 0.5 seconds to reach max vel
+      // Take approximately 0.1 seconds to reach max accel 
+      .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(100));
 
     Slot0Configs slot0 = cfg.Slot0;
     slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
@@ -80,7 +82,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    if (m_printCount++ > 10) {
+    if (++m_printCount >= 10) {
       m_printCount = 0;
       System.out.println("Pos: " + m_fx.getPosition());
       System.out.println("Vel: " + m_fx.getVelocity());
@@ -106,7 +108,7 @@ public class Robot extends TimedRobot {
 
     m_fx.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
     if (m_joystick.getBButton()) {
-      m_fx.setPosition(1);
+      m_fx.setPosition(Rotations.of(1));
     }
   }
 

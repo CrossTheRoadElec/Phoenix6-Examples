@@ -4,13 +4,12 @@
 
 #include "commands/DriveStraightCommand.h"
 
-DriveStraightCommand::DriveStraightCommand(DriveSubsystem &subsystem,
-                                           std::function<double()> throttle) : m_driveSubsystem{subsystem},
-                                                                               m_throttle{std::move(throttle)},
-                                                                               m_yawGetter{subsystem.GetYaw()},
-                                                                               m_holdYaw{0},
-                                                                               m_driveStraightThread{[this]()
-                                                                                                     { DriveStraightExecution(); }}
+DriveStraightCommand::DriveStraightCommand(DriveSubsystem &subsystem, std::function<double()> throttle) :
+    m_driveSubsystem{subsystem},
+    m_throttle{std::move(throttle)},
+    m_yawGetter{subsystem.GetYaw()},
+    m_holdYaw{0_deg},
+    m_driveStraightThread{[this] { DriveStraightExecution(); }}
 {
     AddRequirements(&subsystem);
 }

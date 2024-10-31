@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.commands.DriveStraightCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -22,23 +21,20 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   private final CommandXboxController m_joystick = new CommandXboxController(0);
-
-  /* invert the joystick Y because forward Y is negative */
-  private final Command m_teleopDrive = new RunCommand(() -> {
-      m_driveSubsystem.arcadeDrive(-m_joystick.getLeftY(), m_joystick.getRightX());
-    },
-    m_driveSubsystem);
-
-  private final Command m_driveStraight = new DriveStraightCommand(m_driveSubsystem, () -> -m_joystick.getLeftY());
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_driveSubsystem.setDefaultCommand(m_teleopDrive);
+    m_driveSubsystem.setDefaultCommand(
+      m_driveSubsystem.run(() ->
+        /* invert the joystick Y because forward Y is negative */
+        m_driveSubsystem.arcadeDrive(-m_joystick.getLeftY(), m_joystick.getRightX())
+      )
+    );
 
     // Configure the button bindings
     configureButtonBindings();
@@ -54,7 +50,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* If the upper left shoulder button is pressed, drive straight */
-    m_joystick.leftBumper().whileTrue(m_driveStraight);
+    m_joystick.leftBumper().whileTrue(
+      new DriveStraightCommand(m_driveSubsystem, () -> -m_joystick.getLeftY())
+    );
   }
 
   /**

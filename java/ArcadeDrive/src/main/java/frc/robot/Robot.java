@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -21,11 +21,12 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String CANBUS_NAME = "canivore";
-  private final TalonFX leftLeader = new TalonFX(1, CANBUS_NAME);
-  private final TalonFX leftFollower = new TalonFX(2, CANBUS_NAME);
-  private final TalonFX rightLeader = new TalonFX(3, CANBUS_NAME);
-  private final TalonFX rightFollower = new TalonFX(4, CANBUS_NAME);
+  private final CANBus kCANBus = new CANBus("canivore");
+
+  private final TalonFX leftLeader = new TalonFX(1, kCANBus);
+  private final TalonFX leftFollower = new TalonFX(2, kCANBus);
+  private final TalonFX rightLeader = new TalonFX(3, kCANBus);
+  private final TalonFX rightFollower = new TalonFX(4, kCANBus);
 
   private final DutyCycleOut leftOut = new DutyCycleOut(0);
   private final DutyCycleOut rightOut = new DutyCycleOut(0);
@@ -59,12 +60,6 @@ public class Robot extends TimedRobot {
   
     leftLeader.setSafetyEnabled(true);
     rightLeader.setSafetyEnabled(true);
-
-    /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if (Utils.isSimulation()){
-      leftOut.EnableFOC = false;
-      rightOut.EnableFOC = false;
-    }
   }
 
   @Override

@@ -35,9 +35,11 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic()
 {
-    m_fx.SetControl(m_out.WithOutput(-m_joystick.GetLeftY())
-                         .WithLimitForwardMotion(m_joystick.GetLeftBumper())
-                         .WithLimitReverseMotion(m_joystick.GetRightBumper()));
+    m_fx.SetControl(
+        m_out.WithOutput(-m_joystick.GetLeftY())
+            .WithLimitForwardMotion(m_joystick.GetLeftBumper())
+            .WithLimitReverseMotion(m_joystick.GetRightBumper())
+    );
 }
 
 void Robot::DisabledInit() {}

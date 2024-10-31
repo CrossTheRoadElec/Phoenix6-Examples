@@ -1,7 +1,10 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.StatusSignal;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,8 +30,8 @@ public class Mechanisms {
   @SuppressWarnings("unused")
   private MechanismLigament2d rightArrow = wrist.append(new MechanismLigament2d("RightArrow", 0.1, -150, 6, new Color8Bit(Color.kAliceBlue)));
 
-  public void update(StatusSignal<Double> position) {
-    wrist.setAngle(position.getValue());
+  public void update(StatusSignal<Angle> position) {
+    wrist.setAngle(position.getValue().in(Degrees));
     SmartDashboard.putData("mech2d", mech);
   }
 }
