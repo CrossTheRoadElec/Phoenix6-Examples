@@ -160,7 +160,7 @@ void Robot::SimulationPeriodic()
   rightSim.SetReverseLimit(joystick.GetRightTriggerAxis() > 0.5);
 }
 
-units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
+units::meter_t Robot::rotationsToMeters(units::turn_t rotations)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -170,7 +170,7 @@ units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
     return gearedRotations * wheelDistancePerRad;
 }
 
-units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
+units::turn_t Robot::metersToRotations(units::meter_t meters)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -180,7 +180,7 @@ units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
     return wheelRadians * kGearRatio;
 }
 
-units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per_second_t rotations)
+units::meters_per_second_t Robot::rotationsToMetersVel(units::turns_per_second_t rotations)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -190,7 +190,7 @@ units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per
     return gearedRotations * wheelDistancePerRad;
 }
 
-units::turns_per_second_t DriveSubsystem::metersToRotationsVel(units::meters_per_second_t meters)
+units::turns_per_second_t Robot::metersToRotationsVel(units::meters_per_second_t meters)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;

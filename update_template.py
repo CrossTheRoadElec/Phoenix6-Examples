@@ -11,9 +11,9 @@ from numpy import empty
 
 # Mapping of templates to target directories
 TEMPLATE_DIRS: dict[str, str] = {
-    "./automation/java_template/" : "./java",
-    "./automation/cpp_template/" : "./cpp",
-    "./automation/python_template/": "./python"
+    "./.automation/java_template/" : "./java",
+    "./.automation/cpp_template/" : "./cpp",
+    "./.automation/python_template/": "./python"
 }
 
 # List of globs to ignore for deletion
