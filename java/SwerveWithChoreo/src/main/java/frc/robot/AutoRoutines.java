@@ -3,7 +3,6 @@ package frc.robot;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoLoop;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -20,13 +19,12 @@ public class AutoRoutines {
 
         routine.enabled().onTrue(
             m_drivetrain.runOnce(() ->
-                m_drivetrain.resetPose(
-                    simplePath.getInitialPose().orElseGet(() -> {
-                        routine.kill();
-                        return new Pose2d();
-                    })
+                simplePath.getInitialPose().ifPresentOrElse(
+                    pose -> m_drivetrain.resetPose(pose),
+                    routine::kill
                 )
-            ).andThen(simplePath.cmd())
+            )
+            .andThen(simplePath.cmd())
         );
         return routine.cmd();
     }

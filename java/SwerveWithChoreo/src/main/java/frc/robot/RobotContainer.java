@@ -49,8 +49,6 @@ public class RobotContainer {
     public final AutoChooser autoChooser;
 
     public RobotContainer() {
-        configureBindings();
-
         autoFactory = Choreo.createAutoFactory(
             drivetrain,
             () -> drivetrain.getState().Pose,
@@ -61,6 +59,8 @@ public class RobotContainer {
 
         autoChooser = new AutoChooser(autoFactory, "");
         autoChooser.addAutoRoutine("SimplePath", autoRoutines::simplePathAuto);
+
+        configureBindings();
     }
 
     private void configureBindings() {

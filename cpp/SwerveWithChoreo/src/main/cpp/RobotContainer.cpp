@@ -6,12 +6,22 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
-#include <pathplanner/lib/auto/AutoBuilder.h>
 
-RobotContainer::RobotContainer()
+RobotContainer::RobotContainer() :
+    autoRoutines{drivetrain},
+    autoFactory{
+        [this] { return drivetrain.GetState().Pose; },
+        [this](auto &&pose, auto &&sample) { drivetrain.FollowPath(pose, sample); },
+        [] {
+            auto const alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::Alliance::kBlue);
+            return alliance == frc::DriverStation::Alliance::kRed;
+        },
+        {&drivetrain},
+        std::nullopt
+    },
+    autoChooser{autoFactory, ""}
 {
-    autoChooser = pathplanner::AutoBuilder::buildAutoChooser("Tests");
-    frc::SmartDashboard::PutData("Auto Mode", &autoChooser);
+    autoChooser.AddAutoRoutine("SimplePath", [this] { return autoRoutines.SimplePathAuto(autoFactory); });
 
     ConfigureBindings();
 }
@@ -47,7 +57,7 @@ void RobotContainer::ConfigureBindings()
     drivetrain.RegisterTelemetry([this](auto const &state) { logger.Telemeterize(state); });
 }
 
-frc2::Command *RobotContainer::GetAutonomousCommand()
+frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 {
-    return autoChooser.GetSelected();
+    return autoChooser.GetSelectedAutoRoutine();
 }
