@@ -24,7 +24,7 @@ void CommandSwerveDrivetrain::FollowPath(frc::Pose2d const &pose, choreo::Swerve
     std::vector moduleForcesY(sample.moduleForcesY.begin(), sample.moduleForcesY.end());
 
     SetControl(
-        m_applyFieldSpeeds.WithSpeeds(targetSpeeds)
+        m_pathApplyFieldSpeeds.WithSpeeds(targetSpeeds)
             .WithWheelForceFeedforwardsX(std::move(moduleForcesX))
             .WithWheelForceFeedforwardsY(std::move(moduleForcesY))
     );

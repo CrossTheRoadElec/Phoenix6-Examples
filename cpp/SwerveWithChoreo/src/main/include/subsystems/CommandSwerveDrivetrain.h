@@ -31,8 +31,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase, public swerve::Swerv
     /* Keep track if we've ever applied the operator perspective before or not */
     bool m_hasAppliedOperatorPerspective = false;
 
-    /* Swerve request to apply during path following */
-    swerve::requests::ApplyFieldSpeeds m_applyFieldSpeeds;
+    /** Swerve request to apply during field-centric path following */
+    swerve::requests::ApplyFieldSpeeds m_pathApplyFieldSpeeds;
     frc::PIDController m_pathXController{10, 0, 0};
     frc::PIDController m_pathYController{10, 0, 0};
     frc::PIDController m_pathThetaController{7, 0, 0};

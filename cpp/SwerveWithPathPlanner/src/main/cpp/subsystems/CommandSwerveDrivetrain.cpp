@@ -17,7 +17,7 @@ void CommandSwerveDrivetrain::ConfigureAutoBuilder()
         // Consumer of ChassisSpeeds and feedforwards to drive the robot
         [this](frc::ChassisSpeeds const &speeds, pathplanner::DriveFeedforwards const &feedforwards) {
             return SetControl(
-                m_applyRobotSpeeds.WithSpeeds(speeds)
+                m_pathApplyRobotSpeeds.WithSpeeds(speeds)
                     .WithWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX)
                     .WithWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY)
             );
