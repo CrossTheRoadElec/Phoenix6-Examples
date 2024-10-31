@@ -25,12 +25,12 @@ public:
     /**
      * Adds a TalonFX controller to the simulator.
      * 
-     * @param falcon
+     * @param talonFX
      *        The TalonFX device
      * @param rotorInertia
      *        Rotational Inertia of the mechanism at the rotor
      */
-    void AddTalonFX(ctre::phoenix6::hardware::TalonFX& falcon, units::kilogram_square_meter_t rotorInertia);
+    void AddTalonFX(ctre::phoenix6::hardware::TalonFX& talonFX, units::kilogram_square_meter_t rotorInertia);
 
     /**
      * Runs the simulator:

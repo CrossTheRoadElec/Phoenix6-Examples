@@ -27,24 +27,25 @@ public class Robot extends TimedRobot {
   private final CurrentLimitsConfigs m_currentLimits = new CurrentLimitsConfigs();
 
   private final XboxController m_joystick = new XboxController(0);
-  
 
   int printCount = 0;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    /* Configure the Talon FX to use a supply limit of 60 amps IF we exceed 80 amps for over 0.1 seconds */
+    /* Configure the Talon to use a supply limit of 70 A, and
+     * lower to 40 A if we're at 70 A for over 1 second */
     TalonFXConfiguration toConfigure = new TalonFXConfiguration();
-    m_currentLimits.SupplyCurrentLowerLimit = 60; // Limit to 60 amps
-    m_currentLimits.SupplyCurrentLimit = 80; // If we exceed 80 amps
-    m_currentLimits.SupplyCurrentLowerTime = 0.1; // For at least 0.1 seconds
-    m_currentLimits.SupplyCurrentLimitEnable = true; // And enable it
+    m_currentLimits.withSupplyCurrentLowerLimit(Amps.of(70)) // Default limit of 70 A
+      .withSupplyCurrentLimit(Amps.of(40)) // Reduce the limit to 40 A if we've limited to 70 A...
+      .withSupplyCurrentLowerTime(Seconds.of(1.0)) // ...for at least 1 second
+      .withSupplyCurrentLimitEnable(true); // And enable it
 
-    m_currentLimits.StatorCurrentLimit = 120; // Limit stator current to 120 amps
-    m_currentLimits.StatorCurrentLimitEnable = true; // And enable it
+    m_currentLimits.withStatorCurrentLimit(Amps.of(120)) // Limit stator current to 120 A
+      .withStatorCurrentLimitEnable(true); // And enable it
 
     toConfigure.CurrentLimits = m_currentLimits;
 
@@ -69,8 +70,8 @@ public class Robot extends TimedRobot {
       m_fx.getConfigurator().apply(m_currentLimits);
     }
 
-    if (printCount++ > 20) {
-      printCount= 0;
+    if (++printCount >= 20) {
+      printCount = 0;
       System.out.println("Supply current: " + m_fx.getSupplyCurrent());
       System.out.println("Stator current: " + m_fx.getStatorCurrent());
     }

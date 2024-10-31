@@ -23,7 +23,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -75,11 +74,11 @@ public class Robot extends TimedRobot {
 
     /* Simulation model of the drivetrain */
     private final DifferentialDrivetrainSim m_driveSim = new DifferentialDrivetrainSim(
-        DCMotor.getFalcon500Foc(2), // 2 CIMS on each side of the drivetrain.
+        DCMotor.getKrakenX60Foc(2), // 2 Kraken X60 on each side of the drivetrain.
         kGearRatio, // Standard AndyMark Gearing reduction.
         2.1, // MOI of 2.1 kg m^2 (from CAD model).
         26.5, // Mass of the robot is 26.5 kg.
-        kWheelRadius.in(Inches), // Robot uses 3" radius (6" diameter) wheels.
+        kWheelRadius.in(Meters), // Robot uses 3" radius (6" diameter) wheels.
         0.546, // Distance between wheels is _ meters.
 
         /*
@@ -156,9 +155,11 @@ public class Robot extends TimedRobot {
          * in the previous article while in simulation, but will use
          * real values on the robot itself.
          */
-        m_odometry.update(imu.getRotation2d(),
-                rotationsToMeters(leftSensor.getPosition().getValue()).in(Meters),
-                rotationsToMeters(rightSensor.getPosition().getValue()).in(Meters));
+        m_odometry.update(
+            imu.getRotation2d(),
+            rotationsToMeters(leftSensor.getPosition().getValue()).in(Meters),
+            rotationsToMeters(rightSensor.getPosition().getValue()).in(Meters)
+        );
         m_field.setRobotPose(m_odometry.getPoseMeters());
 
         if (++printCount >= 50) {
@@ -209,8 +210,10 @@ public class Robot extends TimedRobot {
          * WPILib expects +V to be forward. We have already configured
          * our orientations to match this behavior.
          */
-        m_driveSim.setInputs(leftSim.getMotorVoltage(),
-                rightSim.getMotorVoltage());
+        m_driveSim.setInputs(
+            leftSim.getMotorVoltage(),
+            rightSim.getMotorVoltage()
+        );
 
         /*
          * Advance the model by 20 ms. Note that if you are running this
@@ -221,15 +224,19 @@ public class Robot extends TimedRobot {
 
         /* Update all of our sensors. */
         final var leftPos = metersToRotations(
-                Meters.of(m_driveSim.getLeftPositionMeters()));
+            Meters.of(m_driveSim.getLeftPositionMeters())
+        );
         // This is OK, since the time base is the same
         final var leftVel = metersToRotationsVel(
-                MetersPerSecond.of(m_driveSim.getLeftVelocityMetersPerSecond()));
+            MetersPerSecond.of(m_driveSim.getLeftVelocityMetersPerSecond()))
+        ;
         final var rightPos = metersToRotations(
-                Meters.of(m_driveSim.getRightPositionMeters()));
+            Meters.of(m_driveSim.getRightPositionMeters())
+        );
         // This is OK, since the time base is the same
         final var rightVel = metersToRotationsVel(
-                MetersPerSecond.of(m_driveSim.getRightVelocityMetersPerSecond()));
+            MetersPerSecond.of(m_driveSim.getRightVelocityMetersPerSecond())
+        );
         leftSensSim.setRawPosition(leftPos);
         leftSensSim.setVelocity(leftVel);
         rightSensSim.setRawPosition(rightPos);
@@ -300,9 +307,9 @@ public class Robot extends TimedRobot {
 
     private LinearVelocity rotationsToMetersVel(AngularVelocity rotations) {
         /* Apply gear ratio to input rotations */
-        var gearedRotations = rotations.divide(this.kGearRatio);
+        var gearedRotations = rotations.in(RadiansPerSecond) / this.kGearRatio;
         /* Then multiply the wheel radius by radians of rotation to get distance */
-        return this.kWheelRadius.per(Second).times(gearedRotations.in(RadiansPerSecond));
+        return this.kWheelRadius.per(Second).times(gearedRotations);
     }
 
     private AngularVelocity metersToRotationsVel(LinearVelocity meters) {

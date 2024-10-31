@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Pigeon2Configurator;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -20,8 +19,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -64,7 +61,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /* Simulation model of the drivetrain */
     private final DifferentialDrivetrainSim m_driveSim = new DifferentialDrivetrainSim(
-        DCMotor.getFalcon500Foc(2), // 2 CIMS on each side of the drivetrain.
+        DCMotor.getKrakenX60Foc(2), // 2 Kraken X60 on each side of the drivetrain.
         kGearRatio, // Standard AndyMark Gearing reduction.
         2.1, // MOI of 2.1 kg m^2 (from CAD model).
         26.5, // Mass of the robot is 26.5 kg.
@@ -187,8 +184,10 @@ public class DriveSubsystem extends SubsystemBase {
          * WPILib expects +V to be forward. We have already configured
          * our orientations to match this behavior.
          */
-        m_driveSim.setInputs(m_leftSimState.getMotorVoltage(),
-                m_rightSimState.getMotorVoltage());
+        m_driveSim.setInputs(
+            m_leftSimState.getMotorVoltage(),
+            m_rightSimState.getMotorVoltage()
+        );
 
         /*
          * Advance the model by 20 ms. Note that if you are running this
@@ -313,9 +312,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     private LinearVelocity rotationsToMetersVel(AngularVelocity rotations) {
         /* Apply gear ratio to input rotations */
-        var gearedRotations = rotations.divide(this.kGearRatio);
+        var gearedRotations = rotations.in(RadiansPerSecond) / this.kGearRatio;
         /* Then multiply the wheel radius by radians of rotation to get distance */
-        return this.kWheelRadius.per(Second).times(gearedRotations.in(RadiansPerSecond));
+        return this.kWheelRadius.per(Second).times(gearedRotations);
     }
 
     private AngularVelocity metersToRotationsVel(LinearVelocity meters) {

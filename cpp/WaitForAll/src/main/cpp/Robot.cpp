@@ -20,7 +20,7 @@ void Robot::RobotPeriodic() {
   if (m_joystick.GetAButtonPressed()) {
     ctre::phoenix::StatusCode status = ctre::phoenix6::BaseStatusSignal::WaitForAll(m_waitForAllTimeout, m_lotsOfSignals);
     std::cout << "Status of waiting on signals (normal use case): " << status.GetName() << std::endl;
-    for(auto const &sig : m_lotsOfSignals) {
+    for (auto const &sig : m_lotsOfSignals) {
       std::cout << "Signal status: " << sig->GetStatus().GetName() << std::endl;
     }
   }
@@ -29,7 +29,7 @@ void Robot::RobotPeriodic() {
   if (m_joystick.GetBButtonPressed()) {
     ctre::phoenix::StatusCode status = ctre::phoenix6::BaseStatusSignal::WaitForAll(m_waitForAllTimeout, m_signalsAcrossCANbuses);
     std::cout << "Status of waiting on signals across different CAN busses: " << status.GetName() << std::endl;
-    for(auto const& sig : m_signalsAcrossCANbuses) {
+    for (auto const& sig : m_signalsAcrossCANbuses) {
       std::cout << "Signal status: " << sig->GetStatus().GetName() << std::endl;
     }
   }
@@ -38,7 +38,7 @@ void Robot::RobotPeriodic() {
   if (m_joystick.GetYButtonPressed()) {
     ctre::phoenix::StatusCode status = ctre::phoenix6::BaseStatusSignal::WaitForAll(m_waitForAllTimeout, m_noSignals);
     std::cout << "Status of waiting on no signals: " << status.GetName() << std::endl;
-    for(auto const& sig : m_noSignals) {
+    for (auto const& sig : m_noSignals) {
       std::cout << "Signal status: " << sig->GetStatus().GetName() << std::endl;
     }
   }

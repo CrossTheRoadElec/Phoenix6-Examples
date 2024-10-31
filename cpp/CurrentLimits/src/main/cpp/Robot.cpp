@@ -8,14 +8,15 @@
 using namespace ctre::phoenix6;
 
 void Robot::RobotInit() {
-  /* Configure the Talon to use a supply limit of 60 amps IF we exceed 80 amps for over 0.1 seconds */
+  /* Configure the Talon to use a supply limit of 70 A, and
+   * lower to 40 A if we're at 70 A for over 1 second */
   configs::TalonFXConfiguration toConfigure{};
   m_currentLimits.SupplyCurrentLimit = 70_A; // Default limit of 70 A
   m_currentLimits.SupplyCurrentLowerLimit = 40_A; // Reduce the limit to 40 A if we've limited to 70 A...
   m_currentLimits.SupplyCurrentLowerTime = 1_s; // ...for at least 1 second
   m_currentLimits.SupplyCurrentLimitEnable = true; // And enable it
 
-  m_currentLimits.StatorCurrentLimit = 120_A; // Limit stator to 120 amps
+  m_currentLimits.StatorCurrentLimit = 120_A; // Limit stator to 120 A
   m_currentLimits.StatorCurrentLimitEnable = true; // And enable it
 
   toConfigure.CurrentLimits = m_currentLimits;

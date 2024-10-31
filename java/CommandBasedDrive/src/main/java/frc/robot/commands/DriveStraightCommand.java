@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveStraightCommand extends Command {
-    private final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
+    private static final double MAX_UPDATE_PERIOD = 0.05; // Wait up to 50ms
     private final DoubleSupplier m_throttle;
     private final DriveSubsystem m_drivebase;
     private final StatusSignal<Angle> m_yawGetter;

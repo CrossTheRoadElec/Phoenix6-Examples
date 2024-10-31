@@ -21,15 +21,15 @@ public class PhysicsSim {
     /**
      * Adds a TalonFX controller to the simulator.
      * 
-     * @param falcon
+     * @param talonFX
      *        The TalonFX device
      * @param rotorInertia
      *        Rotational Inertia of the mechanism at the rotor
      */
-    public void addTalonFX(TalonFX falcon, final double rotorInertia) {
-        if (falcon != null) {
-            TalonFXSimProfile simFalcon = new TalonFXSimProfile(falcon, rotorInertia);
-            _simProfiles.add(simFalcon);
+    public void addTalonFX(TalonFX talonFX, final double rotorInertia) {
+        if (talonFX != null) {
+            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, rotorInertia);
+            _simProfiles.add(simTalonFX);
         }
     }
 

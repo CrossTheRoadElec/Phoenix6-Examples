@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -23,9 +26,9 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String canbusName = "canivore";
-  private final TalonFX m_fx = new TalonFX(0, canbusName);
-  private final TalonFX m_fllr = new TalonFX(1, canbusName);
+  private final CANBus canbus = new CANBus("canivore");
+  private final TalonFX m_fx = new TalonFX(0, canbus);
+  private final TalonFX m_fllr = new TalonFX(1, canbus);
 
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, use slot 0 */
@@ -54,8 +57,8 @@ public class Robot extends TimedRobot {
     configs.Slot0.kI = 0; // No output for integrated error
     configs.Slot0.kD = 0; // No output for error derivative
     // Peak output of 8 volts
-    configs.Voltage.PeakForwardVoltage = 8;
-    configs.Voltage.PeakReverseVoltage = -8;
+    configs.Voltage.withPeakForwardVoltage(Volts.of(8))
+      .withPeakReverseVoltage(Volts.of(-8));
 
     /* Torque-based velocity does not require a velocity feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
     configs.Slot1.kS = 2.5; // To account for friction, add 2.5 A of static feedforward
@@ -63,8 +66,8 @@ public class Robot extends TimedRobot {
     configs.Slot1.kI = 0; // No output for integrated error
     configs.Slot1.kD = 0; // No output for error derivative
     // Peak output of 40 A
-    configs.TorqueCurrent.PeakForwardTorqueCurrent = 40;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = -40;
+    configs.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(40))
+      .withPeakReverseTorqueCurrent(Amps.of(-40));
 
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;

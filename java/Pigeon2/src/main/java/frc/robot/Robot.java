@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -66,19 +68,21 @@ public class Robot extends TimedRobot {
       System.out.println("Yaw is " + yaw.toString() + " with " + yaw.getTimestamp().getLatency() + " seconds of latency");
 
       /**
-       * Get the gravity vector Z component StatusSignalValue
+       * Get the gravity vector Z component StatusSignalValue without refreshing
        */
-      var gravityVectorZ = pidgey.getGravityVectorZ();
+      var gravityVectorZ = pidgey.getGravityVectorZ(false);
       /* This time wait for the signal to reduce latency */
       gravityVectorZ.waitForUpdate(PRINT_PERIOD); // Wait up to our period
       /**
        * This uses the explicit getValue and getUnits functions to print, even though it's not
        * necessary for the ostream print
        */
-      System.out.println("Gravity Vector in the Z direction is " +
-                         gravityVectorZ.getValue() + " " +
-                         gravityVectorZ.getUnits() + " with " +
-                         gravityVectorZ.getTimestamp().getLatency() + " seconds of latency");
+      System.out.println(
+        "Gravity Vector in the Z direction is " +
+        gravityVectorZ.getValue() + " " +
+        gravityVectorZ.getUnits() + " with " +
+        gravityVectorZ.getTimestamp().getLatency() + " seconds of latency"
+      );
       /**
        * Notice when running this example that the second print's latency is always shorter than the first print's latency.
        * This is because we explicitly wait for the signal using the waitForUpdate() method instead of using the refresh()
@@ -104,7 +108,7 @@ public class Robot extends TimedRobot {
     /**
      * When we teleop init, set the position of the Pigeon2 and wait for the setter to take affect.
      */
-    pidgey.setYaw(144, 0.1); // Set our yaw to 144 degrees and wait up to 100 ms for the setter to take affect
+    pidgey.setYaw(Degrees.of(144), 0.1); // Set our yaw to 144 degrees and wait up to 100 ms for the setter to take affect
     pidgey.getYaw().waitForUpdate(0.1); // And wait up to 100 ms for the position to take affect
     System.out.println("Set the position to 144 degrees, we are currently at " + pidgey.getYaw()); // Use java's implicit toString operator
   }

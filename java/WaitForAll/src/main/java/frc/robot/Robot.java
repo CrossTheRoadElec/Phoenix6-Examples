@@ -28,16 +28,16 @@ public class Robot extends TimedRobot {
                                                                   // selectively power it to completely test this example 
   private final TalonFX m_motor2 = new TalonFX(0, "rio"); // Pick the RIO bus to force a failure we can detect
 
-  private final StatusSignal<Angle> m_canbus1signal1 = m_motor1.getPosition();
-  private final StatusSignal<AngularVelocity> m_canbus1signal2 = m_motor1.getVelocity();
-  private final StatusSignal<ControlModeValue> m_canbus1signal3 = m_motor1.getControlMode();
-  private final StatusSignal<Angle> m_canbus1signal4 = m_pigdey.getYaw();
-  private final StatusSignal<Angle> m_canbus1signal5 = m_pigdey.getRoll();
+  private final StatusSignal<Angle> m_canbus1signal1 = m_motor1.getPosition(false);
+  private final StatusSignal<AngularVelocity> m_canbus1signal2 = m_motor1.getVelocity(false);
+  private final StatusSignal<ControlModeValue> m_canbus1signal3 = m_motor1.getControlMode(false);
+  private final StatusSignal<Angle> m_canbus1signal4 = m_pigdey.getYaw(false);
+  private final StatusSignal<Angle> m_canbus1signal5 = m_pigdey.getRoll(false);
   
-  private final StatusSignal<Angle> m_canbus2signal1 = m_motor2.getPosition();
+  private final StatusSignal<Angle> m_canbus2signal1 = m_motor2.getPosition(false);
   
-  private final StatusSignal<Angle> m_canbus1transcient1 = m_transcientMotor.getPosition();
-  private final StatusSignal<AngularVelocity> m_canbus1transcient2 = m_transcientMotor.getVelocity();
+  private final StatusSignal<Angle> m_canbus1transcient1 = m_transcientMotor.getPosition(false);
+  private final StatusSignal<AngularVelocity> m_canbus1transcient2 = m_transcientMotor.getVelocity(false);
 
   private final StatusSignal<?>[] m_signalsAcrossCANbuses = new StatusSignal<?>[]{
     m_canbus1signal1,
@@ -70,44 +70,47 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    if(m_joystick.getLeftBumperButton()){
+    if (m_joystick.getLeftBumperButton()){
       m_waitForAllTimeout = 0.1;
       System.out.println("Timeout is now at " + m_waitForAllTimeout);
     }
-    if(m_joystick.getRightBumperButton()){
+    if (m_joystick.getRightBumperButton()){
       m_waitForAllTimeout = 0;
       System.out.println("Timeout is now at " + m_waitForAllTimeout);
     }
 
     /* If we press the A button, test what happens when we wait on lots of signals (normal use case) */
-    if(m_joystick.getAButtonPressed()) {
+    if (m_joystick.getAButtonPressed()) {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_lotsOfSignals);
       System.out.println("Status of waiting on signals (normal use case): " + status);
-      for(var sig : m_lotsOfSignals) {
+      for (var sig : m_lotsOfSignals) {
         System.out.println("Signal status: " + sig.getStatus());
       }
     }
+  
     /* If we press the B button, test what happens when we wait on signals from different busses */
-    if(m_joystick.getBButtonPressed()) {
+    if (m_joystick.getBButtonPressed()) {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_signalsAcrossCANbuses);
       System.out.println("Status of waiting on signals across different CAN busses: " + status);
-      for(var sig : m_signalsAcrossCANbuses) {
+      for (var sig : m_signalsAcrossCANbuses) {
         System.out.println("Signal status: " + sig.getStatus());
       }
     }
+  
     /* If we press the Y button, test what happens when we wait on no signals */
-    if(m_joystick.getYButtonPressed()) {
+    if (m_joystick.getYButtonPressed()) {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_noSignals);
       System.out.println("Status of waiting on no signals: " + status);
-      for(var sig : m_noSignals) {
+      for (var sig : m_noSignals) {
         System.out.println("Signal status: " + sig.getStatus());
       }
     }
+  
     /* If we press the X button, test what happens when we wait on signals with the transcient motor controller */
-    if(m_joystick.getXButtonPressed()) {
+    if (m_joystick.getXButtonPressed()) {
       var status = BaseStatusSignal.waitForAll(m_waitForAllTimeout, m_tanscientSignals);
       System.out.println("Status of waiting on transcient signals: " + status);
-      for(var sig : m_tanscientSignals) {
+      for (var sig : m_tanscientSignals) {
         System.out.println("Signal status: " + sig.getStatus());
       }
     }
