@@ -6,7 +6,7 @@
  * Holds information about a simulated device.
  */
 class SimProfile {
-    double _lastTime;
+    units::second_t _lastTime;
     bool _running = false;
 
 public:

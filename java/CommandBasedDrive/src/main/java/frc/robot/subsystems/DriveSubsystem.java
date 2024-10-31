@@ -122,12 +122,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_leftOut.UpdateFreqHz = 0;
         m_rightOut.UpdateFreqHz = 0;
 
-        /* Currently in simulation, we do not support FOC, so disable it while simulating */
-        if (Utils.isSimulation()) {
-            m_leftOut.EnableFOC = false;
-            m_rightOut.EnableFOC = false;
-        }
-
         /*
          * Set the orientation of the simulated TalonFX devices relative to the robot chassis.
          * WPILib expects +V to be forward. Specify orientations to match that behavior.

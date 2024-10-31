@@ -59,12 +59,6 @@ public class Robot extends TimedRobot {
   
     leftLeader.setSafetyEnabled(true);
     rightLeader.setSafetyEnabled(true);
-
-    /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if (Utils.isSimulation()){
-      leftOut.EnableFOC = false;
-      rightOut.EnableFOC = false;
-    }
   }
 
   @Override

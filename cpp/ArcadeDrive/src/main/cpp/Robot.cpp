@@ -20,13 +20,6 @@ void Robot::RobotInit() {
   leftFollower.GetConfigurator().Apply(leftConfiguration);
   rightLeader.GetConfigurator().Apply(rightConfiguration);
   rightFollower.GetConfigurator().Apply(rightConfiguration);
-    
-  /* Currently in simulation, we do not support FOC, so disable it while simulating */
-  if (utils::IsSimulation())
-  {
-    leftOut.EnableFOC = false;
-    rightOut.EnableFOC = false;
-  }
 
   /* Set up followers to follow leaders */
   leftFollower.SetControl(controls::Follower{leftLeader.GetDeviceID(), false});

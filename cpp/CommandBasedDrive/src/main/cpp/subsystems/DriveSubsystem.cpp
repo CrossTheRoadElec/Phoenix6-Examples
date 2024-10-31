@@ -32,12 +32,6 @@ DriveSubsystem::DriveSubsystem()
     /* Set the update frequency of the main requests to 0 so updates are sent immediately in the arcadeDrive method */
     m_leftOut.UpdateFreqHz = 0_Hz;
     m_rightOut.UpdateFreqHz = 0_Hz;
-    
-    /* Currently in simulation, we do not support FOC, so disable it while simulating */
-    if (utils::IsSimulation()) {
-        m_leftOut.EnableFOC = false;
-        m_rightOut.EnableFOC = false;
-    }
 
     /*
      * Set the orientation of the simulated TalonFX devices relative to the robot chassis.
@@ -170,44 +164,40 @@ void DriveSubsystem::SimulationPeriodic()
 
 units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
 {
-    /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches / 1_rad;
-    /* Every rotation of the wheel travels this many inches */
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
     /* Now apply gear ratio to input rotations */
     auto gearedRotations = rotations / kGearRatio;
     /* And multiply geared rotations by meters per rotation */
-    return gearedRotations * circumference;
+    return gearedRotations * wheelDistancePerRad;
 }
 
 units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
 {
-    /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches / 1_rad;
-    /* Every rotation of the wheel travels this many inches */
-    /* Now apply wheel rotations to input meters */
-    auto wheelRotations = meters / circumference;
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
+    /* Now get wheel rotations from input meters */
+    auto wheelRadians = meters / wheelDistancePerRad;
     /* And multiply by gear ratio to get rotor rotations */
-    return wheelRotations * kGearRatio;
+    return wheelRadians * kGearRatio;
 }
 
 units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per_second_t rotations)
 {
-    /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches / 1_rad;
-    /* Every rotation of the wheel travels this many inches */
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
     /* Now apply gear ratio to input rotations */
     auto gearedRotations = rotations / kGearRatio;
     /* And multiply geared rotations by meters per rotation */
-    return gearedRotations * circumference;
+    return gearedRotations * wheelDistancePerRad;
 }
 
 units::turns_per_second_t DriveSubsystem::metersToRotationsVel(units::meters_per_second_t meters)
 {
-    /* Get circumference of wheel */
-    constexpr auto circumference = kWheelRadiusInches / 1_rad;
-    /* Every rotation of the wheel travels this many inches */
-    /* Now apply wheel rotations to input meters */
-    auto wheelRotations = meters / circumference;
+    /* Every radian of rotation, the wheel travels this many inches */
+    constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
+    /* Now get wheel rotations from input meters */
+    auto wheelRadians = meters / wheelDistancePerRad;
     /* And multiply by gear ratio to get rotor rotations */
-    return wheelRotations * kGearRatio;
+    return wheelRadians * kGearRatio;
 }
