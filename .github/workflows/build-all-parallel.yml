@@ -103,7 +103,7 @@ jobs:
       fail-fast: false
       matrix:
         python_version: ['3.10', '3.11', '3.12']
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-13', 'windows-2022']
         project-name: ['ArcadeDrive', 'CANcoder', 'MotionMagic', 'PhoenixSysId', 'PositionClosedLoop', 'StatusSignals', 'TalonFX', 'VelocityClosedLoop']
 
     runs-on: ${{ matrix.os }}
