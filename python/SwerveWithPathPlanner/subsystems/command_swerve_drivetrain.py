@@ -221,7 +221,7 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
                 # PID constants for translation
                 PIDConstants(10.0, 0.0, 0.0),
                 # PID constants for rotation
-                PIDConstants(10.0, 0.0, 0.0)
+                PIDConstants(7.0, 0.0, 0.0)
             ),
             config,
             # Assume the path needs to be flipped for Red vs Blue, this is normally the case

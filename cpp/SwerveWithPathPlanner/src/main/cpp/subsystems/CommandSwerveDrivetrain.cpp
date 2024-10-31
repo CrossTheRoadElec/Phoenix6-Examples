@@ -26,7 +26,7 @@ void CommandSwerveDrivetrain::ConfigureAutoBuilder()
             // PID constants for translation
             pathplanner::PIDConstants{10.0, 0.0, 0.0},
             // PID constants for rotation
-            pathplanner::PIDConstants{10.0, 0.0, 0.0}
+            pathplanner::PIDConstants{7.0, 0.0, 0.0}
         ),
         std::move(config),
         // Assume the path needs to be flipped for Red vs Blue, this is normally the case
