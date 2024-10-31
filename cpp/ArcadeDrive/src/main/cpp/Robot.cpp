@@ -7,7 +7,7 @@
 
 using namespace ctre::phoenix6;
 
-void Robot::RobotInit() {
+Robot::Robot() {
   /* Configure devices */
   configs::TalonFXConfiguration leftConfiguration{};
   configs::TalonFXConfiguration rightConfiguration{};

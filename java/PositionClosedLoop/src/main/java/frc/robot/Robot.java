@@ -42,8 +42,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  @Override
-  public void robotInit() {
+  public Robot() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     configs.Slot0.kP = 2.4; // An error of 1 rotation results in 2.4 V output
     configs.Slot0.kI = 0; // No output for integrated error

@@ -67,7 +67,7 @@ class Robot : public frc::TimedRobot {
   units::turns_per_second_t metersToRotationsVel(units::meters_per_second_t meters);
 
  public:
-  void RobotInit() override;
+  Robot();
   void RobotPeriodic() override;
 
   void AutonomousInit() override;

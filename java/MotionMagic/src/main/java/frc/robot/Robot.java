@@ -47,8 +47,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  @Override
-  public void robotInit() {
+  public Robot() {
     TalonFXConfiguration cfg = new TalonFXConfiguration();
 
     /* Configure gear ratio */

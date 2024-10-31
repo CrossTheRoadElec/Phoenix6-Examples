@@ -7,7 +7,7 @@
 
 using namespace ctre::phoenix6;
 
-void Robot::RobotInit() {
+Robot::Robot() {
   configs::TalonFXConfiguration configs{};
   configs.Slot0.kP = 2.4; // An error of 1 rotations results in 1.2 V output
   configs.Slot0.kI = 0; // No output for integrated error

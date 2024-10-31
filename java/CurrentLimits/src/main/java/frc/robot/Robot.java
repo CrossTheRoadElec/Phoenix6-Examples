@@ -34,8 +34,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  @Override
-  public void robotInit() {
+  public Robot() {
     /* Configure the Talon to use a supply limit of 70 A, and
      * lower to 40 A if we're at 70 A for over 1 second */
     TalonFXConfiguration toConfigure = new TalonFXConfiguration();

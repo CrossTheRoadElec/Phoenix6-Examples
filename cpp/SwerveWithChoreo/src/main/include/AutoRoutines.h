@@ -8,6 +8,10 @@ class AutoRoutines {
 private:
     subsystems::CommandSwerveDrivetrain &m_drivetrain;
 
+    /* cache AutoTrajectory and AutoRoutine instances due to lifetime issues */
+    std::optional<choreo::AutoLoop<choreo::SwerveSample>> simplePathRoutine;
+    choreo::AutoTrajectory<choreo::SwerveSample> simplePathTraj;
+
 public:
     AutoRoutines(subsystems::CommandSwerveDrivetrain &drivetrain) :
         m_drivetrain{drivetrain}

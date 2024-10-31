@@ -5,7 +5,7 @@
 #include "Robot.h"
 #include <iostream>
 
-void Robot::RobotInit() {}
+Robot::Robot() {}
 void Robot::RobotPeriodic() {
   if (m_joystick.GetLeftBumperButton()) {
     m_waitForAllTimeout = 0.1_s;

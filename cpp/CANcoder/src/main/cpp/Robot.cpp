@@ -9,7 +9,7 @@ using namespace ctre::phoenix6;
 
 constexpr units::time::second_t print_period{500_ms};
 
-void Robot::RobotInit() {
+Robot::Robot() {
   /* Configure CANcoder */
   configs::CANcoderConfiguration toApply{};
 
@@ -20,6 +20,7 @@ void Robot::RobotInit() {
   /* Speed up signals to an appropriate rate */
   BaseStatusSignal::SetUpdateFrequencyForAll(100_Hz, cancoder.GetPosition(), cancoder.GetVelocity());
 }
+
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
   if (frc::Timer::GetFPGATimestamp() - currentTime >= print_period) {

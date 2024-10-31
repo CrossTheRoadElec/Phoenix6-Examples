@@ -7,7 +7,7 @@
 
 using namespace ctre::phoenix6;
 
-void Robot::RobotInit() {
+Robot::Robot() {
   /* Configure CANcoder to zero the magnet appropriately */
   configs::CANcoderConfiguration cc_cfg{};
   cc_cfg.MagnetSensor.AbsoluteSensorRange = signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf;

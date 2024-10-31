@@ -9,7 +9,7 @@ using namespace ctre::phoenix6;
 
 constexpr units::time::second_t print_period{500_ms};
 
-void Robot::RobotInit() {
+Robot::Robot() {
   /* Configure Pigeon2 */
   configs::Pigeon2Configuration toApply{};
 
