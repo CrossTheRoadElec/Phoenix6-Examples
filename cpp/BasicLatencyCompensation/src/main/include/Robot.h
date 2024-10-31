@@ -29,7 +29,7 @@ class Robot : public frc::TimedRobot {
   ctre::phoenix6::StatusSignal<units::degrees_per_second_t> &m_p2yawRate = m_p2.GetAngularVelocityZWorld();
 
  public:
-  void RobotInit() override;
+  Robot();
   void RobotPeriodic() override;
 
   void AutonomousInit() override;

@@ -16,7 +16,7 @@ void Robot::SimulationPeriodic() {
   PhysicsSim::GetInstance().Run();
 }
 
-void Robot::RobotInit() {
+Robot::Robot() {
   configs::TalonFXConfiguration cfg{};
 
   /* Configure gear ratio */

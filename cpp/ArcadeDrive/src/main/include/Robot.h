@@ -25,7 +25,7 @@ class Robot : public frc::TimedRobot {
   int printCount{};
 
  public:
-  void RobotInit() override;
+  Robot();
   void RobotPeriodic() override;
 
   void AutonomousInit() override;

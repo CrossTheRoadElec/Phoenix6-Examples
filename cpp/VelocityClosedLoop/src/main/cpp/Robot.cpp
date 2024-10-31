@@ -7,7 +7,7 @@
 
 using namespace ctre::phoenix6;
 
-void Robot::RobotInit() {
+Robot::Robot() {
   configs::TalonFXConfiguration configs{};
 
   /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */

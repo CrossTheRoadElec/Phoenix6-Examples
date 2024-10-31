@@ -8,7 +8,7 @@
 using namespace ctre::phoenix;
 using namespace ctre::phoenix6;
 
-void Robot::RobotInit()
+Robot::Robot()
 {
     configs::TalonFXConfiguration configs{};
 

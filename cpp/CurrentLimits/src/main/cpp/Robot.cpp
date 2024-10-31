@@ -7,7 +7,7 @@
 
 using namespace ctre::phoenix6;
 
-void Robot::RobotInit() {
+Robot::Robot() {
   /* Configure the Talon to use a supply limit of 70 A, and
    * lower to 40 A if we're at 70 A for over 1 second */
   configs::TalonFXConfiguration toConfigure{};

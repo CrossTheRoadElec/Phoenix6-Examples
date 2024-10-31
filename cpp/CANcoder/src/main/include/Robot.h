@@ -14,7 +14,7 @@ class Robot : public frc::TimedRobot {
   units::time::second_t currentTime{frc::Timer::GetFPGATimestamp()};
 
  public:
-  void RobotInit() override;
+  Robot();
   void RobotPeriodic() override;
 
   void AutonomousInit() override;

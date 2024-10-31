@@ -35,8 +35,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-    @Override
-    public void robotInit() {
+    public Robot() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
 
         configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

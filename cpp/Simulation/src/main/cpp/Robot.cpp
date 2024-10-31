@@ -9,7 +9,7 @@
 
 using namespace ctre::phoenix6;
 
-void Robot::RobotInit()
+Robot::Robot()
 {
   ctre::phoenix::StatusCode returnCode;
 
