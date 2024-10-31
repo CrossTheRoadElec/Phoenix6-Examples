@@ -37,8 +37,8 @@ class MyRobot(wpilib.TimedRobot):
             pos = self.talonfx.get_position()
             print(f"Positions is {str(pos)} with {pos.timestamp.get_latency()} seconds of latency")
 
-            # Get the velocity StatusSignal
-            vel = self.talonfx.get_velocity()
+            # Get the velocity StatusSignal without refreshing
+            vel = self.talonfx.get_velocity(False)
             # This time wait for the signal to reduce latency
             vel.wait_for_update(0.1)
             print(f"Velocity is {vel} with {vel.timestamp.get_latency()} seconds of latency")

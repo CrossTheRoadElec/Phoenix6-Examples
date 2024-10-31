@@ -10,12 +10,12 @@
 
 class Robot : public frc::TimedRobot {
  private:
-  static constexpr char const *CANBUS_NAME{"rio"};
+  ctre::phoenix6::CANBus kCANBus{"rio"};
 
-  ctre::phoenix6::hardware::TalonFX leftLeader{1, CANBUS_NAME};
-  ctre::phoenix6::hardware::TalonFX leftFollower{2, CANBUS_NAME};
-  ctre::phoenix6::hardware::TalonFX rightLeader{3, CANBUS_NAME};
-  ctre::phoenix6::hardware::TalonFX rightFollower{4, CANBUS_NAME};
+  ctre::phoenix6::hardware::TalonFX leftLeader{1, kCANBus};
+  ctre::phoenix6::hardware::TalonFX leftFollower{2, kCANBus};
+  ctre::phoenix6::hardware::TalonFX rightLeader{3, kCANBus};
+  ctre::phoenix6::hardware::TalonFX rightFollower{4, kCANBus};
 
   ctre::phoenix6::controls::DutyCycleOut leftOut{0}; // Initialize output to 0%
   ctre::phoenix6::controls::DutyCycleOut rightOut{0}; // Initialize output to 0%

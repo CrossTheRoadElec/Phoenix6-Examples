@@ -22,8 +22,9 @@ void Robot::RobotInit() {
 }
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
-  if (frc::Timer::GetFPGATimestamp() - currentTime > print_period) {
+  if (frc::Timer::GetFPGATimestamp() - currentTime >= print_period) {
     currentTime += print_period;
+
     /**
      * GetPosition automatically calls Refresh(), no need to manually refresh.
      * 
@@ -34,9 +35,9 @@ void Robot::RobotPeriodic() {
     std::cout << "Position is " << pos << " with " << pos.GetTimestamp().GetLatency().value() << " seconds of latency" << std::endl;
 
     /**
-     * Get the velocity StatusSignalValue
+     * Get the velocity StatusSignalValue without refreshing
      */
-    auto &vel = cancoder.GetVelocity();
+    auto &vel = cancoder.GetVelocity(false);
     /* This time wait for the signal to reduce latency */
     vel.WaitForUpdate(print_period); // Wait up to our period
     /**

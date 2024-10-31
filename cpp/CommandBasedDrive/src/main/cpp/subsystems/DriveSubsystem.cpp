@@ -99,9 +99,11 @@ void DriveSubsystem::Periodic()
      * in the previous article while in simulation, but will use
      * real values on the robot itself.
      */
-    m_odometry.Update(m_pigeon2.GetRotation2d(),
-            rotationsToMeters(m_leftLeader.GetPosition().GetValue()),
-            rotationsToMeters(m_rightLeader.GetPosition().GetValue()));
+    m_odometry.Update(
+        m_pigeon2.GetRotation2d(),
+        rotationsToMeters(m_leftLeader.GetPosition().GetValue()),
+        rotationsToMeters(m_rightLeader.GetPosition().GetValue())
+    );
     m_field.SetRobotPose(m_odometry.GetPose());
 }
 
@@ -124,8 +126,10 @@ void DriveSubsystem::SimulationPeriodic()
      * WPILib expects +V to be forward. We have already configured
      * our orientations to match this behavior.
      */
-    m_driveSim.SetInputs(m_leftSimState.GetMotorVoltage(),
-                         m_rightSimState.GetMotorVoltage());
+    m_driveSim.SetInputs(
+        m_leftSimState.GetMotorVoltage(),
+        m_rightSimState.GetMotorVoltage()
+    );
 
     /*
      * Advance the model by 20 ms. Note that if you are running this

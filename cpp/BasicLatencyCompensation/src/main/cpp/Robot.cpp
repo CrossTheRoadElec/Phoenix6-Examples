@@ -19,7 +19,7 @@ void Robot::RobotPeriodic() {
   auto p2CompensatedYaw = BaseStatusSignal::GetLatencyCompensatedValue(m_p2yaw, m_p2yawRate);
 
   /* Print out both values so it shows how they perform */
-  if (m_printCount++ > 10 && m_joystick.GetAButton()) {
+  if (++m_printCount >= 10 && m_joystick.GetAButton()) {
     m_printCount = 0;
     printf("CANcoder: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_ccpos.GetValue().value(), ccCompensatedPos.value(), (m_ccpos.GetValue() - ccCompensatedPos).value());
     printf("Talon FX: Pos: %10.3f - Latency-Compensated: %10.3f - Difference: %6.5f\n", m_fxpos.GetValue().value(), fxCompensatedPos.value(), (m_fxpos.GetValue() - fxCompensatedPos).value());

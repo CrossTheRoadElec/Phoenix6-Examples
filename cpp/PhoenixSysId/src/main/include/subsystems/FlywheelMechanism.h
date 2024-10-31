@@ -26,7 +26,7 @@ private:
         },
         frc2::sysid::Mechanism{
             [this](units::volt_t volts) { m_motorToTest.SetControl(m_sysIdControl.WithOutput(volts)); },
-            [](auto) {},
+            {},
             this
         }
     };

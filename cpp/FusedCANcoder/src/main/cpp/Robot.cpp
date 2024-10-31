@@ -24,7 +24,7 @@ void Robot::RobotInit() {
   m_fx.GetConfigurator().Apply(fx_cfg);
 }
 void Robot::RobotPeriodic() {
-  if (printCount++ > 10) {
+  if (++printCount >= 10) {
     printCount = 0;
 
     BaseStatusSignal::RefreshAll(
@@ -33,11 +33,12 @@ void Robot::RobotPeriodic() {
       f_remoteSensorInvalid,
       sf_remoteSensorInvalid,
       fx_pos, fx_vel,
-      cc_pos, cc_vel);
+      cc_pos, cc_vel
+    );
 
     // If any faults happen, print them out. Sticky faults will always be present if live-fault occurs
     bool anyFault = sf_fusedSensorOutOfSync.GetValue() || sf_remoteSensorInvalid.GetValue();
-    if(anyFault) {
+    if (anyFault) {
       std::cout << "A fault has occurred:" << std::endl;;
       /* If we're live, indicate live, otherwise if we're sticky indicate sticky, otherwise do nothing */
       if (f_fusedSensorOutOfSync.GetValue()) {

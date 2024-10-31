@@ -6,7 +6,7 @@
 
 #include <frc2/command/Command.h>
 #include <frc2/command/RunCommand.h>
-#include <frc/XboxController.h>
+#include <frc2/command/button/CommandXboxController.h>
 #include "subsystems/DriveSubsystem.h"
 #include "commands/DriveStraightCommand.h"
 
@@ -19,19 +19,17 @@
  */
 class RobotContainer
 {
+private:
+  // The robot's subsystems and joysticks are defined here...
+  frc2::CommandXboxController m_joystick{0};
+
 public:
+  DriveSubsystem m_driveSubsystem{};
+
   RobotContainer();
 
-  frc2::Command *GetAutonomousCommand();
+  frc2::CommandPtr GetAutonomousCommand();
 
 private:
-  // The robot's subsystems and commands are defined here...
-  frc::XboxController m_joystick{0};
-
-  DriveSubsystem m_driveSubsystem{};
-  DriveStraightCommand m_driveStraightCommand{m_driveSubsystem,
-                                              [this]()
-                                              { return -m_joystick.GetLeftY(); }};
-
   void ConfigureButtonBindings();
 };

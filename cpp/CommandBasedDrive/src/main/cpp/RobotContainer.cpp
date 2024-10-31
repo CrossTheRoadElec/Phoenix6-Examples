@@ -4,17 +4,17 @@
 
 #include "RobotContainer.h"
 #include <frc2/command/button/Trigger.h>
+#include <frc2/command/Commands.h>
 
 RobotContainer::RobotContainer()
 {
   // Initialize all of your commands and subsystems here
-  frc2::RunCommand teleopDrive {[this]()
-                                 {
-                                   /* invert the joystick Y because forward Y is negative */
-                                   m_driveSubsystem.ArcadeDrive(-m_joystick.GetLeftY(), m_joystick.GetRightX());
-                                 },
-                                 {&m_driveSubsystem}};
-  m_driveSubsystem.SetDefaultCommand(std::move(teleopDrive));
+  m_driveSubsystem.SetDefaultCommand(
+    m_driveSubsystem.Run([this] {
+      /* invert the joystick Y because forward Y is negative */
+      m_driveSubsystem.ArcadeDrive(-m_joystick.GetLeftY(), m_joystick.GetRightX());
+    })
+  );
 
   // Configure the button bindings
   ConfigureButtonBindings();
@@ -23,13 +23,16 @@ RobotContainer::RobotContainer()
 void RobotContainer::ConfigureButtonBindings()
 {
   // Configure your button bindings here
-  frc2::Trigger{[this]()
-                { return m_joystick.GetLeftBumperButton(); }}
-      .WhileTrue(&m_driveStraightCommand);
+  m_joystick.LeftBumper().WhileTrue(
+    DriveStraightCommand{
+      m_driveSubsystem,
+      [this] { return -m_joystick.GetLeftY(); }
+    }.ToPtr()
+  );
 }
 
-frc2::Command *RobotContainer::GetAutonomousCommand()
+frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 {
   // An example command will be run in autonomous
-  return nullptr;
+  return frc2::cmd::Print("No autonomous command configured");
 }

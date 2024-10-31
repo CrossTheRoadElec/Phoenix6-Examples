@@ -10,8 +10,8 @@
 #include <frc/Notifier.h>
 #include <units/time.h>
 
-class DriveStraightCommand
-    : public frc2::CommandHelper<frc2::Command, DriveStraightCommand> {
+class DriveStraightCommand : public frc2::CommandHelper<frc2::Command, DriveStraightCommand>
+{
 private:
     static constexpr units::time::second_t MAX_UPDATE_PERIOD{0.050_s};
 

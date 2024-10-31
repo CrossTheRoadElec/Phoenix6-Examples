@@ -3,7 +3,7 @@
     This is a demo program for arcade drive in Python with Phoenix 6
 """
 import wpilib
-from phoenix6 import hardware, controls, configs
+from phoenix6 import CANBus, configs, controls, hardware
 
 
 class MyRobot(wpilib.TimedRobot):
@@ -16,11 +16,11 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the motor controllers used
-        canivore_name = "canivore"
-        self.front_left_motor = hardware.TalonFX(0, canivore_name)
-        self.rear_left_motor = hardware.TalonFX(1, canivore_name)
-        self.front_right_motor = hardware.TalonFX(2, canivore_name)
-        self.rear_right_motor = hardware.TalonFX(3, canivore_name)
+        self.canivore = CANBus("canivore")
+        self.front_left_motor = hardware.TalonFX(0, self.canivore)
+        self.rear_left_motor = hardware.TalonFX(1, self.canivore)
+        self.front_right_motor = hardware.TalonFX(2, self.canivore)
+        self.rear_right_motor = hardware.TalonFX(3, self.canivore)
 
         cfg = configs.TalonFXConfiguration()
         cfg.motor_output.inverted = configs.config_groups.InvertedValue.COUNTER_CLOCKWISE_POSITIVE
@@ -37,8 +37,8 @@ class MyRobot(wpilib.TimedRobot):
         self.rear_right_motor.set_control(follow_right_request)
 
         # Keep a reference to the DutyCycleOut control request to update periodically
-        self.left_out = controls.DutyCycleOut(output=0)
-        self.right_out = controls.DutyCycleOut(output=0)
+        self.left_out = controls.DutyCycleOut(0)
+        self.right_out = controls.DutyCycleOut(0)
 
         # Keep a reference to an Xbox Controller for teleop control
         self.joy = wpilib.XboxController(0)

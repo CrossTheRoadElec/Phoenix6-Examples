@@ -39,8 +39,9 @@ void Robot::RobotPeriodic() {
     std::cout << "Setting stator limit to " << m_currentLimits.StatorCurrentLimitEnable << std::endl;
     m_fx.GetConfigurator().Apply(m_currentLimits);
   }
-  if (printCount++ > 20) {
-    printCount= 0;
+
+  if (++printCount >= 20) {
+    printCount = 0;
     std::cout << "Supply current: " << m_fx.GetSupplyCurrent() << std::endl;
     std::cout << "Stator current: " << m_fx.GetStatorCurrent() << std::endl;
   }

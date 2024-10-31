@@ -48,7 +48,7 @@ void Robot::RobotInit() {
   }
 }
 void Robot::RobotPeriodic() {
-  if (m_printCount++ > 10) {
+  if (++m_printCount >= 10) {
     m_printCount = 0;
     std::cout << "Pos: " << m_motor.GetPosition() << std::endl;
     std::cout << "Vel: " << m_motor.GetVelocity() << std::endl;
