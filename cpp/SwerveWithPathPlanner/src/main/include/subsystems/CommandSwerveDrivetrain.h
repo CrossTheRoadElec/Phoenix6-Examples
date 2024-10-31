@@ -30,7 +30,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase, public swerve::Swerv
     bool m_hasAppliedOperatorPerspective = false;
 
     /* Swerve request to apply during path following */
-    swerve::requests::ApplyChassisSpeeds m_applyRobotSpeeds;
+    swerve::requests::ApplyRobotSpeeds m_applyRobotSpeeds;
 
     /* Swerve requests to apply during SysId characterization */
     swerve::requests::SysIdSwerveTranslation m_translationCharacterization;

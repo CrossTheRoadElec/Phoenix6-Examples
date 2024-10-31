@@ -119,7 +119,7 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         """Keep track if we've ever applied the operator perspective before or not"""
 
         # Swerve request to apply during path following
-        self._apply_robot_speeds = swerve.requests.ApplyChassisSpeeds()
+        self._apply_robot_speeds = swerve.requests.ApplyRobotSpeeds()
 
         # Swerve requests to apply during SysId characterization
         self._translation_characterization = swerve.requests.SysIdSwerveTranslation()
@@ -208,7 +208,7 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         config = RobotConfig.fromGUISettings()
         AutoBuilder.configure(
             lambda: self.get_state().pose,   # Supplier of current robot pose
-            self.seed_field_relative,        # Consumer for seeding pose against auto
+            self.reset_pose,                 # Consumer for seeding pose against auto
             lambda: self.get_state().speeds, # Supplier of current robot speeds
             # Consumer of ChassisSpeeds and feedforwards to drive the robot
             lambda speeds, feedforwards: self.set_control(

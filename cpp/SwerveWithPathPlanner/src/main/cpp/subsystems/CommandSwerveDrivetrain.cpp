@@ -11,17 +11,13 @@ void CommandSwerveDrivetrain::ConfigureAutoBuilder()
         // Supplier of current robot pose
         [this] { return GetState().Pose; },
         // Consumer for seeding pose against auto
-        [this](frc::Pose2d const &pose) { return SeedFieldRelative(pose); },
+        [this](frc::Pose2d const &pose) { return ResetPose(pose); },
         // Supplier of current robot speeds
-        [this] {
-            auto const speeds = GetState().Speeds;
-            return frc::ChassisSpeeds{speeds.vx, speeds.vy, speeds.omega};
-        },
+        [this] { return GetState().Speeds; },
         // Consumer of ChassisSpeeds and feedforwards to drive the robot
         [this](frc::ChassisSpeeds const &speeds, pathplanner::DriveFeedforwards const &feedforwards) {
-            swerve::impl::ChassisSpeeds robotSpeeds{speeds.vx, speeds.vy, speeds.omega};
             return SetControl(
-                m_applyRobotSpeeds.WithSpeeds(robotSpeeds)
+                m_applyRobotSpeeds.WithSpeeds(speeds)
                     .WithWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX)
                     .WithWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY)
             );

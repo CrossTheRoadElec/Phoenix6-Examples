@@ -28,5 +28,5 @@ robotpy_extras = [
 
 # Other pip packages to install
 requires = [
-    "phoenix6~=25.0b1"
+    "phoenix6~=25.0b2"
 ]
