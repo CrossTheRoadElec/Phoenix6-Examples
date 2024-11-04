@@ -192,7 +192,7 @@ public:
      */
     template <typename RequestSupplier>
         requires std::derived_from<
-            std::invoke_result_t<RequestSupplier>,
+            std::remove_reference_t<std::invoke_result_t<RequestSupplier>>,
             swerve::requests::SwerveRequest>
     frc2::CommandPtr ApplyRequest(RequestSupplier request)
     {

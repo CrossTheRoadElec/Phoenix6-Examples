@@ -73,8 +73,8 @@ private:
 
 
     // These are only used for simulation
-    static constexpr units::kilogram_square_meter_t kSteerInertia = 0.00001_kg_sq_m;
-    static constexpr units::kilogram_square_meter_t kDriveInertia = 0.001_kg_sq_m;
+    static constexpr units::kilogram_square_meter_t kSteerInertia = 0.01_kg_sq_m;
+    static constexpr units::kilogram_square_meter_t kDriveInertia = 0.01_kg_sq_m;
     // Simulated voltage necessary to overcome friction
     static constexpr units::volt_t kSteerFrictionVoltage = 0.25_V;
     static constexpr units::volt_t kDriveFrictionVoltage = 0.25_V;
