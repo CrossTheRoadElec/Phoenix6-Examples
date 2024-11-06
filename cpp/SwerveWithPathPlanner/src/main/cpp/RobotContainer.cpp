@@ -22,15 +22,15 @@ void RobotContainer::ConfigureBindings()
     // and Y is defined as to the left according to WPILib convention.
     drivetrain.SetDefaultCommand(
         // Drivetrain will execute this command periodically
-        drivetrain.ApplyRequest([this] {
+        drivetrain.ApplyRequest([this]() -> auto&& {
             return drive.WithVelocityX(-joystick.GetLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                 .WithVelocityY(-joystick.GetLeftX() * MaxSpeed) // Drive left with negative X (left)
                 .WithRotationalRate(-joystick.GetRightX() * MaxAngularRate); // Drive counterclockwise with negative X (left)
         })
     );
 
-    joystick.A().WhileTrue(drivetrain.ApplyRequest([this] { return brake; }));
-    joystick.B().WhileTrue(drivetrain.ApplyRequest([this] {
+    joystick.A().WhileTrue(drivetrain.ApplyRequest([this]() -> auto&& { return brake; }));
+    joystick.B().WhileTrue(drivetrain.ApplyRequest([this]() -> auto&& {
         return point.WithModuleDirection(frc::Rotation2d{-joystick.GetLeftY(), -joystick.GetLeftX()});
     }));
 
