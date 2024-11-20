@@ -5,39 +5,43 @@ using namespace ctre::phoenix6;
 
 void Telemetry::Telemeterize(subsystems::CommandSwerveDrivetrain::SwerveDriveState const &state)
 {
-    /* Telemeterize the pose */
-    frc::Pose2d const pose = state.Pose;
+    /* Telemeterize the swerve drive state */
+    drivePose.Set(state.Pose);
+    driveSpeeds.Set(state.Speeds);
+    driveModuleStates.Set(state.ModuleStates);
+    driveModuleTargets.Set(state.ModuleTargets);
+    driveModulePositions.Set(state.ModulePositions);
+    driveTimestamp.Set(state.Timestamp.value());
+    driveOdometryFrequency.Set(1.0 / state.OdometryPeriod.value());
+
+    /* Also write to log file */
+    std::array<double, 8> moduleStatesArray{};
+    std::array<double, 8> moduleTargetsArray{};
+    for (int i = 0; i < 4; ++i) {
+        moduleStatesArray[i*2 + 0] = state.ModuleStates[i].angle.Radians().value();
+        moduleStatesArray[i*2 + 1] = state.ModuleStates[i].speed.value();
+        moduleTargetsArray[i*2 + 0] = state.ModuleTargets[i].angle.Radians().value();
+        moduleTargetsArray[i*2 + 1] = state.ModuleTargets[i].speed.value();
+    }
+    SignalLogger::WriteDoubleArray("DriveState/Pose", {state.Pose.X().value(), state.Pose.Y().value(), state.Pose.Rotation().Degrees().value()});
+    SignalLogger::WriteDoubleArray("DriveState/ModuleStates", moduleStatesArray);
+    SignalLogger::WriteDoubleArray("DriveState/ModuleTargets", moduleTargetsArray);
+    SignalLogger::WriteValue("DriveState/OdometryPeriod", state.OdometryPeriod);
+
+    /* Telemeterize the pose to a Field2d */
     fieldTypePub.Set("Field2d");
     fieldPub.Set(std::array{
-        pose.X().value(),
-        pose.Y().value(),
-        pose.Rotation().Degrees().value()
+        state.Pose.X().value(),
+        state.Pose.Y().value(),
+        state.Pose.Rotation().Degrees().value()
     });
 
-    /* Telemeterize the robot's general speeds */
-    units::second_t const currentTime = utils::GetCurrentTime();
-    units::second_t const diffTime = currentTime - lastTime;
-    lastTime = currentTime;
-
-    frc::Translation2d const distanceDiff = (pose - m_lastPose).Translation();
-    m_lastPose = pose;
-
-    frc::Translation2d const velocities = distanceDiff / diffTime.value();
-
-    speed.Set(velocities.Norm().value());
-    velocityX.Set(velocities.X().value());
-    velocityY.Set(velocities.Y().value());
-    odomFreq.Set((1.0 / state.OdometryPeriod).value());
-
-    /* Telemeterize the module's states */
+    /* Telemeterize the module states to a Mechanism2d */
     for (size_t i = 0; i < m_moduleSpeeds.size(); ++i) {
-        m_moduleSpeeds[i]->SetAngle(state.ModuleStates[i].angle.Degrees());
         m_moduleDirections[i]->SetAngle(state.ModuleStates[i].angle.Degrees());
+        m_moduleSpeeds[i]->SetAngle(state.ModuleStates[i].angle.Degrees());
         m_moduleSpeeds[i]->SetLength(state.ModuleStates[i].speed / (2 * MaxSpeed));
 
         frc::SmartDashboard::PutData("Module " + std::to_string(i), &m_moduleMechanisms[i]);
     }
-
-    SignalLogger::WriteDoubleArray("odometry", {pose.X().value(), pose.Y().value(), pose.Rotation().Degrees().value()});
-    SignalLogger::WriteDouble("odom period", state.OdometryPeriod.value(), "seconds");
 }

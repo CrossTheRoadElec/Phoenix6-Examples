@@ -7,6 +7,8 @@
 #include <networktables/DoubleArrayTopic.h>
 #include <networktables/DoubleTopic.h>
 #include <networktables/StringTopic.h>
+#include <networktables/StructArrayTopic.h>
+#include <networktables/StructTopic.h>
 
 #include "subsystems/CommandSwerveDrivetrain.h"
 
@@ -17,21 +19,20 @@ private:
     /* What to publish over networktables for telemetry */
     nt::NetworkTableInstance inst = nt::NetworkTableInstance::GetDefault();
 
+    /* Robot swerve drive state */
+    std::shared_ptr<nt::NetworkTable> driveStateTable = inst.GetTable("DriveState");
+    nt::StructPublisher<frc::Pose2d> drivePose = driveStateTable->GetStructTopic<frc::Pose2d>("Pose").Publish();
+    nt::StructPublisher<frc::ChassisSpeeds> driveSpeeds = driveStateTable->GetStructTopic<frc::ChassisSpeeds>("Speeds").Publish();
+    nt::StructArrayPublisher<frc::SwerveModuleState> driveModuleStates = driveStateTable->GetStructArrayTopic<frc::SwerveModuleState>("ModuleStates").Publish();
+    nt::StructArrayPublisher<frc::SwerveModuleState> driveModuleTargets = driveStateTable->GetStructArrayTopic<frc::SwerveModuleState>("ModuleTargets").Publish();
+    nt::StructArrayPublisher<frc::SwerveModulePosition> driveModulePositions = driveStateTable->GetStructArrayTopic<frc::SwerveModulePosition>("ModulePositions").Publish();
+    nt::DoublePublisher driveTimestamp = driveStateTable->GetDoubleTopic("Timestamp").Publish();
+    nt::DoublePublisher driveOdometryFrequency = driveStateTable->GetDoubleTopic("OdometryFrequency").Publish();
+
     /* Robot pose for field positioning */
     std::shared_ptr<nt::NetworkTable> table = inst.GetTable("Pose");
     nt::DoubleArrayPublisher fieldPub = table->GetDoubleArrayTopic("robotPose").Publish();
     nt::StringPublisher fieldTypePub = table->GetStringTopic(".type").Publish();
-
-    /* Robot speeds for general checking */
-    std::shared_ptr<nt::NetworkTable> driveStats = inst.GetTable("Drive");
-    nt::DoublePublisher velocityX = driveStats->GetDoubleTopic("Velocity X").Publish();
-    nt::DoublePublisher velocityY = driveStats->GetDoubleTopic("Velocity Y").Publish();
-    nt::DoublePublisher speed = driveStats->GetDoubleTopic("Speed").Publish();
-    nt::DoublePublisher odomFreq = driveStats->GetDoubleTopic("Odometry Frequency").Publish();
-
-    /* Keep a reference of the last pose to calculate the speeds */
-    frc::Pose2d m_lastPose{};
-    units::second_t lastTime = ctre::phoenix6::utils::GetCurrentTime();
 
     /* Mechanisms to represent the swerve module states */
     std::array<frc::Mechanism2d, 4> m_moduleMechanisms{
