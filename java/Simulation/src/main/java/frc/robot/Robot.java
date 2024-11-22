@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     private final CANcoderSimState rightSensSim = rightSensor.getSimState();
     private final Pigeon2SimState imuSim = imu.getSimState();
 
-    private final DifferentialDrive drivetrain = new DifferentialDrive(leftFX, rightFX);
+    private final DifferentialDrive drivetrain = new DifferentialDrive(leftFX::set, rightFX::set);
 
     /*
      * These numbers are an example AndyMark Drivetrain with some additional weight.

@@ -1,4 +1,5 @@
 #include "subsystems/CommandSwerveDrivetrain.h"
+#include <frc/RobotController.h>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 

@@ -28,7 +28,10 @@ class Robot : public frc::TimedRobot {
   ctre::phoenix6::sim::CANcoderSimState &rightSensSim = rightSensor.GetSimState();
   ctre::phoenix6::sim::Pigeon2SimState &imuSim = imu.GetSimState();
 
-  frc::DifferentialDrive drivetrain{leftFX, rightFX};
+  frc::DifferentialDrive drivetrain{
+    [this](double output) { leftFX.Set(output); },
+    [this](double output) { rightFX.Set(output); }
+  };
 
   frc::XboxController joystick{0};
 
