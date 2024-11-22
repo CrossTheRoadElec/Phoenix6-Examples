@@ -36,9 +36,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private double m_lastSimTime;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
+    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-    private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
+    private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
@@ -118,7 +118,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so user should not construct
+     * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them
      * through getters in the classes.
      *
@@ -135,7 +135,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so user should not construct
+     * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them
      * through getters in the classes.
      *
@@ -155,7 +155,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so user should not construct
+     * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them through
      * getters in the classes.
      *

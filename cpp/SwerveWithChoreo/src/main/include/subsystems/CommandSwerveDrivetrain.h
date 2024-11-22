@@ -118,7 +118,7 @@ public:
     /**
      * \brief Constructs a CTRE SwerveDrivetrain using the specified constants.
      *
-     * This constructs the underlying hardware devices, so user should not construct
+     * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them
      * through getters in the classes.
      *
@@ -137,7 +137,7 @@ public:
     /**
      * \brief Constructs a CTRE SwerveDrivetrain using the specified constants.
      *
-     * This constructs the underlying hardware devices, so user should not construct
+     * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them
      * through getters in the classes.
      *
@@ -160,7 +160,7 @@ public:
     /**
      * \brief Constructs a CTRE SwerveDrivetrain using the specified constants.
      *
-     * This constructs the underlying hardware devices, so user should not construct
+     * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them
      * through getters in the classes.
      *
@@ -187,13 +187,32 @@ public:
     /**
      * \brief Returns a command that applies the specified control request to this swerve drivetrain.
      *
+     * This captures the returned swerve request by reference, so it must live
+     * for at least as long as the drivetrain. This can be done by storing the
+     * request as a member variable of your drivetrain subsystem or robot.
+     *
      * \param request Function returning the request to apply
      * \returns Command to run
      */
     template <typename RequestSupplier>
-        requires std::derived_from<
-            std::remove_reference_t<std::invoke_result_t<RequestSupplier>>,
-            swerve::requests::SwerveRequest>
+        requires std::is_lvalue_reference_v<std::invoke_result_t<RequestSupplier>> &&
+            requires(RequestSupplier req, swerve::SwerveDrivetrain &drive) { drive.SetControl(req()); }
+    frc2::CommandPtr ApplyRequest(RequestSupplier request)
+    {
+        return Run([this, request=std::move(request)] {
+            return SetControl(request());
+        });
+    }
+
+    /**
+     * \brief Returns a command that applies the specified control request to this swerve drivetrain.
+     *
+     * \param request Function returning the request to apply
+     * \returns Command to run
+     */
+    template <typename RequestSupplier>
+        requires std::is_rvalue_reference_v<std::invoke_result_t<RequestSupplier>> &&
+            requires(RequestSupplier req, swerve::SwerveDrivetrain &drive) { drive.SetControl(req()); }
     frc2::CommandPtr ApplyRequest(RequestSupplier request)
     {
         return Run([this, request=std::move(request)] {
@@ -208,6 +227,8 @@ public:
      * \param sample Sample along the path to follow
      */
     void FollowPath(frc::Pose2d const &pose, choreo::SwerveSample const &sample);
+
+    void Periodic() override;
 
     /**
      * \brief Runs the SysId Quasistatic test in the given direction for the routine
@@ -232,8 +253,6 @@ public:
     {
         return m_sysIdRoutineToApply->Dynamic(direction);
     }
-
-    void Periodic() override;
 
 private:
     void StartSimThread();

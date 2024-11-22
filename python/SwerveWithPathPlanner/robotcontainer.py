@@ -35,12 +35,6 @@ class RobotContainer:
             0.75
         )  # 3/4 of a rotation per second max angular velocity
 
-        self._joystick = commands2.button.CommandXboxController(0)
-
-        self._logger = Telemetry(self._max_speed)
-
-        self.drivetrain = TunerConstants.create_drivetrain()
-
         # Setting up bindings for necessary control of the swerve drive platform
         self._drive = (
             swerve.requests.FieldCentric()
@@ -60,6 +54,12 @@ class RobotContainer:
                 swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE
             )
         )
+
+        self._logger = Telemetry(self._max_speed)
+
+        self._joystick = commands2.button.CommandXboxController(0)
+
+        self.drivetrain = TunerConstants.create_drivetrain()
 
         # Path follower
         self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -100,6 +100,17 @@ class RobotContainer:
                 lambda: self._point.with_module_direction(
                     Rotation2d(-self._joystick.getLeftY(), -self._joystick.getLeftX())
                 )
+            )
+        )
+
+        self._joystick.pov(0).whileTrue(
+            self.drivetrain.apply_request(
+                lambda: self._forward_straight.with_velocity_x(0.5).with_velocity_y(0)
+            )
+        )
+        self._joystick.pov(180).whileTrue(
+            self.drivetrain.apply_request(
+                lambda: self._forward_straight.with_velocity_x(-0.5).with_velocity_y(0)
             )
         )
 

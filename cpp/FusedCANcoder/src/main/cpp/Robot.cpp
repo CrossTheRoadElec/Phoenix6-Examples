@@ -10,7 +10,7 @@ using namespace ctre::phoenix6;
 Robot::Robot() {
   /* Configure CANcoder to zero the magnet appropriately */
   configs::CANcoderConfiguration cc_cfg{};
-  cc_cfg.MagnetSensor.AbsoluteSensorRange = signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf;
+  cc_cfg.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5_tr;
   cc_cfg.MagnetSensor.SensorDirection = signals::SensorDirectionValue::CounterClockwise_Positive;
   cc_cfg.MagnetSensor.MagnetOffset = 0.4_tr;
   m_cc.GetConfigurator().Apply(cc_cfg);

@@ -1,4 +1,4 @@
-from phoenix6 import CANBus, configs, swerve, units
+from phoenix6 import CANBus, configs, signals, swerve, units
 from subsystems.command_swerve_drivetrain import CommandSwerveDrivetrain
 from wpimath.units import inchesToMeters
 
@@ -19,8 +19,9 @@ class TunerConstants:
         .with_k_i(0)
         .with_k_d(2.0)
         .with_k_s(0.2)
-        .with_k_v(1.5)
+        .with_k_v(1.59)
         .with_k_a(0)
+        .with_static_feedforward_sign(signals.StaticFeedforwardSignValue.USE_CLOSED_LOOP_SIGN)
     )
     # When using closed-loop control, the drive motor uses the control
     # output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
@@ -30,7 +31,7 @@ class TunerConstants:
         .with_k_i(0)
         .with_k_d(0)
         .with_k_s(0)
-        .with_k_v(0.12)
+        .with_k_v(0.124)
     )
 
     # The closed-loop output type to use for the steer motors;
@@ -61,9 +62,13 @@ class TunerConstants:
     # Configs for the Pigeon 2; leave this None to skip applying Pigeon 2 configs
     _pigeon_configs: configs.Pigeon2Configuration | None = None
 
+    # CAN bus that the devices are located on;
+    # All swerve devices must share the same CAN bus
+    canbus = CANBus("rio", "./logs/example.hoot")
+
     # Theoretical free speed (m/s) at 12 V applied output;
     # This needs to be tuned to your individual robot
-    speed_at_12_volts: units.meters_per_second = 4.70
+    speed_at_12_volts: units.meters_per_second = 4.55
 
     # Every 1 rotation of the azimuth results in _couple_ratio drive motor turns;
     # This may need to be tuned to your individual robot
@@ -76,7 +81,6 @@ class TunerConstants:
     _invert_left_side = False
     _invert_right_side = True
 
-    _canbus = CANBus("rio", "./logs/example.hoot")
     _pigeon_id = 1
 
     # These are only used for simulation
@@ -88,7 +92,7 @@ class TunerConstants:
 
     drivetrain_constants = (
         swerve.SwerveDrivetrainConstants()
-        .with_can_bus_name(_canbus.name)
+        .with_can_bus_name(canbus.name)
         .with_pigeon2_id(_pigeon_id)
         .with_pigeon2_configs(_pigeon_configs)
     )
@@ -121,6 +125,7 @@ class TunerConstants:
     _front_left_encoder_id = 2
     _front_left_encoder_offset: units.rotation = -0.83544921875
     _front_left_steer_motor_inverted = True
+    _front_left_cancoder_inverted = False
 
     _front_left_x_pos: units.meter = inchesToMeters(10.5)
     _front_left_y_pos: units.meter = inchesToMeters(10.5)
@@ -131,6 +136,7 @@ class TunerConstants:
     _front_right_encoder_id = 3
     _front_right_encoder_offset: units.rotation = -0.15234375
     _front_right_steer_motor_inverted = True
+    _front_right_cancoder_inverted = False
 
     _front_right_x_pos: units.meter = inchesToMeters(10.5)
     _front_right_y_pos: units.meter = inchesToMeters(-10.5)
@@ -141,6 +147,7 @@ class TunerConstants:
     _back_left_encoder_id = 0
     _back_left_encoder_offset: units.rotation = -0.4794921875
     _back_left_steer_motor_inverted = True
+    _back_left_cancoder_inverted = False
 
     _back_left_x_pos: units.meter = inchesToMeters(-10.5)
     _back_left_y_pos: units.meter = inchesToMeters(10.5)
@@ -151,9 +158,11 @@ class TunerConstants:
     _back_right_encoder_id = 1
     _back_right_encoder_offset: units.rotation = -0.84130859375
     _back_right_steer_motor_inverted = True
+    _back_right_cancoder_inverted = False
 
     _back_right_x_pos: units.meter = inchesToMeters(-10.5)
     _back_right_y_pos: units.meter = inchesToMeters(-10.5)
+
 
     front_left = _constants_creator.create_module_constants(
         _front_left_steer_motor_id,
@@ -164,6 +173,7 @@ class TunerConstants:
         _front_left_y_pos,
         _invert_left_side,
         _front_left_steer_motor_inverted,
+        _front_left_cancoder_inverted,
     )
     front_right = _constants_creator.create_module_constants(
         _front_right_steer_motor_id,
@@ -174,6 +184,7 @@ class TunerConstants:
         _front_right_y_pos,
         _invert_right_side,
         _front_right_steer_motor_inverted,
+        _front_right_cancoder_inverted,
     )
     back_left = _constants_creator.create_module_constants(
         _back_left_steer_motor_id,
@@ -184,6 +195,7 @@ class TunerConstants:
         _back_left_y_pos,
         _invert_left_side,
         _back_left_steer_motor_inverted,
+        _back_left_cancoder_inverted,
     )
     back_right = _constants_creator.create_module_constants(
         _back_right_steer_motor_id,
@@ -194,6 +206,7 @@ class TunerConstants:
         _back_right_y_pos,
         _invert_right_side,
         _back_right_steer_motor_inverted,
+        _back_right_cancoder_inverted,
     )
 
     @classmethod

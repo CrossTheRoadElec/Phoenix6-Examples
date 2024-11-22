@@ -13,7 +13,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -59,7 +58,7 @@ public class Robot extends TimedRobot {
   public Robot() {
     /* Configure CANcoder to zero the magnet appropriately */
     CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-    cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.5));
     cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.4));
     m_cc.getConfigurator().apply(cc_cfg);

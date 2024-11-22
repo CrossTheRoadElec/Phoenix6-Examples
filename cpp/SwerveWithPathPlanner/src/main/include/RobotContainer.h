@@ -15,16 +15,6 @@ private:
     units::meters_per_second_t MaxSpeed = TunerConstants::kSpeedAt12Volts; // kSpeedAt12Volts desired top speed
     units::radians_per_second_t MaxAngularRate = 0.75_tps; // 3/4 of a rotation per second max angular velocity
 
-    frc2::CommandXboxController joystick{0};
-
-    /* Note: This must be constructed before the drivetrain, otherwise we need to
-     *       define a destructor to un-register the telemetry from the drivetrain */
-    Telemetry logger{MaxSpeed};
-
-public:
-    subsystems::CommandSwerveDrivetrain drivetrain{TunerConstants::CreateDrivetrain()};
-
-private:
     /* Setting up bindings for necessary control of the swerve drive platform */
     swerve::requests::FieldCentric drive = swerve::requests::FieldCentric{}
         .WithDeadband(MaxSpeed * 0.1).WithRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -34,6 +24,16 @@ private:
     swerve::requests::RobotCentric forwardStraight = swerve::requests::RobotCentric{}
         .WithDriveRequestType(swerve::SwerveModule::DriveRequestType::OpenLoopVoltage);
 
+    /* Note: This must be constructed before the drivetrain, otherwise we need to
+     *       define a destructor to un-register the telemetry from the drivetrain */
+    Telemetry logger{MaxSpeed};
+
+    frc2::CommandXboxController joystick{0};
+
+public:
+    subsystems::CommandSwerveDrivetrain drivetrain{TunerConstants::CreateDrivetrain()};
+
+private:
     /* Path follower */
     frc::SendableChooser<frc2::Command *> autoChooser;
 

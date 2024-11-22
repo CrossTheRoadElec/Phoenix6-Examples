@@ -32,7 +32,7 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         """
         Constructs a CTRE SwerveDrivetrain using the specified constants.
 
-        This constructs the underlying hardware devices, so user should not construct
+        This constructs the underlying hardware devices, so users should not construct
         the devices themselves. If they need the devices, they can access them through
         getters in the classes.
 
@@ -53,7 +53,7 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         """
         Constructs a CTRE SwerveDrivetrain using the specified constants.
 
-        This constructs the underlying hardware devices, so user should not construct
+        This constructs the underlying hardware devices, so users should not construct
         the devices themselves. If they need the devices, they can access them through
         getters in the classes.
 
@@ -80,7 +80,7 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         """
         Constructs a CTRE SwerveDrivetrain using the specified constants.
 
-        This constructs the underlying hardware devices, so user should not construct
+        This constructs the underlying hardware devices, so users should not construct
         the devices themselves. If they need the devices, they can access them through
         getters in the classes.
 
