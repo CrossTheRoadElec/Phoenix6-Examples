@@ -17,7 +17,7 @@ class TunerConstants:
         configs.Slot0Configs()
         .with_k_p(100)
         .with_k_i(0)
-        .with_k_d(2.0)
+        .with_k_d(0.5)
         .with_k_s(0.2)
         .with_k_v(1.59)
         .with_k_a(0)
