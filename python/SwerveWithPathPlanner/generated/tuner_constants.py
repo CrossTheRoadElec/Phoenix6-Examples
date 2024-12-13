@@ -18,7 +18,7 @@ class TunerConstants:
         .with_k_p(100)
         .with_k_i(0)
         .with_k_d(0.5)
-        .with_k_s(0.2)
+        .with_k_s(0.1)
         .with_k_v(1.59)
         .with_k_a(0)
         .with_static_feedforward_sign(signals.StaticFeedforwardSignValue.USE_CLOSED_LOOP_SIGN)
@@ -87,8 +87,8 @@ class TunerConstants:
     _steer_inertia: units.kilogram_square_meter = 0.01
     _drive_inertia: units.kilogram_square_meter = 0.01
     # Simulated voltage necessary to overcome friction
-    _steer_friction_voltage: units.volt = 0.25
-    _drive_friction_voltage: units.volt = 0.25
+    _steer_friction_voltage: units.volt = 0.2
+    _drive_friction_voltage: units.volt = 0.2
 
     drivetrain_constants = (
         swerve.SwerveDrivetrainConstants()

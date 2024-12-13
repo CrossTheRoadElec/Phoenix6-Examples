@@ -13,7 +13,7 @@ class TunerConstants {
     // output type specified by SwerveModuleConstants::SteerMotorClosedLoopOutput
     static constexpr configs::Slot0Configs steerGains = configs::Slot0Configs{}
         .WithKP(100).WithKI(0).WithKD(0.5)
-        .WithKS(0.2).WithKV(1.59).WithKA(0)
+        .WithKS(0.1).WithKV(1.59).WithKA(0)
         .WithStaticFeedforwardSign(signals::StaticFeedforwardSignValue::UseClosedLoopSign);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants::DriveMotorClosedLoopOutput
@@ -80,8 +80,8 @@ private:
     static constexpr units::kilogram_square_meter_t kSteerInertia = 0.01_kg_sq_m;
     static constexpr units::kilogram_square_meter_t kDriveInertia = 0.01_kg_sq_m;
     // Simulated voltage necessary to overcome friction
-    static constexpr units::volt_t kSteerFrictionVoltage = 0.25_V;
-    static constexpr units::volt_t kDriveFrictionVoltage = 0.25_V;
+    static constexpr units::volt_t kSteerFrictionVoltage = 0.2_V;
+    static constexpr units::volt_t kDriveFrictionVoltage = 0.2_V;
 
 public:
     static constexpr swerve::SwerveDrivetrainConstants DrivetrainConstants = swerve::SwerveDrivetrainConstants{}

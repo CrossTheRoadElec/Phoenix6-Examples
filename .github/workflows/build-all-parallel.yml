@@ -45,8 +45,6 @@ jobs:
             directory: 'cpp/PositionClosedLoop'
           - project-name: 'Simulation'
             directory: 'cpp/Simulation'
-          - project-name: 'SwerveWithChoreo'
-            directory: 'cpp/SwerveWithChoreo'
           - project-name: 'SwerveWithPathPlanner'
             directory: 'cpp/SwerveWithPathPlanner'
           - project-name: 'VelocityClosedLoop'
