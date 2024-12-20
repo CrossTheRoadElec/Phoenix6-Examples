@@ -1,31 +1,26 @@
 package frc.robot;
 
 import choreo.auto.AutoFactory;
-import choreo.auto.AutoLoop;
+import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AutoRoutines {
-    private final CommandSwerveDrivetrain m_drivetrain;
+    private final AutoFactory m_factory;
 
-    public AutoRoutines(CommandSwerveDrivetrain drivetrain) {
-        m_drivetrain = drivetrain;
+    public AutoRoutines(AutoFactory factory) {
+        m_factory = factory;
     }
 
-    public Command simplePathAuto(AutoFactory factory) {
-        final AutoLoop routine = factory.newLoop("SimplePath Auto");
-        final AutoTrajectory simplePath = factory.trajectory("SimplePath", routine);
+    public AutoRoutine simplePathAuto() {
+        final AutoRoutine routine = m_factory.newRoutine("SimplePath Auto");
+        final AutoTrajectory simplePath = routine.trajectory("SimplePath");
 
-        routine.enabled().onTrue(
-            m_drivetrain.runOnce(() ->
-                simplePath.getInitialPose().ifPresentOrElse(
-                    pose -> m_drivetrain.resetPose(pose),
-                    routine::kill
-                )
-            )
+        routine.active().onTrue(
+            Commands.print("TEST_________").andThen(
+            routine.resetOdometry(simplePath))
             .andThen(simplePath.cmd())
         );
-        return routine.cmd();
+        return routine;
     }
 }

@@ -8,15 +8,13 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
-import choreo.Choreo;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -44,21 +42,24 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     /* Path follower */
-    private final AutoRoutines autoRoutines = new AutoRoutines(drivetrain);
+    private final AutoRoutines autoRoutines;
     private final AutoFactory autoFactory;
     public final AutoChooser autoChooser;
 
     public RobotContainer() {
-        autoFactory = Choreo.createAutoFactory(
-            drivetrain,
+        autoFactory = new AutoFactory(
             () -> drivetrain.getState().Pose,
+            drivetrain::resetPose,
             drivetrain::followPath,
-            () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+            true,
+            drivetrain,
             new AutoFactory.AutoBindings()
         );
+        autoRoutines = new AutoRoutines(autoFactory);
 
-        autoChooser = new AutoChooser(autoFactory, "");
-        autoChooser.addAutoRoutine("SimplePath", autoRoutines::simplePathAuto);
+        autoChooser = new AutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+        autoChooser.addRoutine("SimplePath", autoRoutines::simplePathAuto);
 
         configureBindings();
     }
@@ -102,6 +103,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         /* First put the drivetrain into auto run mode, then run the auto */
-        return autoChooser.getSelectedAutoRoutine();
+        return autoChooser.selectedCommand();
     }
 }

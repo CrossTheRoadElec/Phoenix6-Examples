@@ -14,7 +14,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -193,7 +192,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      * @param pose Current pose of the robot
      * @param sample Sample along the path to follow
      */
-    public void followPath(Pose2d pose, SwerveSample sample) {
+    public void followPath(SwerveSample sample) {
+        var pose = getState().Pose;
         m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         var targetSpeeds = sample.getChassisSpeeds();
