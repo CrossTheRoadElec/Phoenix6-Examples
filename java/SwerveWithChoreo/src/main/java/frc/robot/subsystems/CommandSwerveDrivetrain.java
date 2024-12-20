@@ -11,10 +11,12 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import choreo.Choreo.TrajectoryLogger;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoFactory.AutoBindings;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -178,6 +180,46 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     /**
+     * Creates a new auto factory for this drivetrain.
+     *
+     * @return AutoFactory for this drivetrain
+     */
+    public AutoFactory createAutoFactory() {
+        return createAutoFactory(new AutoBindings());
+    }
+
+    /**
+     * Creates a new auto factory for this drivetrain with the given
+     * global auto bindings.
+     *
+     * @param autoBindings Global bindings to apply to the factory
+     * @return AutoFactory for this drivetrain
+     */
+    public AutoFactory createAutoFactory(AutoBindings autoBindings) {
+        return createAutoFactory(autoBindings, (sample, isStart) -> {});
+    }
+
+    /**
+     * Creates a new auto factory for this drivetrain with the given
+     * global auto bindings and trajectory logger.
+     *
+     * @param autoBindings Global bindings to apply to the factory
+     * @param trajLogger Logger for the trajectory
+     * @return AutoFactory for this drivetrain
+     */
+    public AutoFactory createAutoFactory(AutoBindings autoBindings, TrajectoryLogger<SwerveSample> trajLogger) {
+        return new AutoFactory(
+            () -> getState().Pose,
+            this::resetPose,
+            this::followPath,
+            true,
+            this,
+            autoBindings,
+            trajLogger
+        );
+    }
+
+    /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
      * @param request Function returning the request to apply
@@ -190,11 +232,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /**
      * Follows the given field-centric path sample with PID.
      *
-     * @param pose Current pose of the robot
      * @param sample Sample along the path to follow
      */
-    public void followPath(Pose2d pose, SwerveSample sample) {
+    public void followPath(SwerveSample sample) {
         m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+        var pose = getState().Pose;
 
         var targetSpeeds = sample.getChassisSpeeds();
         targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(

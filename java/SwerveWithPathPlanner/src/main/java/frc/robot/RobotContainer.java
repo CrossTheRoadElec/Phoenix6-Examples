@@ -88,7 +88,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        /* First put the drivetrain into auto run mode, then run the auto */
+        /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
     }
 }
