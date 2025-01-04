@@ -26,6 +26,9 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
     @overload
     def __init__(
         self,
+        drive_motor_type: type,
+        steer_motor_type: type,
+        encoder_type: type,
         drivetrain_constants: swerve.SwerveDrivetrainConstants,
         modules: list[swerve.SwerveModuleConstants],
     ) -> None:
@@ -36,16 +39,25 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         the devices themselves. If they need the devices, they can access them through
         getters in the classes.
 
-        :param driveTrainConstants: Drivetrain-wide constants for the swerve drive
-        :type driveTrainConstants:  swerve.SwerveDrivetrainConstants
-        :param modules:             Constants for each specific module
-        :type modules:              list[swerve.SwerveModuleConstants]
+        :param drive_motor_type:     Type of the drive motor
+        :type drive_motor_type:      type
+        :param steer_motor_type:     Type of the steer motor
+        :type steer_motor_type:      type
+        :param encoder_type:         Type of the azimuth encoder
+        :type encoder_type:          type
+        :param drivetrain_constants: Drivetrain-wide constants for the swerve drive
+        :type drivetrain_constants:  swerve.SwerveDrivetrainConstants
+        :param modules:              Constants for each specific module
+        :type modules:               list[swerve.SwerveModuleConstants]
         """
         ...
 
     @overload
     def __init__(
         self,
+        drive_motor_type: type,
+        steer_motor_type: type,
+        encoder_type: type,
         drivetrain_constants: swerve.SwerveDrivetrainConstants,
         odometry_update_frequency: units.hertz,
         modules: list[swerve.SwerveModuleConstants],
@@ -57,8 +69,14 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         the devices themselves. If they need the devices, they can access them through
         getters in the classes.
 
-        :param driveTrainConstants:         Drivetrain-wide constants for the swerve drive
-        :type driveTrainConstants:          swerve.SwerveDrivetrainConstants
+        :param drive_motor_type:            Type of the drive motor
+        :type drive_motor_type:             type
+        :param steer_motor_type:            Type of the steer motor
+        :type steer_motor_type:             type
+        :param encoder_type:                Type of the azimuth encoder
+        :type encoder_type:                 type
+        :param drivetrain_constants:        Drivetrain-wide constants for the swerve drive
+        :type drivetrain_constants:         swerve.SwerveDrivetrainConstants
         :param odometry_update_frequency:   The frequency to run the odometry loop. If
                                             unspecified or set to 0 Hz, this is 250 Hz on
                                             CAN FD, and 100 Hz on CAN 2.0.
@@ -71,6 +89,9 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
     @overload
     def __init__(
         self,
+        drive_motor_type: type,
+        steer_motor_type: type,
+        encoder_type: type,
         drivetrain_constants: swerve.SwerveDrivetrainConstants,
         odometry_update_frequency: units.hertz,
         odometry_standard_deviation: tuple[float, float, float],
@@ -84,15 +105,25 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         the devices themselves. If they need the devices, they can access them through
         getters in the classes.
 
-        :param driveTrainConstants:         Drivetrain-wide constants for the swerve drive
-        :type driveTrainConstants:          swerve.SwerveDrivetrainConstants
+        :param drive_motor_type:            Type of the drive motor
+        :type drive_motor_type:             type
+        :param steer_motor_type:            Type of the steer motor
+        :type steer_motor_type:             type
+        :param encoder_type:                Type of the azimuth encoder
+        :type encoder_type:                 type
+        :param drivetrain_constants:        Drivetrain-wide constants for the swerve drive
+        :type drivetrain_constants:         swerve.SwerveDrivetrainConstants
         :param odometry_update_frequency:   The frequency to run the odometry loop. If
                                             unspecified or set to 0 Hz, this is 250 Hz on
                                             CAN FD, and 100 Hz on CAN 2.0.
         :type odometry_update_frequency:    units.hertz
         :param odometry_standard_deviation: The standard deviation for odometry calculation
+                                            in the form [x, y, theta]ᵀ, with units in meters
+                                            and radians
         :type odometry_standard_deviation:  tuple[float, float, float]
         :param vision_standard_deviation:   The standard deviation for vision calculation
+                                            in the form [x, y, theta]ᵀ, with units in meters
+                                            and radians
         :type vision_standard_deviation:    tuple[float, float, float]
         :param modules:                     Constants for each specific module
         :type modules:                      list[swerve.SwerveModuleConstants]
@@ -101,15 +132,19 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
 
     def __init__(
         self,
+        drive_motor_type: type,
+        steer_motor_type: type,
+        encoder_type: type,
         drivetrain_constants: swerve.SwerveDrivetrainConstants,
+        arg0=None,
+        arg1=None,
         arg2=None,
         arg3=None,
-        arg4=None,
-        arg5=None,
     ):
         Subsystem.__init__(self)
         swerve.SwerveDrivetrain.__init__(
-            self, drivetrain_constants, arg2, arg3, arg4, arg5
+            self, drive_motor_type, steer_motor_type, encoder_type,
+            drivetrain_constants, arg0, arg1, arg2, arg3
         )
 
         self._sim_notifier: Notifier | None = None

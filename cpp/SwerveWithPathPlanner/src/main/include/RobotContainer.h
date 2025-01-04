@@ -7,7 +7,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
-#include "generated/TunerConstants.h"
+#include "subsystems/CommandSwerveDrivetrain.h"
 #include "Telemetry.h"
 
 class RobotContainer {
@@ -18,11 +18,11 @@ private:
     /* Setting up bindings for necessary control of the swerve drive platform */
     swerve::requests::FieldCentric drive = swerve::requests::FieldCentric{}
         .WithDeadband(MaxSpeed * 0.1).WithRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-        .WithDriveRequestType(swerve::SwerveModule::DriveRequestType::OpenLoopVoltage); // Use open-loop control for drive motors
+        .WithDriveRequestType(swerve::DriveRequestType::OpenLoopVoltage); // Use open-loop control for drive motors
     swerve::requests::SwerveDriveBrake brake{};
     swerve::requests::PointWheelsAt point{};
     swerve::requests::RobotCentric forwardStraight = swerve::requests::RobotCentric{}
-        .WithDriveRequestType(swerve::SwerveModule::DriveRequestType::OpenLoopVoltage);
+        .WithDriveRequestType(swerve::DriveRequestType::OpenLoopVoltage);
 
     /* Note: This must be constructed before the drivetrain, otherwise we need to
      *       define a destructor to un-register the telemetry from the drivetrain */
