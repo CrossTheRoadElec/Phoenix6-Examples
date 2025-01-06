@@ -12,7 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
-import choreo.auto.AutoFactory.AutoBindings;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
@@ -200,36 +199,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @return AutoFactory for this drivetrain
      */
     public AutoFactory createAutoFactory() {
-        return createAutoFactory(new AutoBindings());
+        return createAutoFactory((sample, isStart) -> {});
     }
 
     /**
      * Creates a new auto factory for this drivetrain with the given
-     * global auto bindings.
+     * trajectory logger.
      *
-     * @param autoBindings Global bindings to apply to the factory
-     * @return AutoFactory for this drivetrain
-     */
-    public AutoFactory createAutoFactory(AutoBindings autoBindings) {
-        return createAutoFactory(autoBindings, (sample, isStart) -> {});
-    }
-
-    /**
-     * Creates a new auto factory for this drivetrain with the given
-     * global auto bindings and trajectory logger.
-     *
-     * @param autoBindings Global bindings to apply to the factory
      * @param trajLogger Logger for the trajectory
      * @return AutoFactory for this drivetrain
      */
-    public AutoFactory createAutoFactory(AutoBindings autoBindings, TrajectoryLogger<SwerveSample> trajLogger) {
+    public AutoFactory createAutoFactory(TrajectoryLogger<SwerveSample> trajLogger) {
         return new AutoFactory(
             () -> getState().Pose,
             this::resetPose,
             this::followPath,
             true,
             this,
-            autoBindings,
             trajLogger
         );
     }

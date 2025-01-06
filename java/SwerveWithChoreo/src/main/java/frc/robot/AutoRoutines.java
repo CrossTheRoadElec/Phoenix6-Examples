@@ -16,7 +16,7 @@ public class AutoRoutines {
         final AutoTrajectory simplePath = routine.trajectory("SimplePath");
 
         routine.active().onTrue(
-            routine.resetOdometry(simplePath)
+            simplePath.resetOdometry()
                 .andThen(simplePath.cmd())
         );
         return routine;
