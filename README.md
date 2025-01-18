@@ -29,5 +29,7 @@ This repository contains examples of robot code utilizing WPILib and the Phoenix
 
 ## Application specific examples
 
-- SwerveWithPathPlanner (Java only)
-    - Provides a basic example with the Phoenix6 Swerve API integrated with PathPlanner's path following for autonomous movement.
+- SwerveWithPathPlanner
+    - Provides a basic example with the Phoenix 6 Swerve API integrated with PathPlanner's path following for autonomous movement.
+- SwerveWithChoreo (Java only)
+    - Provides a basic example with the Phoenix 6 Swerve API integrated with Choreo's path following for autonomous movement.
