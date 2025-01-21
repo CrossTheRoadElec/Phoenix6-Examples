@@ -7,7 +7,7 @@ from phoenix6 import SignalLogger, swerve, units, utils
 from typing import Callable, overload
 from wpilib import DriverStation, Notifier, RobotController
 from wpilib.sysid import SysIdRoutineLog
-from wpimath.geometry import Rotation2d
+from wpimath.geometry import Pose2d, Rotation2d
 
 
 class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
@@ -329,3 +329,23 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
         self._last_sim_time = utils.get_current_time_seconds()
         self._sim_notifier = Notifier(_sim_periodic)
         self._sim_notifier.startPeriodic(self._SIM_LOOP_PERIOD)
+
+    def add_vision_measurement(self, vision_robot_pose: Pose2d, timestamp: units.second, vision_measurement_std_devs: tuple[float, float, float] | None = None):
+        """
+        Adds a vision measurement to the Kalman Filter. This will correct the
+        odometry pose estimate while still accounting for measurement noise.
+
+        Note that the vision measurement standard deviations passed into this method
+        will continue to apply to future measurements until a subsequent call to
+        set_vision_measurement_std_devs or this method.
+
+        :param vision_robot_pose:           The pose of the robot as measured by the vision camera.
+        :type vision_robot_pose:            Pose2d
+        :param timestamp:                   The timestamp of the vision measurement in seconds.
+        :type timestamp:                    second
+        :param vision_measurement_std_devs: Standard deviations of the vision pose measurement
+                                            in the form [x, y, theta]ᵀ, with units in meters
+                                            and radians.
+        :type vision_measurement_std_devs:  tuple[float, float, float] | None
+        """
+        swerve.SwerveDrivetrain.add_vision_measurement(self, vision_robot_pose, utils.fpga_to_current_time(timestamp), vision_measurement_std_devs)
