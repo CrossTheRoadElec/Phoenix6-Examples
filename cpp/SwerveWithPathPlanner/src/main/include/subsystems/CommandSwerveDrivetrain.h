@@ -254,6 +254,38 @@ public:
         return m_sysIdRoutineToApply->Dynamic(direction);
     }
 
+    /**
+     * \brief Adds a vision measurement to the Kalman Filter. This will correct the
+     * odometry pose estimate while still accounting for measurement noise.
+     *
+     * \param visionRobotPose The pose of the robot as measured by the vision camera.
+     * \param timestamp The timestamp of the vision measurement in seconds.
+     */
+    void AddVisionMeasurement(frc::Pose2d visionRobotPose, units::second_t timestamp) override
+    {
+        TunerSwerveDrivetrain::AddVisionMeasurement(std::move(visionRobotPose), utils::FPGAToCurrentTime(timestamp));
+    }
+
+    /**
+     * \brief Adds a vision measurement to the Kalman Filter. This will correct the
+     * odometry pose estimate while still accounting for measurement noise.
+     *
+     * Note that the vision measurement standard deviations passed into this method
+     * will continue to apply to future measurements until a subsequent call to
+     * #SetVisionMeasurementStdDevs or this method.
+     *
+     * \param visionRobotPose The pose of the robot as measured by the vision camera.
+     * \param timestamp The timestamp of the vision measurement in seconds.
+     * \param visionMeasurementStdDevs Standard deviations of the vision pose measurement.
+     */
+    void AddVisionMeasurement(
+        frc::Pose2d visionRobotPose,
+        units::second_t timestamp,
+        std::array<double, 3> visionMeasurementStdDevs) override
+    {
+        TunerSwerveDrivetrain::AddVisionMeasurement(std::move(visionRobotPose), utils::FPGAToCurrentTime(timestamp), visionMeasurementStdDevs);
+    }
+
 private:
     void ConfigureAutoBuilder();
     void StartSimThread();
