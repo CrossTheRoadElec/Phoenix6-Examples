@@ -73,6 +73,8 @@ jobs:
             directory: 'java/Pigeon2'
           - project-name: 'PositionClosedLoop'
             directory: 'java/PositionClosedLoop'
+          - project-name: 'PWMTalonFXS'
+            directory: 'java/PWMTalonFXS'
           - project-name: 'Simulation'
             directory: 'java/Simulation'
           - project-name: 'SwerveWithChoreo'
