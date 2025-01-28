@@ -43,6 +43,8 @@ jobs:
             directory: 'cpp/Pigeon2'
           - project-name: 'PositionClosedLoop'
             directory: 'cpp/PositionClosedLoop'
+          - project-name: 'PWMTalonFXS'
+            directory: 'cpp/PWMTalonFXS'
           - project-name: 'Simulation'
             directory: 'cpp/Simulation'
           - project-name: 'SwerveWithPathPlanner'
