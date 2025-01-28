@@ -47,7 +47,7 @@ public class PWMTalonFXS extends PWMMotorController {
         m_pwm.setSpeed(0.0);
         m_pwm.setZeroLatch();
 
-        HAL.report(tResourceType.kResourceType_PWMTalonSRX, getChannel() + 1);
+        HAL.report(tResourceType.kResourceType_CTRE_future12, getChannel() + 1);
     }
     /**
      * Sets the mode of operation when output is neutral or disabled.
