@@ -11,7 +11,10 @@ import edu.wpi.first.wpilibj.Timer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
+@ResourceLock(value = "SimState", mode = ResourceAccessMode.READ_WRITE)
 public class Pigeon2Tests {
     final double SET_DELTA = 0.1;
     final int CONFIG_RETRY_COUNT = 5;

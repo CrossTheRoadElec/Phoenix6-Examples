@@ -16,7 +16,10 @@ import edu.wpi.first.units.measure.Angle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
+@ResourceLock(value = "SimState", mode = ResourceAccessMode.READ_WRITE)
 public class FusedCANcoderTests {
     final double SET_DELTA = 0.1;
     final int CONFIG_RETRY_COUNT = 5;

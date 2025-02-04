@@ -16,7 +16,10 @@ import edu.wpi.first.units.measure.Time;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
+@ResourceLock(value = "SimState", mode = ResourceAccessMode.READ_WRITE)
 public class LatencyCompensationTests {
     final double DOUBLE_DELTA = 0.01;
 
