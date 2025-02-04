@@ -17,7 +17,10 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
+@ResourceLock(value = "SimState", mode = ResourceAccessMode.READ_WRITE)
 public class CurrentLimitTests implements AutoCloseable {
     final int CONFIG_RETRY_COUNT = 5;
 
