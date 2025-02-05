@@ -77,6 +77,8 @@ jobs:
             directory: 'java/PositionClosedLoop'
           - project-name: 'PWMTalonFXS'
             directory: 'java/PWMTalonFXS'
+          - project-name: 'TalonFXSGadgeteer'
+            directory: 'java/TalonFXSGadgeteer'
           - project-name: 'Simulation'
             directory: 'java/Simulation'
           - project-name: 'SwerveWithChoreo'
