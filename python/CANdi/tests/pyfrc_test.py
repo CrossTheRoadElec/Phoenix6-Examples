@@ -135,15 +135,15 @@ def test_individual_positions():
     # Make sure both are initially set to 0 before messing with sim state
     candi_sim_state.set_pwm1_position(0)
     candi_sim_state.set_pwm2_position(0)
-    candi_sim_state.set_quadrature_position(0)
-    candi.set_quadrature_position(0)
+    candi_sim_state.set_raw_quadrature_position(0)
+    candi.set_raw_quadrature_position(0)
     # Wait for sets to take affect
     BaseStatusSignal.wait_for_all(1.0, candi_pos_1, candi_pos_2, candi_pos_3)
 
     # Set them to different values
     candi_sim_state.set_pwm1_position(CANDI_POSITION_1)
     candi_sim_state.set_pwm2_position(CANDI_POSITION_2)
-    candi_sim_state.set_quadrature_position(CANDI_POSITION_3)
+    candi_sim_state.set_raw_quadrature_position(CANDI_POSITION_3)
 
     BaseStatusSignal.wait_for_all(1.0, candi_pos_1, candi_pos_2, candi_pos_3)
     BaseStatusSignal.wait_for_all(1.0, candi_pos_1, candi_pos_2, candi_pos_3)

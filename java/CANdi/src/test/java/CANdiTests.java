@@ -102,7 +102,7 @@ public class CANdiTests {
         var s2State = candi.getS2State();
         var s2Closed = candi.getS2Closed();
         for(var e : permuations) {
-            /* First configure close state value */
+            /* First pnfigure close state value */
             var cfg = new CANdiConfiguration();
             cfg.DigitalInputs.S2CloseState = e.closeState2();
             retryConfigApply(()->candi.getConfigurator().apply(cfg));
@@ -169,17 +169,17 @@ public class CANdiTests {
         var candiPos3 = candi.getQuadraturePosition();
 
         /* Make sure both are initially set to 0 before messing with sim state */
-        retryConfigApply(()->candiSimState.setPWM1Position(Rotations.of(0)));
-        retryConfigApply(()->candiSimState.setPWM2Position(Rotations.of(0)));
-        retryConfigApply(()->candiSimState.setQuadraturePosition(Rotations.of(0)));
-        retryConfigApply(()->candi.setQuadraturePosition(Rotations.of(0)));
+        retryConfigApply(()->candiSimState.setPwm1Position(Rotations.of(0)));
+        retryConfigApply(()->candiSimState.setPwm2Position(Rotations.of(0)));
+        retryConfigApply(()->candiSimState.setRawQuadraturePosition(Rotations.of(0)));
+        retryConfigApply(()->candi.setRawQuadraturePosition(Rotations.of(0)));
         /* Wait for sets to take affect */
         BaseStatusSignal.waitForAll(1.0, candiPos1, candiPos2, candiPos3);
 
         /* Set them to different values */
-        retryConfigApply(()->candiSimState.setPWM1Position(CANDI_POSITION_1));
-        retryConfigApply(()->candiSimState.setPWM2Position(CANDI_POSITION_2));
-        retryConfigApply(()->candiSimState.setQuadraturePosition(CANDI_POSITION_3));
+        retryConfigApply(()->candiSimState.setPwm1Position(CANDI_POSITION_1));
+        retryConfigApply(()->candiSimState.setPwm2Position(CANDI_POSITION_2));
+        retryConfigApply(()->candiSimState.setRawQuadraturePosition(CANDI_POSITION_3));
 
         BaseStatusSignal.waitForAll(1.0, candiPos1, candiPos2, candiPos3);
         BaseStatusSignal.waitForAll(1.0, candiPos1, candiPos2, candiPos3);

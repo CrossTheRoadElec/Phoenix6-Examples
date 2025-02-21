@@ -67,7 +67,7 @@ class TalonFXSimProfile extends SimProfile {
         _talonFXSim.setSupplyVoltage(12 - _talonFXSim.getSupplyCurrent() * kMotorResistance);
 
 
-        _candi.getSimState().setPWM1Position(position_rot / _gearRatio);
-        _candi.getSimState().setPWM1Velocity(velocity_rps / _gearRatio);
+        _candi.getSimState().setPwm1Position(position_rot / _gearRatio);
+        _candi.getSimState().setPwm1Velocity(velocity_rps / _gearRatio);
     }
 }
