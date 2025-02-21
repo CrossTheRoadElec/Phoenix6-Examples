@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    container: wpilib/roborio-cross-ubuntu:2025-22.04
 
     steps:
     - uses: actions/checkout@v4
@@ -46,8 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ['3.9', '3.10', '3.11']
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        python_version: ['3.10', '3.11', '3.12']
+        os: ['ubuntu-22.04', 'macos-13', 'windows-2022']
         project-name: [{python_projects}]
 
     runs-on: ${{{{ matrix.os }}}}
@@ -60,7 +60,7 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install -U pip
-        pip install 'robotpy' phoenix6
+        pip install -U --pre robotpy robotpy-commands-v2 robotpy-pathplannerlib phoenix6
     - name: Test ${{{{ matrix.project-name }}}}
       run: |
         cd "python/${{{{ matrix.project-name }}}}" && python3 -m robotpy test
