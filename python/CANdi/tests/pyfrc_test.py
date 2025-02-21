@@ -136,7 +136,7 @@ def test_individual_positions():
     candi_sim_state.set_pwm1_position(0)
     candi_sim_state.set_pwm2_position(0)
     candi_sim_state.set_raw_quadrature_position(0)
-    candi.set_raw_quadrature_position(0)
+    candi.set_quadrature_position(0)
     # Wait for sets to take affect
     BaseStatusSignal.wait_for_all(1.0, candi_pos_1, candi_pos_2, candi_pos_3)
 
