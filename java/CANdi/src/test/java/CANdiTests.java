@@ -172,7 +172,7 @@ public class CANdiTests {
         retryConfigApply(()->candiSimState.setPwm1Position(Rotations.of(0)));
         retryConfigApply(()->candiSimState.setPwm2Position(Rotations.of(0)));
         retryConfigApply(()->candiSimState.setRawQuadraturePosition(Rotations.of(0)));
-        retryConfigApply(()->candi.setRawQuadraturePosition(Rotations.of(0)));
+        retryConfigApply(()->candi.setQuadraturePosition(Rotations.of(0)));
         /* Wait for sets to take affect */
         BaseStatusSignal.waitForAll(1.0, candiPos1, candiPos2, candiPos3);
 
