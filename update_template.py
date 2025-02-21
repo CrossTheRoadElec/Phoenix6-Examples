@@ -7,8 +7,6 @@ import os
 import re
 import shutil
 
-from numpy import empty
-
 # Mapping of templates to target directories
 TEMPLATE_DIRS: dict[str, str] = {
     "./.automation/java_template/" : "./java",
