@@ -73,6 +73,8 @@ jobs:
             directory: 'java/FusedCANcoder'
           - project-name: 'MotionMagic'
             directory: 'java/MotionMagic'
+          - project-name: 'MotionMagicExpo'
+            directory: 'java/MotionMagicExpo'
           - project-name: 'PhoenixSysId'
             directory: 'java/PhoenixSysId'
           - project-name: 'Pigeon2'
