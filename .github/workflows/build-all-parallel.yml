@@ -122,7 +122,7 @@ jobs:
       matrix:
         python_version: ['3.10', '3.11', '3.12']
         os: ['ubuntu-22.04', 'macos-13', 'windows-2022']
-        project-name: ['ArcadeDrive', 'CANcoder', 'CANdi', 'MotionMagic', 'PhoenixSysId', 'PositionClosedLoop', 'StatusSignals', 'SwerveWithPathPlanner', 'TalonFX', 'VelocityClosedLoop']
+        project-name: ['ArcadeDrive', 'CANcoder', 'CANdi', 'CANrange', 'MotionMagic', 'PhoenixSysId', 'PositionClosedLoop', 'StatusSignals', 'SwerveWithPathPlanner', 'TalonFX', 'VelocityClosedLoop']
 
     runs-on: ${{ matrix.os }}
 
