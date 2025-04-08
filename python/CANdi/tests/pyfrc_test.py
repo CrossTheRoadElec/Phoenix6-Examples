@@ -23,7 +23,7 @@ def test_float_states():
     candi.configurator.apply(configs.CANdiConfiguration())
 
     # Double check all permutations make sense
-    permutations : tuple[signals.S1CloseStateValue, signals.S1StateValue, bool] = [
+    s1_permutations: list[tuple[signals.S1CloseStateValue, signals.S1StateValue, bool]] = [
         (signals.S1CloseStateValue.CLOSE_WHEN_NOT_FLOATING, signals.S1StateValue.FLOATING, False),
         (signals.S1CloseStateValue.CLOSE_WHEN_NOT_FLOATING, signals.S1StateValue.HIGH, True),
         (signals.S1CloseStateValue.CLOSE_WHEN_NOT_FLOATING, signals.S1StateValue.LOW, True),
@@ -47,7 +47,7 @@ def test_float_states():
     s1_state = candi.get_s1_state()
     s1_closed = candi.get_s1_closed()
 
-    for e in permutations:
+    for e in s1_permutations:
         # First configure close state value
         cfg = configs.CANdiConfiguration()
         cfg.digital_inputs.s1_close_state = e[0]
@@ -61,13 +61,13 @@ def test_float_states():
         assert e[2] == s1_closed.value
     
     # Convert to S2 equivalents
-    permutations : tuple[signals.S2CloseStateValue, signals.S2StateValue, bool] = [
-        (signals.S2CloseStateValue(a.value), signals.S2StateValue(b.value), c) for (a, b, c) in permutations
+    s2_permutations : list[tuple[signals.S2CloseStateValue, signals.S2StateValue, bool]] = [
+        (signals.S2CloseStateValue(a.value), signals.S2StateValue(b.value), c) for (a, b, c) in s1_permutations
     ]
 
     s2_state = candi.get_s2_state()
     s2_closed = candi.get_s2_closed()
-    for e in permutations:
+    for e in s2_permutations:
         # First configure close state value
         cfg = configs.CANdiConfiguration()
         cfg.digital_inputs.s2_close_state = e[0]
