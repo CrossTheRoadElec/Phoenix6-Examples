@@ -5,8 +5,8 @@
 #
 
 import commands2
-import commands2.button
 import commands2.cmd
+from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 
 from generated.tuner_constants import TunerConstants
@@ -14,7 +14,7 @@ from telemetry import Telemetry
 
 from pathplannerlib.auto import AutoBuilder
 from phoenix6 import swerve
-from wpilib import SmartDashboard
+from wpilib import DriverStation, SmartDashboard
 from wpimath.geometry import Rotation2d
 from wpimath.units import rotationsToRadians
 
@@ -57,7 +57,7 @@ class RobotContainer:
 
         self._logger = Telemetry(self._max_speed)
 
-        self._joystick = commands2.button.CommandXboxController(0)
+        self._joystick = CommandXboxController(0)
 
         self.drivetrain = TunerConstants.create_drivetrain()
 
@@ -92,6 +92,13 @@ class RobotContainer:
                     )  # Drive counterclockwise with negative X (left)
                 )
             )
+        )
+
+        # Idle while the robot is disabled. This ensures the configured
+        # neutral mode is applied to the drive motors while disabled.
+        idle = swerve.requests.Idle()
+        Trigger(DriverStation.isDisabled).whileTrue(
+            self.drivetrain.apply_request(lambda: idle).ignoringDisable(True)
         )
 
         self._joystick.a().whileTrue(self.drivetrain.apply_request(lambda: self._brake))
