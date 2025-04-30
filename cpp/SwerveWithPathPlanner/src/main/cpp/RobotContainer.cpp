@@ -6,6 +6,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
+#include <frc2/command/button/RobotModeTriggers.h>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 
 RobotContainer::RobotContainer()
@@ -27,6 +28,14 @@ void RobotContainer::ConfigureBindings()
                 .WithVelocityY(-joystick.GetLeftX() * MaxSpeed) // Drive left with negative X (left)
                 .WithRotationalRate(-joystick.GetRightX() * MaxAngularRate); // Drive counterclockwise with negative X (left)
         })
+    );
+
+    // Idle while the robot is disabled. This ensures the configured
+    // neutral mode is applied to the drive motors while disabled.
+    frc2::RobotModeTriggers::Disabled().WhileTrue(
+        drivetrain.ApplyRequest([] {
+            return swerve::requests::Idle{};
+        }).IgnoringDisable(true)
     );
 
     joystick.A().WhileTrue(drivetrain.ApplyRequest([this]() -> auto&& { return brake; }));

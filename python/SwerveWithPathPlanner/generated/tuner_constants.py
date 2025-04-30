@@ -218,7 +218,7 @@ class TunerConstants:
     )
 
     @classmethod
-    def create_drivetrain(clazz) -> CommandSwerveDrivetrain:
+    def create_drivetrain(cls) -> CommandSwerveDrivetrain:
         """
         Creates a CommandSwerveDrivetrain instance.
         This should only be called once in your robot program.
@@ -227,11 +227,11 @@ class TunerConstants:
             hardware.TalonFX,
             hardware.TalonFX,
             hardware.CANcoder,
-            clazz.drivetrain_constants,
+            cls.drivetrain_constants,
             [
-                clazz.front_left,
-                clazz.front_right,
-                clazz.back_left,
-                clazz.back_right,
+                cls.front_left,
+                cls.front_right,
+                cls.back_left,
+                cls.back_right,
             ],
         )
