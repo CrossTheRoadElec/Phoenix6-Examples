@@ -23,7 +23,7 @@ void Telemetry::Telemeterize(subsystems::CommandSwerveDrivetrain::SwerveDriveSta
         moduleTargetsArray[i*2 + 0] = state.ModuleTargets[i].angle.Radians().value();
         moduleTargetsArray[i*2 + 1] = state.ModuleTargets[i].speed.value();
     }
-    SignalLogger::WriteDoubleArray("DriveState/Pose", {state.Pose.X().value(), state.Pose.Y().value(), state.Pose.Rotation().Degrees().value()});
+    SignalLogger::WriteDoubleArray("DriveState/Pose", std::array{state.Pose.X().value(), state.Pose.Y().value(), state.Pose.Rotation().Degrees().value()});
     SignalLogger::WriteDoubleArray("DriveState/ModuleStates", moduleStatesArray);
     SignalLogger::WriteDoubleArray("DriveState/ModuleTargets", moduleTargetsArray);
     SignalLogger::WriteValue("DriveState/OdometryPeriod", state.OdometryPeriod);
