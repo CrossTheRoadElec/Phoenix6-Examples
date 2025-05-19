@@ -47,7 +47,7 @@ class TunerConstants:
     _steer_motor_type = swerve.SteerMotorArrangement.TALON_FX_INTEGRATED
 
     # The remote sensor feedback type to use for the steer motors;
-    # When not Pro-licensed, FusedCANcoder/SyncCANcoder automatically fall back to RemoteCANcoder
+    # When not Pro-licensed, Fused*/Sync* automatically fall back to Remote*
     _steer_feedback_type = swerve.SteerFeedbackType.FUSED_CANCODER
 
     # The stator current at which the wheels start to slip;

@@ -219,7 +219,7 @@ public:
      * \returns Command to run
      */
     template <typename RequestSupplier>
-        requires std::negation_v<std::is_lvalue_reference<std::invoke_result_t<RequestSupplier>>> &&
+        requires (!std::is_lvalue_reference_v<std::invoke_result_t<RequestSupplier>>) &&
             requires(RequestSupplier req, TunerSwerveDrivetrain &drive) { drive.SetControl(req()); }
     frc2::CommandPtr ApplyRequest(RequestSupplier request)
     {
