@@ -16,7 +16,7 @@ robotpy_extras = [
     "commands2",
     # "cscore",
     # "navx",
-    "pathplannerlib",
+    # "pathplannerlib",
     # "phoenix5",
     # "photonvision",
     # "playingwithfusion",
