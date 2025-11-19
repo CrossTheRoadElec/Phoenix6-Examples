@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -54,8 +55,8 @@ public class Robot extends TimedRobot {
     rightFollower.getConfigurator().apply(rightConfiguration);
 
     /* Set up followers to follow leaders */
-    leftFollower.setControl(new Follower(leftLeader.getDeviceID(), false));
-    rightFollower.setControl(new Follower(rightLeader.getDeviceID(), false));
+    leftFollower.setControl(new Follower(leftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
+    rightFollower.setControl(new Follower(rightLeader.getDeviceID(), MotorAlignmentValue.Aligned));
   
     leftLeader.setSafetyEnabled(true);
     rightLeader.setSafetyEnabled(true);

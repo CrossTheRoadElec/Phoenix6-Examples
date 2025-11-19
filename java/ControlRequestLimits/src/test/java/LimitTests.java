@@ -82,7 +82,7 @@ public class LimitTests {
             limitForward = request::withLimitForwardMotion;
             limitReverse = request::withLimitReverseMotion;
         }},
-        new ControlRequestTest<DynamicMotionMagicDutyCycle>(new DynamicMotionMagicDutyCycle(0, 0, 0, 0)) {{
+        new ControlRequestTest<DynamicMotionMagicDutyCycle>(new DynamicMotionMagicDutyCycle(0, 0, 0)) {{
             direction = dir -> {
                 if (dir == DriveDirection.Zero) {
                     request.Position = 0;
@@ -142,7 +142,7 @@ public class LimitTests {
             limitForward = request::withLimitForwardMotion;
             limitReverse = request::withLimitReverseMotion;
         }},
-        new ControlRequestTest<DynamicMotionMagicVoltage>(new DynamicMotionMagicVoltage(0, 0, 0, 0)) {{
+        new ControlRequestTest<DynamicMotionMagicVoltage>(new DynamicMotionMagicVoltage(0, 0, 0)) {{
             direction = dir -> {
                 if (dir == DriveDirection.Zero) {
                     request.Position = 0;
@@ -202,7 +202,7 @@ public class LimitTests {
             limitForward = request::withLimitForwardMotion;
             limitReverse = request::withLimitReverseMotion;
         }},
-        new ControlRequestTest<DynamicMotionMagicTorqueCurrentFOC>(new DynamicMotionMagicTorqueCurrentFOC(0, 0, 0, 0)) {{
+        new ControlRequestTest<DynamicMotionMagicTorqueCurrentFOC>(new DynamicMotionMagicTorqueCurrentFOC(0, 0, 0)) {{
             direction = dir -> {
                 if (dir == DriveDirection.Zero) {
                     request.Position = 0;

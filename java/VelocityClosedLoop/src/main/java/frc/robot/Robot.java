@@ -14,6 +14,7 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -78,7 +79,7 @@ public class Robot extends TimedRobot {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
 
-    m_fllr.setControl(new Follower(m_fx.getDeviceID(), false));
+    m_fllr.setControl(new Follower(m_fx.getDeviceID(), MotorAlignmentValue.Aligned));
   }
 
   @Override

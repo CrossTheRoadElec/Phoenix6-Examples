@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
 
     /* Also configure TalonFX to use CANdi as a remote sensor for PWM 1, and Limit switch for S2 */
     var fxConfigs = new TalonFXConfiguration();
-    fxConfigs.Feedback.withFusedCANdiPwm1(candi);
+    fxConfigs.Feedback.withFusedCANdiPWM1(candi);
     fxConfigs.HardwareLimitSwitch.withReverseLimitRemoteCANdiS2(candi);
     talonFX.getConfigurator().apply(fxConfigs);
   }
