@@ -46,8 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ['3.10', '3.11', '3.12']
-        os: ['ubuntu-22.04', 'macos-13', 'windows-2022']
+        python_version: ['3.12', '3.13', '3.14']
+        os: ['ubuntu-22.04', 'macos-latest', 'windows-latest']
         project-name: [{python_projects}]
 
     runs-on: ${{{{ matrix.os }}}}
