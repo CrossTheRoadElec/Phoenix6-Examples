@@ -46,9 +46,9 @@ class PhysicsEngine:
         # WPILib expects +V to be forward. Specify orientations to match that behavior.
 
         # left devices are CCW+
-        self.left_talon_sim.orientation = sim.ChassisReference.CounterClockwise_Positive
+        self.left_talon_sim.orientation = sim.ChassisReference.COUNTER_CLOCKWISE_POSITIVE
         # right devices are CW+
-        self.right_talon_sim.orientation = sim.ChassisReference.Clockwise_Positive
+        self.right_talon_sim.orientation = sim.ChassisReference.CLOCKWISE_POSITIVE
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
