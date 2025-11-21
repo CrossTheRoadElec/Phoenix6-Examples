@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ['3.12', '3.13', '3.14']
+        python_version: ['3.12', '3.13']
         os: ['ubuntu-22.04', 'macos-latest', 'windows-latest']
         project-name: [{python_projects}]
 
@@ -60,7 +60,7 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install -U pip
-        pip install -U --pre robotpy robotpy-commands-v2 robotpy-pathplannerlib phoenix6
+        pip install -r requirements.txt
     - name: Test ${{{{ matrix.project-name }}}}
       run: |
         cd "python/${{{{ matrix.project-name }}}}" && python3 -m robotpy test
