@@ -8,6 +8,7 @@ from typing import Callable, overload
 from wpilib import DriverStation, Notifier, RobotController
 from wpilib.sysid import SysIdRoutineLog
 from wpimath.geometry import Pose2d, Rotation2d
+from wpimath.kinematics import ChassisSpeeds
 
 
 class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
@@ -248,7 +249,7 @@ class CommandSwerveDrivetrain(Subsystem, swerve.SwerveDrivetrain):
             # Consumer of ChassisSpeeds and feedforwards to drive the robot
             lambda speeds, feedforwards: self.set_control(
                 self._apply_robot_speeds
-                .with_speeds(speeds)
+                .with_speeds(ChassisSpeeds.discretize(speeds, 0.020))
                 .with_wheel_force_feedforwards_x(feedforwards.robotRelativeForcesXNewtons)
                 .with_wheel_force_feedforwards_y(feedforwards.robotRelativeForcesYNewtons)
             ),
