@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import CANBus, configs, controls, hardware, StatusCode
+from phoenix6 import CANBus, configs, controls, hardware, StatusCode, signals
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -61,7 +61,7 @@ class MyRobot(wpilib.TimedRobot):
         if not status.is_ok():
             print(f"Could not apply configs, error code: {status.name}")
 
-        self.talonfx_follower.set_control(controls.Follower(self.talonfx.device_id, False))
+        self.talonfx_follower.set_control(controls.Follower(self.talonfx.device_id, signals.MotorAlignmentValue.ALIGNED))
 
     def teleopInit(self):
         pass

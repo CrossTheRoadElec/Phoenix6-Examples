@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Pigeon2Configurator;
@@ -16,6 +17,7 @@ import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.Pigeon2SimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -31,10 +33,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
 public class DriveSubsystem extends SubsystemBase {
-    private final TalonFX m_leftLeader = new TalonFX(LEFT_LEADER_ID, CANBUS_NAME);
-    private final TalonFX m_leftFollower = new TalonFX(LEFT_FOLLOWER_ID, CANBUS_NAME);
-    private final TalonFX m_rightLeader = new TalonFX(RIGHT_LEADER_ID, CANBUS_NAME);
-    private final TalonFX m_rightFollower = new TalonFX(RIGHT_FOLLOWER_ID, CANBUS_NAME);
+    private final TalonFX m_leftLeader = new TalonFX(LEFT_LEADER_ID, ROBOT_CANBUS);
+    private final TalonFX m_leftFollower = new TalonFX(LEFT_FOLLOWER_ID, ROBOT_CANBUS);
+    private final TalonFX m_rightLeader = new TalonFX(RIGHT_LEADER_ID, ROBOT_CANBUS);
+    private final TalonFX m_rightFollower = new TalonFX(RIGHT_FOLLOWER_ID, ROBOT_CANBUS);
 
     private final TalonFXSimState m_leftSimState = m_leftLeader.getSimState();
     private final TalonFXSimState m_rightSimState = m_rightLeader.getSimState();
@@ -44,7 +46,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final DutyCycleOut m_leftOut = new DutyCycleOut(0); // Initialize with 0% output
     private final DutyCycleOut m_rightOut = new DutyCycleOut(0); // Initialize with 0% output
 
-    private final Pigeon2 m_pigeon2 = new Pigeon2(PIGEON2_ID, CANBUS_NAME);
+    private final Pigeon2 m_pigeon2 = new Pigeon2(PIGEON2_ID, ROBOT_CANBUS);
 
     private final Pigeon2SimState m_pigeon2SimState = m_pigeon2.getSimState();
 
@@ -99,8 +101,8 @@ public class DriveSubsystem extends SubsystemBase {
         initializePigeon2(m_pigeon2.getConfigurator());
 
         /* Set followers to follow leader */
-        m_leftFollower.setControl(new Follower(m_leftLeader.getDeviceID(), false));
-        m_rightFollower.setControl(new Follower(m_rightLeader.getDeviceID(), false));
+        m_leftFollower.setControl(new Follower(m_leftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
+        m_rightFollower.setControl(new Follower(m_rightLeader.getDeviceID(), MotorAlignmentValue.Aligned));
 
         /* Make sure all critical signals are synchronized */
         /*

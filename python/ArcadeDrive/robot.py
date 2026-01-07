@@ -3,7 +3,7 @@
     This is a demo program for arcade drive in Python with Phoenix 6
 """
 import wpilib
-from phoenix6 import CANBus, configs, controls, hardware
+from phoenix6 import CANBus, configs, controls, hardware, signals
 
 
 class MyRobot(wpilib.TimedRobot):
@@ -30,10 +30,10 @@ class MyRobot(wpilib.TimedRobot):
         self.front_right_motor.configurator.apply(cfg)
 
         # Configure the rear motors to follow the front motors
-        follow_left_request = controls.Follower(0, False)
+        follow_left_request = controls.Follower(0, signals.MotorAlignmentValue.ALIGNED)
         self.rear_left_motor.set_control(follow_left_request)
 
-        follow_right_request = controls.Follower(2, False)
+        follow_right_request = controls.Follower(2, signals.MotorAlignmentValue.ALIGNED)
         self.rear_right_motor.set_control(follow_right_request)
 
         # Keep a reference to the DutyCycleOut control request to update periodically
