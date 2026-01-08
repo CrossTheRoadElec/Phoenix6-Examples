@@ -8,25 +8,25 @@
 # Version of robotpy this project depends on
 robotpy_version = "2026.1.1b1"
 
-# Which extra RobotPy components should be installed
+# Which core WPILib components should be installed
 # -> equivalent to `pip install robotpy[extra1, ...]
 components = [
     # "all",
     # "apriltag",
     "commands2",
     # "cscore",
-    # "navx",
-]
-
-# Other pip packages to install
-requires = [
-    "phoenix6~=26.1.0",
-    # "pathplannerlib",
-    # "phoenix5",
-    # "photonvision",
-    # "playingwithfusion",
-    # "rev",
     # "romi",
     # "sim",
     # "xrp",
+]
+
+# Other pip packages to install (including vendor packages)
+requires = [
+    "phoenix6~=26.1",
+    # "photonlibpy",
+    # "robotpy-ctre",  # Phoenix 5
+    # "robotpy-navx",
+    # "robotpy-pathplannerlib",
+    # "robotpy-playingwithfusion",
+    # "robotpy-rev",
 ]
