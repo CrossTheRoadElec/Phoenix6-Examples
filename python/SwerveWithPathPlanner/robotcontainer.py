@@ -5,7 +5,7 @@
 #
 
 import commands2
-import commands2.cmd
+from commands2 import cmd
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 
@@ -29,7 +29,7 @@ class RobotContainer:
 
     def __init__(self) -> None:
         self._max_speed = (
-            TunerConstants.speed_at_12_volts
+            1.0 * TunerConstants.speed_at_12_volts
         )  # speed_at_12_volts desired top speed
         self._max_angular_rate = rotationsToRadians(
             0.75
@@ -110,12 +110,12 @@ class RobotContainer:
             )
         )
 
-        self._joystick.pov(0).whileTrue(
+        self._joystick.povUp().whileTrue(
             self.drivetrain.apply_request(
                 lambda: self._forward_straight.with_velocity_x(0.5).with_velocity_y(0)
             )
         )
-        self._joystick.pov(180).whileTrue(
+        self._joystick.povDown().whileTrue(
             self.drivetrain.apply_request(
                 lambda: self._forward_straight.with_velocity_x(-0.5).with_velocity_y(0)
             )
@@ -138,7 +138,7 @@ class RobotContainer:
 
         # reset the field-centric heading on left bumper press
         self._joystick.leftBumper().onTrue(
-            self.drivetrain.runOnce(lambda: self.drivetrain.seed_field_centric())
+            self.drivetrain.runOnce(self.drivetrain.seed_field_centric)
         )
 
         self.drivetrain.register_telemetry(
@@ -146,7 +146,8 @@ class RobotContainer:
         )
 
     def getAutonomousCommand(self) -> commands2.Command:
-        """Use this to pass the autonomous command to the main {@link Robot} class.
+        """
+        Use this to pass the autonomous command to the main {@link Robot} class.
 
         :returns: the command to run in autonomous
         """

@@ -11,6 +11,8 @@ import typing
 
 from robotcontainer import RobotContainer
 
+from phoenix6 import HootAutoReplay
+
 
 class MyRobot(commands2.TimedCommandRobot):
     """
@@ -30,6 +32,13 @@ class MyRobot(commands2.TimedCommandRobot):
         # autonomous chooser on the dashboard.
         self.container = RobotContainer()
 
+        # log and replay timestamp and joystick data
+        self._time_and_joystick_replay = (
+            HootAutoReplay()
+            .with_timestamp_replay()
+            .with_joystick_replay()
+        )
+
     def robotPeriodic(self) -> None:
         """This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
         that you want ran during disabled, autonomous, teleoperated and test.
@@ -37,6 +46,7 @@ class MyRobot(commands2.TimedCommandRobot):
         This runs after the mode specific periodic functions, but before LiveWindow and
         SmartDashboard integrated updating."""
 
+        self._time_and_joystick_replay.update()
         # Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
         # commands, running already-scheduled commands, removing finished or interrupted commands,
         # and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -56,7 +66,7 @@ class MyRobot(commands2.TimedCommandRobot):
         self.autonomousCommand = self.container.getAutonomousCommand()
 
         if self.autonomousCommand:
-            self.autonomousCommand.schedule()
+            commands2.CommandScheduler.getInstance().schedule(self.autonomousCommand)
 
     def autonomousPeriodic(self) -> None:
         """This function is called periodically during autonomous"""
@@ -68,7 +78,7 @@ class MyRobot(commands2.TimedCommandRobot):
         # continue until interrupted by another command, remove
         # this line or comment it out.
         if self.autonomousCommand:
-            self.autonomousCommand.cancel()
+            commands2.CommandScheduler.getInstance().cancel(self.autonomousCommand)
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""

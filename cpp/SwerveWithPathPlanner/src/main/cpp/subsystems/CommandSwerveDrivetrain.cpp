@@ -64,6 +64,8 @@ void CommandSwerveDrivetrain::Periodic()
 void CommandSwerveDrivetrain::StartSimThread()
 {
     m_lastSimTime = utils::GetCurrentTime();
+
+    /* Run simulation at a faster rate so PID gains behave more reasonably */
     m_simNotifier = std::make_unique<frc::Notifier>([this] {
         units::second_t const currentTime = utils::GetCurrentTime();
         auto const deltaTime = currentTime - m_lastSimTime;

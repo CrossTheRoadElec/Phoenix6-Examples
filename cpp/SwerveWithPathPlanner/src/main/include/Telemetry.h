@@ -66,10 +66,7 @@ public:
      *
      * \param maxSpeed Maximum speed
      */
-    Telemetry(units::meters_per_second_t maxSpeed) : MaxSpeed{maxSpeed}
-    {
-        ctre::phoenix6::SignalLogger::Start();
-    }
+    Telemetry(units::meters_per_second_t maxSpeed);
 
     /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
     void Telemeterize(subsystems::CommandSwerveDrivetrain::SwerveDriveState const &state);
