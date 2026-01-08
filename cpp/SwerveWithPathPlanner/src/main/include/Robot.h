@@ -4,34 +4,38 @@
 
 #pragma once
 
-#include <optional>
+#include "ctre/phoenix6/HootAutoReplay.hpp"
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
+#include <optional>
 
 #include "RobotContainer.h"
 
 class Robot : public frc::TimedRobot {
- public:
-  Robot();
-  void RobotPeriodic() override;
-  void DisabledInit() override;
-  void DisabledPeriodic() override;
-  void DisabledExit() override;
-  void AutonomousInit() override;
-  void AutonomousPeriodic() override;
-  void AutonomousExit() override;
-  void TeleopInit() override;
-  void TeleopPeriodic() override;
-  void TeleopExit() override;
-  void TestInit() override;
-  void TestPeriodic() override;
-  void TestExit() override;
+public:
+    Robot();
+    void RobotPeriodic() override;
+    void DisabledInit() override;
+    void DisabledPeriodic() override;
+    void DisabledExit() override;
+    void AutonomousInit() override;
+    void AutonomousPeriodic() override;
+    void AutonomousExit() override;
+    void TeleopInit() override;
+    void TeleopPeriodic() override;
+    void TeleopExit() override;
+    void TestInit() override;
+    void TestPeriodic() override;
+    void TestExit() override;
 
- private:
-  frc2::Command *m_autonomousCommand;
+private:
+    frc2::Command *m_autonomousCommand;
 
-  RobotContainer m_container;
+    RobotContainer m_container;
 
-  static constexpr bool kUseLimelight = false;
+    /* log and replay timestamp and joystick data */
+    ctre::phoenix6::HootAutoReplay m_timeAndJoystickReplay = ctre::phoenix6::HootAutoReplay{}
+        .WithTimestampReplay()
+        .WithJoystickReplay();
 };

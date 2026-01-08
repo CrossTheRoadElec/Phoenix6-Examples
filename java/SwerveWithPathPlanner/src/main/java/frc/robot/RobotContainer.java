@@ -24,7 +24,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -79,10 +79,10 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
 
-        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
+        joystick.povUp().whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
-        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
+        joystick.povDown().whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
 
@@ -93,8 +93,8 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // Reset the field-centric heading on left bumper press.
+        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
