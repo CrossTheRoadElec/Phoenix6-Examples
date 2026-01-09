@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2025-22.04
+    container: wpilib/roborio-cross-ubuntu:2026-22.04-py314
 
     steps:
     - uses: actions/checkout@v4
@@ -144,3 +144,4 @@ jobs:
     - name: Test ${{ matrix.project-name }}
       run: |
         cd "python/${{ matrix.project-name }}" && python3 -m robotpy test
+
