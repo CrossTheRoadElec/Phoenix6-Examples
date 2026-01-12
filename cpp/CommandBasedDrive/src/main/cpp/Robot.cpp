@@ -38,7 +38,7 @@ void Robot::AutonomousInit() {
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
   if (m_autonomousCommand) {
-    m_autonomousCommand->Schedule();
+    frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand.value());
   }
 }
 
@@ -50,7 +50,7 @@ void Robot::TeleopInit() {
   // continue until interrupted by another command, remove
   // this line or comment it out.
   if (m_autonomousCommand) {
-    m_autonomousCommand->Cancel();
+    frc2::CommandScheduler::GetInstance().Cancel(m_autonomousCommand.value());
     m_autonomousCommand = std::nullopt;
   }
 }
