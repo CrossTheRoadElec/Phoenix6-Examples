@@ -30,6 +30,8 @@ public:
     void TestExit() override;
 
 private:
+    static constexpr bool kUseLimelight = false;
+
     frc2::Command *m_autonomousCommand;
 
     RobotContainer m_container;

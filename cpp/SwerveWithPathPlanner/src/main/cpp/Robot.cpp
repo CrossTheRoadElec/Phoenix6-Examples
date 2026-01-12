@@ -44,7 +44,7 @@ void Robot::AutonomousInit() {
     m_autonomousCommand = m_container.GetAutonomousCommand();
 
     if (m_autonomousCommand) {
-        frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand.value());
+        frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand);
     }
 }
 
@@ -54,7 +54,7 @@ void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {
     if (m_autonomousCommand) {
-        frc2::CommandScheduler::GetInstance().Cancel(m_autonomousCommand.value());
+        frc2::CommandScheduler::GetInstance().Cancel(m_autonomousCommand);
     }
 }
 

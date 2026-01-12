@@ -36,7 +36,7 @@ class MyRobot(TimedCommandRobot):
         self.autonomousCommand = self.container.getAutonomousCommand()
 
         if self.autonomousCommand:
-            self.autonomousCommand.schedule()
+            CommandScheduler.getInstance().schedule(self.autonomousCommand)
 
     def teleopInit(self) -> None:
         # This makes sure that the autonomous stops running when
@@ -44,7 +44,7 @@ class MyRobot(TimedCommandRobot):
         # continue until interrupted by another command, remove
         # this line or comment it out.
         if self.autonomousCommand:
-            self.autonomousCommand.cancel()
+            CommandScheduler.getInstance().cancel(self.autonomousCommand)
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
