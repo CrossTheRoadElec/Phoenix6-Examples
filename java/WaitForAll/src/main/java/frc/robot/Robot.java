@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -22,11 +23,12 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFX m_motor1 = new TalonFX(0, "*"); // Pick the first CANivore bus
-  private final Pigeon2 m_pigdey = new Pigeon2(1, "*"); // Pick the first CANivore bus also
-  private final TalonFX m_transcientMotor = new TalonFX(20, "*"); // This motor may or may not be on the bus, 
+  private final CANBus kCANivore = new CANBus("*"); // The first CANivore bus
+  private final TalonFX m_motor1 = new TalonFX(0, kCANivore); // Pick the first CANivore bus
+  private final Pigeon2 m_pigdey = new Pigeon2(1, kCANivore); // Pick the first CANivore bus also
+  private final TalonFX m_transcientMotor = new TalonFX(20, kCANivore); // This motor may or may not be on the bus, 
                                                                   // selectively power it to completely test this example 
-  private final TalonFX m_motor2 = new TalonFX(0, "rio"); // Pick the RIO bus to force a failure we can detect
+  private final TalonFX m_motor2 = new TalonFX(0, CANBus.roboRIO()); // Pick the RIO bus to force a failure we can detect
 
   private final StatusSignal<Angle> m_canbus1signal1 = m_motor1.getPosition(false);
   private final StatusSignal<AngularVelocity> m_canbus1signal2 = m_motor1.getVelocity(false);

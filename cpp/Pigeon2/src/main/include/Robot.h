@@ -10,7 +10,7 @@
 
 class Robot : public frc::TimedRobot {
  private:
-  ctre::phoenix6::hardware::Pigeon2 pidgey{1, "rio"};
+  ctre::phoenix6::hardware::Pigeon2 pidgey{1, ctre::phoenix6::CANBus::RoboRIO()};
   units::time::second_t currentTime{frc::Timer::GetFPGATimestamp()};
 
  public:

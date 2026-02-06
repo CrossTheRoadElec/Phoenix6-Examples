@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import XboxController
-from phoenix6 import hardware, controls, configs, StatusCode
+from phoenix6 import CANBus, StatusCode, configs, controls, hardware
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -16,7 +16,7 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the motor controllers used
-        self.talonfx = hardware.TalonFX(1, "canivore")
+        self.talonfx = hardware.TalonFX(1, CANBus("canivore"))
         self.motion_magic = controls.MotionMagicVoltage(0)
 
         self.joystick = XboxController(0)

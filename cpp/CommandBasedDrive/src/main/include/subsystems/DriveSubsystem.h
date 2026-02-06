@@ -15,15 +15,15 @@
 class DriveSubsystem : public frc2::SubsystemBase
 {
 private:
-    ctre::phoenix6::hardware::TalonFX m_leftLeader{LEFT_LEADER_ID, CANBUS_NAME};
-    ctre::phoenix6::hardware::TalonFX m_leftFollower{LEFT_FOLLOWER_ID, CANBUS_NAME};
-    ctre::phoenix6::hardware::TalonFX m_rightLeader{RIGHT_LEADER_ID, CANBUS_NAME};
-    ctre::phoenix6::hardware::TalonFX m_rightFollower{RIGHT_FOLLOWER_ID, CANBUS_NAME};
+    ctre::phoenix6::hardware::TalonFX m_leftLeader{LEFT_LEADER_ID, CANBUS};
+    ctre::phoenix6::hardware::TalonFX m_leftFollower{LEFT_FOLLOWER_ID, CANBUS};
+    ctre::phoenix6::hardware::TalonFX m_rightLeader{RIGHT_LEADER_ID, CANBUS};
+    ctre::phoenix6::hardware::TalonFX m_rightFollower{RIGHT_FOLLOWER_ID, CANBUS};
 
     ctre::phoenix6::controls::DutyCycleOut m_leftOut{0};  // Initialize with 0% output
     ctre::phoenix6::controls::DutyCycleOut m_rightOut{0}; // Initialize with 0% output
 
-    ctre::phoenix6::hardware::Pigeon2 m_pigeon2{PIGEON2_ID, CANBUS_NAME};
+    ctre::phoenix6::hardware::Pigeon2 m_pigeon2{PIGEON2_ID, CANBUS};
 
     ctre::phoenix6::sim::TalonFXSimState &m_leftSimState = m_leftLeader.GetSimState();
     ctre::phoenix6::sim::TalonFXSimState &m_rightSimState = m_rightLeader.GetSimState();

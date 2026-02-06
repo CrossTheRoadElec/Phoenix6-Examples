@@ -9,7 +9,7 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenix6::hardware::TalonFX m_motor{1, "canivore"};
+  ctre::phoenix6::hardware::TalonFX m_motor{1, ctre::phoenix6::CANBus{"canivore"}};
   ctre::phoenix6::controls::MotionMagicVoltage m_mmReq{0_tr};
   frc::XboxController m_joystick{0};
   int m_printCount = 0;

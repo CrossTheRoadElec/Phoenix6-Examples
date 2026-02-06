@@ -11,10 +11,10 @@
 #include <ctre/phoenix6/CANcoder.hpp>
 
 class Robot : public frc::TimedRobot {
-  const std::string CANBUS_NAME = "";
-  ctre::phoenix6::hardware::CANcoder m_cc{0, CANBUS_NAME};
-  ctre::phoenix6::hardware::TalonFX m_fx{0, CANBUS_NAME};
-  ctre::phoenix6::hardware::Pigeon2 m_p2{0, CANBUS_NAME};
+  ctre::phoenix6::CANBus CANBUS{""};
+  ctre::phoenix6::hardware::CANcoder m_cc{0, CANBUS};
+  ctre::phoenix6::hardware::TalonFX m_fx{0, CANBUS};
+  ctre::phoenix6::hardware::Pigeon2 m_p2{0, CANBUS};
   int m_printCount = 0;
 
   ctre::phoenix6::controls::DutyCycleOut m_dutycycle{0};

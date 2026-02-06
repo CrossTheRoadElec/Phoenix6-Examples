@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import CANBus, configs, controls, hardware, StatusCode, signals
+from phoenix6 import CANBus, StatusCode, configs, controls, hardware, signals
 
 class MyRobot(wpilib.TimedRobot):
     """

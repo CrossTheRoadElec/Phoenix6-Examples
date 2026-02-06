@@ -29,7 +29,7 @@ private:
     static constexpr int kSlot1StartIdx = 38;
     static constexpr int kSlot1EndIdx = 67;
 
-    ctre::phoenix6::hardware::CANdle m_candle{1, "rio"};
+    ctre::phoenix6::hardware::CANdle m_candle{1, ctre::phoenix6::CANBus::RoboRIO()};
 
     enum class AnimationType {
         None,

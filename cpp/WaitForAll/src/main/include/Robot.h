@@ -30,11 +30,12 @@ class Robot : public frc::TimedRobot {
   void SimulationPeriodic() override;
   
 private:
-  ctre::phoenix6::hardware::TalonFX m_motor1{0, "*"}; // Pick the first CANivore bus
-  ctre::phoenix6::hardware::Pigeon2 m_pigdey{1, "*"}; // Pick the first CANivore bus also
-  ctre::phoenix6::hardware::TalonFX m_transcientMotor{20, "*"}; // This motor may or may not be on the bus, 
-                                                                // selectively power it to completely test this example 
-  ctre::phoenix6::hardware::TalonFX m_motor2{0, "rio"}; // Pick the RIO bus to force a failure we can detect
+  ctre::phoenix6::CANBus kCANivore{"*"}; // The first CANivore bus
+  ctre::phoenix6::hardware::TalonFX m_motor1{0, kCANivore}; // Pick the first CANivore bus
+  ctre::phoenix6::hardware::Pigeon2 m_pigdey{1, kCANivore}; // Pick the first CANivore bus also
+  ctre::phoenix6::hardware::TalonFX m_transcientMotor{20, kCANivore}; // This motor may or may not be on the bus, 
+                                                                      // selectively power it to completely test this example 
+  ctre::phoenix6::hardware::TalonFX m_motor2{0, ctre::phoenix6::CANBus::RoboRIO()}; // Pick the RIO bus to force a failure we can detect
   
   ctre::phoenix6::StatusSignal<units::turn_t> m_canbus1signal1 = m_motor1.GetPosition(false);
   ctre::phoenix6::StatusSignal<units::turns_per_second_t> m_canbus1signal2 = m_motor1.GetVelocity(false);

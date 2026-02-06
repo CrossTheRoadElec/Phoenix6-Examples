@@ -4,7 +4,7 @@
 """
 import wpilib
 from enum import Enum
-from phoenix6 import configs, controls, hardware, signals
+from phoenix6 import CANBus, configs, controls, hardware, signals
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -43,7 +43,7 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the devices used
-        self.candle = hardware.CANdle(1, "rio")
+        self.candle = hardware.CANdle(1, CANBus.roborio())
 
         # Configure CANdle
         cfg = configs.CANdleConfiguration()

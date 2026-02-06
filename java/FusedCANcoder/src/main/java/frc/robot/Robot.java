@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -28,9 +29,9 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String canBusName = "canivore";
-  private final TalonFX m_fx = new TalonFX(1, canBusName);
-  private final CANcoder m_cc = new CANcoder(1, canBusName);
+  private static final CANBus canBus = new CANBus("canivore");
+  private final TalonFX m_fx = new TalonFX(1, canBus);
+  private final CANcoder m_cc = new CANcoder(1, canBus);
 
   private final StatusSignal<Boolean> f_fusedSensorOutOfSync = m_fx.getFault_FusedSensorOutOfSync(false);
   private final StatusSignal<Boolean> sf_fusedSensorOutOfSync = m_fx.getStickyFault_FusedSensorOutOfSync(false);

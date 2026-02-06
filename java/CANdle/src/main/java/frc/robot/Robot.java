@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANdle;
@@ -43,7 +44,7 @@ public class Robot extends TimedRobot {
     private static final int kSlot1StartIdx = 38;
     private static final int kSlot1EndIdx = 67;
 
-    private final CANdle m_candle = new CANdle(1, "rio");
+    private final CANdle m_candle = new CANdle(1, CANBus.roboRIO());
 
     private enum AnimationType {
         None,

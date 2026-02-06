@@ -30,8 +30,8 @@ public:
   void SimulationPeriodic() override;
 
 private:
-  ctre::phoenix6::hardware::TalonFX m_fx{0, "*"};
-  ctre::phoenix6::hardware::CANcoder m_cc{1, "*"};
+  ctre::phoenix6::hardware::TalonFX m_fx{0, ctre::phoenix6::CANBus{"*"}};
+  ctre::phoenix6::hardware::CANcoder m_cc{1, ctre::phoenix6::CANBus{"*"}};
   ctre::phoenix6::controls::DutyCycleOut m_out{0};
 
   frc::XboxController m_joystick{0};

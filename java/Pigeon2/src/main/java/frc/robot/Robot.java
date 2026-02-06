@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -27,8 +28,8 @@ public class Robot extends TimedRobot {
   private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
   /* Keep a reference for a TalonFX around so we can drive the thing the Pigeon is on */
-  private final TalonFX talonfx = new TalonFX(0, "rio");
-  private final Pigeon2 pidgey = new Pigeon2(1, "rio");
+  private final TalonFX talonfx = new TalonFX(0, CANBus.roboRIO());
+  private final Pigeon2 pidgey = new Pigeon2(1, CANBus.roboRIO());
   private double currentTime = Timer.getFPGATimestamp();
 
   private final XboxController joystick = new XboxController(0);

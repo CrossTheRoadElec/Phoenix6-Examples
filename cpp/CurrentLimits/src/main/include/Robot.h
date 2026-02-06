@@ -9,7 +9,7 @@
 #include <frc/XboxController.h>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenix6::hardware::TalonFX m_fx{0, "canivore"};
+  ctre::phoenix6::hardware::TalonFX m_fx{0, ctre::phoenix6::CANBus{"canivore"}};
   ctre::phoenix6::controls::DutyCycleOut m_output{0};
   ctre::phoenix6::configs::CurrentLimitsConfigs m_currentLimits{};
   

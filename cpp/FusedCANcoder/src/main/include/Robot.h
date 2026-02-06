@@ -10,8 +10,8 @@
 #include <ctre/phoenix6/CANcoder.hpp>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenix6::hardware::TalonFX m_fx{1, "canivore"};
-  ctre::phoenix6::hardware::CANcoder m_cc{1, "canivore"};
+  ctre::phoenix6::hardware::TalonFX m_fx{1, ctre::phoenix6::CANBus{"canivore"}};
+  ctre::phoenix6::hardware::CANcoder m_cc{1, ctre::phoenix6::CANBus{"canivore"}};
   ctre::phoenix6::StatusSignal<bool> &f_fusedSensorOutOfSync = m_fx.GetFault_FusedSensorOutOfSync(false);
   ctre::phoenix6::StatusSignal<bool> &sf_fusedSensorOutOfSync = m_fx.GetStickyFault_FusedSensorOutOfSync(false);
   ctre::phoenix6::StatusSignal<bool> &f_remoteSensorInvalid = m_fx.GetFault_RemoteSensorDataInvalid(false);
