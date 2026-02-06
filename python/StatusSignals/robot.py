@@ -4,13 +4,7 @@
 """
 import wpilib
 from wpilib import Timer, XboxController
-from phoenix6 import (
-    hardware,
-    controls,
-    SignalLogger,
-    BaseStatusSignal,
-    unmanaged
-)
+from phoenix6 import BaseStatusSignal, CANBus, SignalLogger, controls, hardware
 
 
 class MyRobot(wpilib.TimedRobot):
@@ -23,7 +17,7 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the motor controllers used
-        self.motor = hardware.TalonFX(1, "canivore")
+        self.motor = hardware.TalonFX(1, CANBus("canivore"))
         self.request = controls.DutyCycleOut(0)
 
         self.pos = self.motor.get_position()

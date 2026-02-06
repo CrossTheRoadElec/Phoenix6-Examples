@@ -10,7 +10,7 @@
 
 class Robot : public frc::TimedRobot {
  private:
-  ctre::phoenix6::CANBus kCANBus{"rio"};
+  ctre::phoenix6::CANBus kCANBus = ctre::phoenix6::CANBus::RoboRIO();
 
   ctre::phoenix6::hardware::TalonFX leftLeader{1, kCANBus};
   ctre::phoenix6::hardware::TalonFX leftFollower{2, kCANBus};

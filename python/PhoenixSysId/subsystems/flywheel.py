@@ -2,7 +2,7 @@ from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
 from wpilib.sysid import SysIdRoutineLog
 
-from phoenix6 import configs, controls, hardware, BaseStatusSignal, SignalLogger
+from phoenix6 import BaseStatusSignal, SignalLogger, configs, controls, hardware
 
 from constants import Constants
 

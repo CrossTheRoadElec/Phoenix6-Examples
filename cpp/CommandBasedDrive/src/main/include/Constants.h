@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <string_view>
+#include "ctre/phoenix6/CANBus.hpp"
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -16,7 +16,7 @@
  * they are needed.
  */
 
-constexpr char CANBUS_NAME[]{"rio"};
+constexpr ctre::phoenix6::CANBus CANBUS = ctre::phoenix6::CANBus::RoboRIO();
 
 /* Talon FX Device IDs */
 constexpr int LEFT_LEADER_ID{1};

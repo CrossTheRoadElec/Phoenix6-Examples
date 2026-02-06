@@ -30,7 +30,7 @@ import frc.robot.sim.PhysicsSim;
 public class Robot extends TimedRobot {
   private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final CANBus kCANBus = new CANBus("rio");
+  private final CANBus kCANBus = CANBus.roboRIO();
 
   private final TalonFX talonFX = new TalonFX(2, kCANBus);
   private final CANdi candi = new CANdi(1, kCANBus);

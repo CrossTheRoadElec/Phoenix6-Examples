@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Hertz;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
@@ -24,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-  private final TalonFXS m_fxs = new TalonFXS(0, "canivore");
+  private final TalonFXS m_fxs = new TalonFXS(0, new CANBus("canivore"));
 
   private final StatusSignal<Angle> m_quadPosSignal;
   private final StatusSignal<AngularVelocity> m_quadVelSignal;

@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends TimedRobot {
   private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final CANBus kCANBus = new CANBus("rio");
+  private final CANBus kCANBus = CANBus.roboRIO();
 
   /**
    * We recommend reading the Tuning CANrange devblog in our API documentation

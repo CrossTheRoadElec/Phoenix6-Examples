@@ -9,7 +9,7 @@
 #include <frc/XboxController.h>
 
 class Robot : public frc::TimedRobot {
-  ctre::phoenix6::hardware::TalonFX m_fx{1, "canivore"};
+  ctre::phoenix6::hardware::TalonFX m_fx{1, ctre::phoenix6::CANBus{"canivore"}};
 
   /* Be able to switch which control request to use based on a button press */
   /* Start at position 0, use slot 0 */

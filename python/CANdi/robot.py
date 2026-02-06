@@ -4,7 +4,7 @@
 """
 import wpilib
 from wpilib import Timer
-from phoenix6 import configs, hardware, signals
+from phoenix6 import CANBus, configs, hardware, signals
 
 class MyRobot(wpilib.TimedRobot):
     """
@@ -16,7 +16,7 @@ class MyRobot(wpilib.TimedRobot):
         """Robot initialization function"""
 
         # Keep a reference to all the devices used
-        self.candi = hardware.CANdi(1, "canivore")
+        self.candi = hardware.CANdi(1, CANBus("canivore"))
 
         # Configure CANdi
         cfg = configs.CANdiConfiguration()

@@ -1,4 +1,6 @@
 #pragma once
 
-constexpr char kCANbus[]{"canivore"};
+#include "ctre/phoenix6/CANBus.hpp"
+
+constexpr ctre::phoenix6::CANBus kCANbus{"canivore"};
 constexpr int kTalonFxId = 18;

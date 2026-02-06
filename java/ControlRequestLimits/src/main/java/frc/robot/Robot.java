@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -24,8 +25,8 @@ import edu.wpi.first.wpilibj.XboxController;
  * project.
  */
 public class Robot extends TimedRobot {
-    private final TalonFX m_fx = new TalonFX(0, "*"); 
-    private final CANcoder m_cc = new CANcoder(1, "*");
+    private final TalonFX m_fx = new TalonFX(0, new CANBus("*")); 
+    private final CANcoder m_cc = new CANcoder(1, new CANBus("*"));
 
     private final DutyCycleOut m_out = new DutyCycleOut(0);
 
