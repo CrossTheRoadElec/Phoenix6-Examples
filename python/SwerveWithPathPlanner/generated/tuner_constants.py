@@ -96,7 +96,7 @@ class TunerConstants:
 
     # These are only used for simulation
     _steer_inertia: units.kilogram_square_meter = 0.01
-    _drive_inertia: units.kilogram_square_meter = 0.01
+    _drive_inertia: units.kilogram_square_meter = 0.035
     # Simulated voltage necessary to overcome friction
     _steer_friction_voltage: units.volt = 0.2
     _drive_friction_voltage: units.volt = 0.2
