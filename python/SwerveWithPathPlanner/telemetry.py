@@ -108,7 +108,7 @@ class Telemetry:
         # Telemeterize the pose to a Field2d
         self._field_type_pub.set("Field2d")
 
-        pose_array = [state.pose.x, state.pose.y, state.pose.rotation().degrees()]
+        pose_array: list = [state.pose.x, state.pose.y, state.pose.rotation().degrees()]
         self._field_pub.set(pose_array)
 
         # Telemeterize each module state to a Mechanism2d

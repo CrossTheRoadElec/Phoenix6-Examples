@@ -37,7 +37,7 @@ class TunerConstants {
 
     // The type of motor used for the drive motor
     static constexpr swerve::DriveMotorArrangement kDriveMotorType = swerve::DriveMotorArrangement::TalonFX_Integrated;
-    // The type of motor used for the drive motor
+    // The type of motor used for the steer motor
     static constexpr swerve::SteerMotorArrangement kSteerMotorType = swerve::SteerMotorArrangement::TalonFX_Integrated;
 
     // The remote sensor feedback type to use for the steer motors;
@@ -50,7 +50,14 @@ class TunerConstants {
 
     // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     // Some configs will be overwritten; check the `With*InitialConfigs()` API documentation.
-    static constexpr configs::TalonFXConfiguration driveInitialConfigs{};
+    static constexpr configs::TalonFXConfiguration driveInitialConfigs = configs::TalonFXConfiguration{}
+        .WithCurrentLimits(
+            configs::CurrentLimitsConfigs{}
+                // Default supply current limit is 70 A, but it can be lowered to avoid brownouts.
+                // Supply current limits can be larger than the breaker current rating.
+                .WithSupplyCurrentLimit(70_A)
+                .WithSupplyCurrentLimitEnable(true)
+        );
     static constexpr configs::TalonFXConfiguration steerInitialConfigs = configs::TalonFXConfiguration{}
         .WithCurrentLimits(
             configs::CurrentLimitsConfigs{}
@@ -70,7 +77,8 @@ public:
     // All swerve devices must share the same CAN bus
     static inline const CANBus kCANBus{kCANBusName, "./logs/example.hoot"};
 
-    // Theoretical free speed (m/s) at 12 V applied output;
+    // Measured robot speed (m/s) at 12 V applied output;
+    // This is NOT the desired max robot speed - see MaxSpeed in RobotContainer instead;
     // This needs to be tuned to your individual robot
     static constexpr units::meters_per_second_t kSpeedAt12Volts = 4.54_mps;
 
