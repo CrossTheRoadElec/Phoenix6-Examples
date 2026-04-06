@@ -6,7 +6,7 @@
 [tool.robotpy]
 
 # Version of robotpy this project depends on
-robotpy_version = "2026.2.1.1"
+robotpy_version = "2026.2.2"
 
 # Which core WPILib components should be installed
 # -> equivalent to `pip install robotpy[extra1, ...]
