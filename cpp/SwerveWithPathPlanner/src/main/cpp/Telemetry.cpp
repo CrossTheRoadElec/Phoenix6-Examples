@@ -31,6 +31,7 @@ void Telemetry::Telemeterize(subsystems::CommandSwerveDrivetrain::SwerveDriveSta
     SignalLogger::WriteStructArray<frc::SwerveModuleState>("DriveState/ModuleTargets", state.ModuleTargets);
     SignalLogger::WriteStructArray<frc::SwerveModulePosition>("DriveState/ModulePositions", state.ModulePositions);
     SignalLogger::WriteValue("DriveState/OdometryPeriod", state.OdometryPeriod);
+    SignalLogger::WriteInteger("DriveState/FailedDaqs", state.FailedDaqs);
 
     /* Telemeterize the pose to a Field2d */
     fieldTypePub.Set("Field2d");

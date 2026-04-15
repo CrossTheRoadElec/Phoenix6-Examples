@@ -104,6 +104,7 @@ class Telemetry:
         SignalLogger.write_double(
             "DriveState/OdometryPeriod", state.odometry_period, "seconds"
         )
+        SignalLogger.write_integer("DriveState/FailedDaqs", state.failed_daqs)
 
         # Telemeterize the pose to a Field2d
         self._field_type_pub.set("Field2d")

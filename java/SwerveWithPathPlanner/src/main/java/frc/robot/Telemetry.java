@@ -102,6 +102,7 @@ public class Telemetry {
         SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
         SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+        SignalLogger.writeInteger("DriveState/FailedDaqs", state.FailedDaqs);
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");
