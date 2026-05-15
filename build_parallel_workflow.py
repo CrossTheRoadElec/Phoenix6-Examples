@@ -46,8 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ['3.12', '3.13']
-        os: ['ubuntu-22.04', 'macos-latest', 'windows-latest']
+        python_version: ['3.12', '3.13', '3.14']
+        os: ['ubuntu-24.04', 'macos-latest', 'windows-latest']
         project-name: [{python_projects}]
 
     runs-on: ${{{{ matrix.os }}}}
@@ -63,7 +63,10 @@ jobs:
         pip install -r requirements.txt
     - name: Test ${{{{ matrix.project-name }}}}
       run: |
-        cd "python/${{{{ matrix.project-name }}}}" && python3 -m robotpy test
+        cd "python/${{{{ matrix.project-name }}}}" && python3 -Wall -m robotpy test
+    - name: Vet mypy
+      run: |
+        cd "python/${{{{ matrix.project-name }}}}" && mypy --check-untyped-defs --ignore-missing-imports --explicit-package-bases .
 """
 
 PROJECT_MATRIX_TEMPLATE = """

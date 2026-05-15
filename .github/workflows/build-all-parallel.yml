@@ -141,9 +141,9 @@ jobs:
       run: |
         pip install -U pip
         pip install -r requirements.txt
-    - name: Vet mypy
-      run: |
-        cd "python/${{ matrix.project-name }}" && mypy --ignore-missing-imports .
     - name: Test ${{ matrix.project-name }}
       run: |
-        cd "python/${{ matrix.project-name }}" && python3 -m robotpy test
+        cd "python/${{ matrix.project-name }}" && python3 -Wall -m robotpy test
+    - name: Vet mypy
+      run: |
+        cd "python/${{ matrix.project-name }}" && mypy --check-untyped-defs --ignore-missing-imports --explicit-package-bases .

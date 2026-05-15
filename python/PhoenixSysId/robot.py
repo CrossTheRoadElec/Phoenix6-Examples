@@ -5,25 +5,31 @@
 # the WPILib BSD license file in the root directory of this project.
 #
 
-from commands2 import CommandScheduler, TimedCommandRobot
+import commands2
 
 from robotcontainer import RobotContainer
 
 
-class MyRobot(TimedCommandRobot):
-    """The VM is configured to automatically run this class, and to call the functions corresponding to
-    each mode, as described in the TimedRobot documentation. If you change the name of this class or
-    the package after creating this project, you must also update the build.gradle file in the
-    project.
+class MyRobot(commands2.TimedCommandRobot):
+    """
+    Command v2 robots are encouraged to inherit from TimedCommandRobot, which
+    has an implementation of robotPeriodic which runs the scheduler for you
     """
 
     def robotInit(self) -> None:
         """This function is run when the robot is first started up and should be used for any
         initialization code.
         """
+        self.autonomousCommand: commands2.Command | None = None
         self.container = RobotContainer()
 
-        self.autonomousCommand = None
+    def robotPeriodic(self) -> None:
+        """This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+        that you want ran during disabled, autonomous, teleoperated and test.
+
+        This runs after the mode specific periodic functions, but before LiveWindow and
+        SmartDashboard integrated updating."""
+        pass
 
     def disabledInit(self) -> None:
         """This function is called once each time the robot enters Disabled mode."""
@@ -36,7 +42,7 @@ class MyRobot(TimedCommandRobot):
         self.autonomousCommand = self.container.getAutonomousCommand()
 
         if self.autonomousCommand:
-            CommandScheduler.getInstance().schedule(self.autonomousCommand)
+            commands2.CommandScheduler.getInstance().schedule(self.autonomousCommand)
 
     def teleopInit(self) -> None:
         # This makes sure that the autonomous stops running when
@@ -44,7 +50,7 @@ class MyRobot(TimedCommandRobot):
         # continue until interrupted by another command, remove
         # this line or comment it out.
         if self.autonomousCommand:
-            CommandScheduler.getInstance().cancel(self.autonomousCommand)
+            commands2.CommandScheduler.getInstance().cancel(self.autonomousCommand)
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
@@ -52,7 +58,7 @@ class MyRobot(TimedCommandRobot):
 
     def testInit(self) -> None:
         # Cancels all running commands at the start of test mode.
-        CommandScheduler.getInstance().cancelAll()
+        commands2.CommandScheduler.getInstance().cancelAll()
 
     def testPeriodic(self) -> None:
         """This function is called periodically during test mode."""

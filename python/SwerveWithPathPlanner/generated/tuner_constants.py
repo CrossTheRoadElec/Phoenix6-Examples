@@ -115,12 +115,12 @@ class TunerConstants:
         .with_pigeon2_configs(_pigeon_configs)
     )
 
-    _constants_creator: swerve.SwerveModuleConstantsFactory[
-        configs.TalonFXConfiguration,
-        configs.TalonFXConfiguration,
-        configs.CANcoderConfiguration,
-    ] = (
-        swerve.SwerveModuleConstantsFactory()
+    _constants_creator = (
+        swerve.SwerveModuleConstantsFactory[
+            configs.TalonFXConfiguration,
+            configs.TalonFXConfiguration,
+            configs.CANcoderConfiguration,
+        ]()
         .with_drive_motor_gear_ratio(_drive_gear_ratio)
         .with_steer_motor_gear_ratio(_steer_gear_ratio)
         .with_coupling_gear_ratio(_couple_ratio)
