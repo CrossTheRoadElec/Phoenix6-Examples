@@ -8,6 +8,7 @@ from constants import Constants
 
 from typing import Callable
 
+
 class FlywheelMechanism(Subsystem):
     def __init__(self) -> None:
         self.motor_to_test = hardware.TalonFX(Constants.kTalonFxId, Constants.kCANbus)
@@ -20,13 +21,19 @@ class FlywheelMechanism(Subsystem):
                 # Reduce dynamic voltage to 4 to prevent brownout
                 stepVoltage = 4.0,
                 # Log state with Phoenix SignalLogger class
-                recordState = lambda state: SignalLogger.write_string("state", SysIdRoutineLog.stateEnumToString(state))
+                recordState = lambda state: SignalLogger.write_string(
+                    "state", SysIdRoutineLog.stateEnumToString(state)
+                )
+                and None,
             ),
             SysIdRoutine.Mechanism(
-                lambda volts: self.motor_to_test.set_control(self.sys_id_control.with_output(volts)),
+                lambda volts: self.motor_to_test.set_control(
+                    self.sys_id_control.with_output(volts)
+                )
+                and None,
                 lambda log: None,
-                self
-            )
+                self,
+            ),
         )
 
         self.setName("Flywheel")
@@ -36,11 +43,13 @@ class FlywheelMechanism(Subsystem):
         self.motor_to_test.configurator.apply(cfg)
 
         # Speed up signals for better characterization data
-        BaseStatusSignal.set_update_frequency_for_all(250,
+        BaseStatusSignal.set_update_frequency_for_all(
+            250,
             self.motor_to_test.get_position(),
             self.motor_to_test.get_velocity(),
-            self.motor_to_test.get_motor_voltage())
-        
+            self.motor_to_test.get_motor_voltage(),
+        )
+
         # Optimize out the other signals, since they're not useful for SysId
         self.motor_to_test.optimize_bus_utilization()
 
@@ -48,7 +57,12 @@ class FlywheelMechanism(Subsystem):
         SignalLogger.start()
 
     def joystick_drive_command(self, output: Callable[[], float]) -> Command:
-        return self.run(lambda: self.motor_to_test.set_control(self.joystick_control.with_output(output())))
+        return self.run(
+            lambda: self.motor_to_test.set_control(
+                self.joystick_control.with_output(output())
+            )
+            and None
+        )
 
     def sys_id_quasistatic(self, direction: SysIdRoutine.Direction) -> Command:
         return self.sys_id_routine.quasistatic(direction)

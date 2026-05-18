@@ -1,6 +1,4 @@
-import wpilib.simulation as sim
-from wpilib import RobotController, DriverStation
-
+from wpilib import RobotController
 from wpilib.simulation import DifferentialDrivetrainSim
 from wpimath.kinematics import DifferentialDriveKinematics, DifferentialDriveWheelSpeeds
 from wpimath.system.plant import DCMotor
@@ -8,10 +6,9 @@ from wpimath.units import inchesToMeters
 
 from pyfrc.physics.core import PhysicsInterface
 
-from phoenix6 import unmanaged, sim
+from phoenix6 import sim
 
 import math
-
 import typing
 
 if typing.TYPE_CHECKING:

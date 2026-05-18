@@ -4,7 +4,7 @@
 '''
 
 from pyfrc.tests import *
-from phoenix6 import hardware, configs, signals, BaseStatusSignal
+from phoenix6 import configs, hardware, signals, BaseStatusSignal, CANBus
 
 FIRST_SET = 0
 SECOND_SET = 4.8
@@ -16,7 +16,7 @@ def assert_almost_equal(a: float, b: float, range_val: float):
     assert a >= (b - range_val) and a <= (b + range_val)
 
 def test_float_states():
-    candi = hardware.CANdi(1, "sim")
+    candi = hardware.CANdi(1, CANBus("sim"))
     candi_sim_state = candi.sim_state
 
     # Factory-default CANdi
@@ -47,18 +47,18 @@ def test_float_states():
     s1_state = candi.get_s1_state()
     s1_closed = candi.get_s1_closed()
 
-    for e in s1_permutations:
+    for e1 in s1_permutations:
         # First configure close state value
         cfg = configs.CANdiConfiguration()
-        cfg.digital_inputs.s1_close_state = e[0]
+        cfg.digital_inputs.s1_close_state = e1[0]
         candi.configurator.apply(cfg)
-        candi_sim_state.set_s1_state(e[1])
+        candi_sim_state.set_s1_state(e1[1])
 
         BaseStatusSignal.wait_for_all(1, s1_state, s1_closed)
         BaseStatusSignal.wait_for_all(1, s1_state, s1_closed)
-        print(f"Configured for {e[0]} and state is {s1_state} and is closed: {s1_closed}")
-        assert e[1] == s1_state.value
-        assert e[2] == s1_closed.value
+        print(f"Configured for {e1[0]} and state is {s1_state} and is closed: {s1_closed}")
+        assert e1[1] == s1_state.value
+        assert e1[2] == s1_closed.value
     
     # Convert to S2 equivalents
     s2_permutations : list[tuple[signals.S2CloseStateValue, signals.S2StateValue, bool]] = [
@@ -67,22 +67,22 @@ def test_float_states():
 
     s2_state = candi.get_s2_state()
     s2_closed = candi.get_s2_closed()
-    for e in s2_permutations:
+    for e2 in s2_permutations:
         # First configure close state value
         cfg = configs.CANdiConfiguration()
-        cfg.digital_inputs.s2_close_state = e[0]
+        cfg.digital_inputs.s2_close_state = e2[0]
         candi.configurator.apply(cfg)
-        candi_sim_state.set_s2_state(e[1])
+        candi_sim_state.set_s2_state(e2[1])
 
         BaseStatusSignal.wait_for_all(1, s2_state, s2_closed)
         BaseStatusSignal.wait_for_all(1, s2_state, s2_closed)
-        print(f"Configured for {e[0]} and state is {s2_state} and is closed: {s2_closed}")
-        assert e[1] == s2_state.value
-        assert e[2] == s2_closed.value
+        print(f"Configured for {e2[0]} and state is {s2_state} and is closed: {s2_closed}")
+        assert e2[1] == s2_state.value
+        assert e2[2] == s2_closed.value
 
 
 def over_current_test():
-    candi = hardware.CANdi(2, "sim")
+    candi = hardware.CANdi(2, CANBus("sim"))
     candi_sim_state = candi.sim_state
 
     candi.configurator.apply(configs.CANdiConfiguration())
@@ -121,7 +121,7 @@ def test_individual_positions():
     CANDI_POSITION_2 = 1.2
     CANDI_POSITION_3 = 0.7
 
-    candi = hardware.CANdi(2, "sim")
+    candi = hardware.CANdi(3, CANBus("sim"))
     candi_sim_state = candi.sim_state
 
     # Factory-default CANdi
