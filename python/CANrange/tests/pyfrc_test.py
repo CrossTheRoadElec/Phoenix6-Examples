@@ -4,7 +4,7 @@
 '''
 
 from pyfrc.tests import *
-from phoenix6 import hardware, configs, signals, BaseStatusSignal
+from phoenix6 import configs, hardware, BaseStatusSignal, CANBus
 
 FIRST_SET = 0
 SECOND_SET = 4.8
@@ -16,7 +16,7 @@ def assert_almost_equal(a: float, b: float, range_val: float):
     assert a >= (b - range_val) and a <= (b + range_val)
 
 def test_proximity_detect():
-    canrange = hardware.CANrange(1, "sim")
+    canrange = hardware.CANrange(1, CANBus("sim"))
     canrange_sim_state = canrange.sim_state
 
     # Factory-default CANrange

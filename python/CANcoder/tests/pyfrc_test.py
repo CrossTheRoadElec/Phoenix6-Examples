@@ -4,7 +4,7 @@
 '''
 
 from pyfrc.tests import *
-from phoenix6 import hardware, configs
+from phoenix6 import configs, hardware, CANBus
 
 FIRST_SET = 0
 SECOND_SET = 4.8
@@ -16,7 +16,7 @@ def assert_almost_equal(a: float, b: float, range_val: float):
     assert a >= (b - range_val) and a <= (b + range_val)
 
 def test_pos_setter():
-    cancoder = hardware.CANcoder(1, "sim")
+    cancoder = hardware.CANcoder(1, CANBus("sim"))
     pos = cancoder.get_position()
 
     cfg = configs.CANcoderConfiguration()

@@ -3,8 +3,13 @@
     to test basic functionality of just about any robot.
 '''
 
+from typing import TYPE_CHECKING
+
 from pyfrc.tests import *
 from wpilib.simulation import XboxControllerSim
+
+if TYPE_CHECKING:
+    from pyfrc.test_support.controller import TestController
 
 def assert_almost_equal(a: float, b: float, range_val: float):
     """
@@ -12,7 +17,7 @@ def assert_almost_equal(a: float, b: float, range_val: float):
     """
     assert a >= (b - range_val) and a <= (b + range_val)
 
-def test_sysid_quasistatic(control, robot):
+def test_sysid_quasistatic(control: 'TestController', robot):
     with control.run_robot():
         joysim = XboxControllerSim(robot.container.joystick.getHID())
 
@@ -23,7 +28,7 @@ def test_sysid_quasistatic(control, robot):
 
         joysim.setYButton(False)
 
-def test_sysid_dynamic(control, robot):
+def test_sysid_dynamic(control: 'TestController', robot):
     with control.run_robot():
         joysim = XboxControllerSim(robot.container.joystick.getHID())
 

@@ -31,7 +31,7 @@ jobs:
     container: wpilib/roborio-cross-ubuntu:2025-22.04
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -46,15 +46,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ['3.12', '3.13']
-        os: ['ubuntu-22.04', 'macos-latest', 'windows-latest']
+        python_version: ['3.12', '3.13', '3.14']
+        os: ['ubuntu-24.04', 'macos-latest', 'windows-latest']
         project-name: [{python_projects}]
 
     runs-on: ${{{{ matrix.os }}}}
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{{{ matrix.python_version }}}}
     - name: Install python dependencies
@@ -63,7 +63,10 @@ jobs:
         pip install -r requirements.txt
     - name: Test ${{{{ matrix.project-name }}}}
       run: |
-        cd "python/${{{{ matrix.project-name }}}}" && python3 -m robotpy test
+        cd "python/${{{{ matrix.project-name }}}}" && python3 -Wall -m robotpy test
+    - name: Vet mypy
+      run: |
+        cd "python/${{{{ matrix.project-name }}}}" && mypy --check-untyped-defs --ignore-missing-imports --explicit-package-bases .
 """
 
 PROJECT_MATRIX_TEMPLATE = """
