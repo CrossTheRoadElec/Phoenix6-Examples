@@ -31,7 +31,7 @@ class Telemetry:
 
         # Robot pose for field positioning
         self._table = self._inst.getTable("Pose")
-        self._field_pub = self._table.getDoubleArrayTopic("robotPose").publish()
+        self._field_pub = self._table.getDoubleArrayTopic("Robot").publish()
         self._field_type_pub = self._table.getStringTopic(".type").publish()
 
         # Mechanisms to represent the swerve module states

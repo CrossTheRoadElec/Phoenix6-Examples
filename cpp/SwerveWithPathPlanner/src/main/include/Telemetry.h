@@ -31,7 +31,7 @@ private:
 
     /* Robot pose for field positioning */
     std::shared_ptr<nt::NetworkTable> table = inst.GetTable("Pose");
-    nt::DoubleArrayPublisher fieldPub = table->GetDoubleArrayTopic("robotPose").Publish();
+    nt::DoubleArrayPublisher fieldPub = table->GetDoubleArrayTopic("Robot").Publish();
     nt::StringPublisher fieldTypePub = table->GetStringTopic(".type").Publish();
 
     /* Mechanisms to represent the swerve module states */
