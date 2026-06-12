@@ -1,25 +1,22 @@
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.hardware.hal.HAL;
+import org.wpilib.simulation.DriverStationSim;
+import org.wpilib.system.Timer;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +43,7 @@ public class GadgeteerTests implements AutoCloseable {
     public void constructDevices() {
         assert HAL.initialize(500, 0);
 
-        talon = new TalonFXS(0);
+        talon = new TalonFXS(0, new CANBus());
 
         /* enable the robot */
         DriverStationSim.setEnabled(true);
@@ -64,7 +61,7 @@ public class GadgeteerTests implements AutoCloseable {
     @Test
     public void robotIsEnabled() {
         /* verify that the robot is enabled */
-        assertTrue(DriverStation.isEnabled());
+        assertTrue(RobotState.isEnabled());
     }
 
     @Test

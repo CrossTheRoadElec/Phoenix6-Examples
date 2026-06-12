@@ -1,11 +1,12 @@
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Milliamps;
-import static edu.wpi.first.units.Units.Rotations;
+import static org.wpilib.units.Units.Amps;
+import static org.wpilib.units.Units.Milliamps;
+import static org.wpilib.units.Units.Rotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.hardware.CANdi;
@@ -14,8 +15,8 @@ import com.ctre.phoenix6.signals.S1StateValue;
 import com.ctre.phoenix6.signals.S2CloseStateValue;
 import com.ctre.phoenix6.signals.S2StateValue;
 
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.units.measure.Angle;
+import org.wpilib.hardware.hal.HAL;
+import org.wpilib.units.measure.Angle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ public class CANdiTests {
     public void constructDevices() {
         assert HAL.initialize(500, 0);
 
-        candi = new CANdi(0);
+        candi = new CANdi(0, new CANBus());
     }
 
     @Test

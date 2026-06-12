@@ -2,12 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "Robot.hpp"
 #include <iostream>
-#include "Robot.h"
 
 using namespace ctre::phoenix6;
 
-constexpr units::time::second_t print_period{500_ms};
+constexpr wpi::units::time::second_t print_period{500_ms};
 
 Robot::Robot() {
   /* Configure CANcoder */
@@ -23,7 +23,7 @@ Robot::Robot() {
 
 void Robot::RobotPeriodic() {
   /* Every print_period get the CANcoder position/velocity and report it */
-  if (frc::Timer::GetFPGATimestamp() - currentTime >= print_period) {
+  if (wpi::Timer::GetTimestamp() - currentTime >= print_period) {
     currentTime += print_period;
 
     /**
@@ -79,14 +79,14 @@ void Robot::TeleopPeriodic() {}
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::UtilityInit() {}
+void Robot::UtilityPeriodic() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
-#ifndef RUNNING_FRC_TESTS
+#ifndef RUNNING_WPILIB_TESTS
 int main() {
-  return frc::StartRobot<Robot>();
+  return wpi::StartRobot<Robot>();
 }
 #endif

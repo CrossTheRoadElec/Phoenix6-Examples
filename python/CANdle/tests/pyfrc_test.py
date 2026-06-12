@@ -3,4 +3,4 @@
     to test basic functionality of just about any robot.
 '''
 
-from pyfrc.tests import *
+from wpilib.testing.robot_tests import *

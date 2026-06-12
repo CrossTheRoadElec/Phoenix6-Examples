@@ -1,0 +1,72 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+#pragma once
+
+#include "ctre/phoenix6/Pigeon2.hpp"
+#include "ctre/phoenix6/TalonFX.hpp"
+#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/framework/TimedRobot.hpp"
+
+class Robot : public wpi::TimedRobot {
+ public:
+  Robot();
+  void RobotPeriodic() override;
+
+  void AutonomousInit() override;
+  void AutonomousPeriodic() override;
+
+  void TeleopInit() override;
+  void TeleopPeriodic() override;
+
+  void DisabledInit() override;
+  void DisabledPeriodic() override;
+
+  void UtilityInit() override;
+  void UtilityPeriodic() override;
+
+  void SimulationInit() override;
+  void SimulationPeriodic() override;
+  
+private:
+  static constexpr ctre::phoenix6::CANBus CANIVORE{"*"}; // The first CANivore bus
+  ctre::phoenix6::hardware::TalonFX m_motor1{0, CANIVORE}; // Pick the first CANivore bus
+  ctre::phoenix6::hardware::Pigeon2 m_pigdey{1, CANIVORE}; // Pick the first CANivore bus also
+  ctre::phoenix6::hardware::TalonFX m_transcientMotor{20, CANIVORE}; // This motor may or may not be on the bus, 
+                                                                      // selectively power it to completely test this example 
+  ctre::phoenix6::hardware::TalonFX m_motor2{0, ctre::phoenix6::CANBus::Systemcore(1)}; // Pick a Systemcore bus to force a failure we can detect
+  
+  ctre::phoenix6::StatusSignal<wpi::units::turn_t> m_canbus1signal1 = m_motor1.GetPosition(false);
+  ctre::phoenix6::StatusSignal<wpi::units::turns_per_second_t> m_canbus1signal2 = m_motor1.GetVelocity(false);
+  ctre::phoenix6::StatusSignal<ctre::phoenix6::signals::ControlModeValue> m_canbus1signal3 = m_motor1.GetControlMode(false);
+  ctre::phoenix6::StatusSignal<wpi::units::degree_t> m_canbus1signal4 = m_pigdey.GetYaw(false);
+  ctre::phoenix6::StatusSignal<wpi::units::degree_t> m_canbus1signal5 = m_pigdey.GetRoll(false);
+  
+  ctre::phoenix6::StatusSignal<wpi::units::turn_t> m_canbus2signal1 = m_motor2.GetPosition(false);
+  
+  ctre::phoenix6::StatusSignal<wpi::units::turn_t> m_canbus1transcient1 = m_transcientMotor.GetPosition(false);
+  ctre::phoenix6::StatusSignal<wpi::units::turns_per_second_t> m_canbus1transcient2 = m_transcientMotor.GetVelocity(false);
+
+  std::vector<ctre::phoenix6::BaseStatusSignal *> m_signalsAcrossCANbuses = {
+    &m_canbus1signal1,
+    &m_canbus2signal1
+  };
+  std::vector<ctre::phoenix6::BaseStatusSignal *> m_lotsOfSignals = {
+    &m_canbus1signal1,
+    &m_canbus1signal2,
+    &m_canbus1signal3,
+    &m_canbus1signal5
+  };
+  std::vector<ctre::phoenix6::BaseStatusSignal *> m_noSignals = {};
+  std::vector<ctre::phoenix6::BaseStatusSignal *> m_tanscientSignals = {
+    &m_canbus1signal1,
+    &m_canbus1signal2,
+    &m_canbus1transcient1,
+    &m_canbus1transcient2
+  };
+
+  wpi::NiDsXboxController m_joystick{0}; // Allow us to see the different errors
+  
+  wpi::units::second_t m_waitForAllTimeout{0.1_s};
+};

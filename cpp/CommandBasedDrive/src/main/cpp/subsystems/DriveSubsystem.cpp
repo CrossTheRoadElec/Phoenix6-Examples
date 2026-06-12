@@ -2,10 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "subsystems/DriveSubsystem.h"
+#include "subsystems/DriveSubsystem.hpp"
+
 #include "ctre/phoenix6/Utils.hpp"
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/RobotController.h>
+#include "wpi/smartdashboard/SmartDashboard.hpp"
+#include "wpi/system/RobotController.hpp"
 
 using namespace ctre::phoenix6;
 
@@ -45,7 +46,7 @@ DriveSubsystem::DriveSubsystem()
     m_rightFollowerSimState.Orientation = sim::ChassisReference::Clockwise_Positive;
 
     /* Publish field pose data to read back from */
-    frc::SmartDashboard::PutData("Field", &m_field);
+    wpi::SmartDashboard::PutData("Field", &m_field);
 }
 
 void DriveSubsystem::ArcadeDrive(double fwd, double rot)
@@ -110,11 +111,11 @@ void DriveSubsystem::Periodic()
 void DriveSubsystem::SimulationPeriodic()
 {
     /* Pass the robot battery voltage to the simulated devices */
-    m_leftSimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-    m_rightSimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-    m_leftFollowerSimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-    m_rightFollowerSimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-    m_pigeon2SimState.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+    m_leftSimState.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+    m_rightSimState.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+    m_leftFollowerSimState.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+    m_rightFollowerSimState.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+    m_pigeon2SimState.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
 
     /*
      * CTRE simulation is low-level, so SimState inputs
@@ -166,7 +167,7 @@ void DriveSubsystem::SimulationPeriodic()
     m_pigeon2SimState.SetRawYaw(m_driveSim.GetHeading().Degrees());
 }
 
-units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
+wpi::units::meter_t DriveSubsystem::rotationsToMeters(wpi::units::turn_t rotations)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -176,7 +177,7 @@ units::meter_t DriveSubsystem::rotationsToMeters(units::turn_t rotations)
     return gearedRotations * wheelDistancePerRad;
 }
 
-units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
+wpi::units::turn_t DriveSubsystem::metersToRotations(wpi::units::meter_t meters)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -186,7 +187,7 @@ units::turn_t DriveSubsystem::metersToRotations(units::meter_t meters)
     return wheelRadians * kGearRatio;
 }
 
-units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per_second_t rotations)
+wpi::units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(wpi::units::turns_per_second_t rotations)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -196,7 +197,7 @@ units::meters_per_second_t DriveSubsystem::rotationsToMetersVel(units::turns_per
     return gearedRotations * wheelDistancePerRad;
 }
 
-units::turns_per_second_t DriveSubsystem::metersToRotationsVel(units::meters_per_second_t meters)
+wpi::units::turns_per_second_t DriveSubsystem::metersToRotationsVel(wpi::units::meters_per_second_t meters)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;

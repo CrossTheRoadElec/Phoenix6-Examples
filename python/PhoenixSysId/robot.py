@@ -16,10 +16,12 @@ class MyRobot(commands2.TimedCommandRobot):
     has an implementation of robotPeriodic which runs the scheduler for you
     """
 
-    def robotInit(self) -> None:
+    def __init__(self) -> None:
         """This function is run when the robot is first started up and should be used for any
         initialization code.
         """
+        super().__init__()
+
         self.autonomousCommand: commands2.Command | None = None
         self.container = RobotContainer()
 

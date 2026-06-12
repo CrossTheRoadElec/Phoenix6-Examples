@@ -1,8 +1,8 @@
 from ntcore import NetworkTableInstance
 from phoenix6 import SignalLogger, swerve, units
-from wpilib import Color, Color8Bit, Mechanism2d, MechanismLigament2d, SmartDashboard
-from wpimath.geometry import Pose2d
-from wpimath.kinematics import ChassisSpeeds, SwerveModulePosition, SwerveModuleState
+from wpilib import Mechanism2d, MechanismLigament2d, SmartDashboard
+from wpimath import ChassisVelocities, Pose2d, SwerveModulePosition, SwerveModuleVelocity
+from wpiutil import Color, Color8Bit
 
 
 class Telemetry:
@@ -22,10 +22,10 @@ class Telemetry:
         # Robot swerve drive state
         self._drive_state_table = self._inst.getTable("DriveState")
         self._drive_pose = self._drive_state_table.getStructTopic("Pose", Pose2d).publish()
-        self._drive_speeds = self._drive_state_table.getStructTopic("Speeds", ChassisSpeeds).publish()
-        self._drive_module_states = self._drive_state_table.getStructArrayTopic("ModuleStates", SwerveModuleState).publish()
-        self._drive_module_targets = self._drive_state_table.getStructArrayTopic("ModuleTargets", SwerveModuleState).publish()
+        self._drive_velocity = self._drive_state_table.getStructTopic("Velocity", ChassisVelocities).publish()
         self._drive_module_positions = self._drive_state_table.getStructArrayTopic("ModulePositions", SwerveModulePosition).publish()
+        self._drive_module_velocities = self._drive_state_table.getStructArrayTopic("ModuleVelocities", SwerveModuleVelocity).publish()
+        self._drive_module_targets = self._drive_state_table.getStructArrayTopic("ModuleTargets", SwerveModuleVelocity).publish()
         self._drive_timestamp = self._drive_state_table.getDoubleTopic("Timestamp").publish()
         self._drive_odometry_frequency = self._drive_state_table.getDoubleTopic("OdometryFrequency").publish()
 
@@ -60,16 +60,16 @@ class Telemetry:
         self._module_directions: list[MechanismLigament2d] = [
             self._module_mechanisms[0]
             .getRoot("RootDirection", 0.5, 0.5)
-            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.kWhite)),
+            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.WHITE)),
             self._module_mechanisms[1]
             .getRoot("RootDirection", 0.5, 0.5)
-            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.kWhite)),
+            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.WHITE)),
             self._module_mechanisms[2]
             .getRoot("RootDirection", 0.5, 0.5)
-            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.kWhite)),
+            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.WHITE)),
             self._module_mechanisms[3]
             .getRoot("RootDirection", 0.5, 0.5)
-            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.kWhite)),
+            .appendLigament("Direction", 0.1, 0, 0, Color8Bit(Color.WHITE)),
         ]
 
         # Set up the module state Mechanism2d telemetry
@@ -82,24 +82,24 @@ class Telemetry:
         """
         # Telemeterize the swerve drive state
         self._drive_pose.set(state.pose)
-        self._drive_speeds.set(state.speeds)
-        self._drive_module_states.set(state.module_states)
-        self._drive_module_targets.set(state.module_targets)
+        self._drive_velocity.set(state.velocity)
         self._drive_module_positions.set(state.module_positions)
+        self._drive_module_velocities.set(state.module_velocities)
+        self._drive_module_targets.set(state.module_targets)
         self._drive_timestamp.set(state.timestamp)
         self._drive_odometry_frequency.set(1.0 / state.odometry_period)
 
         # Also write to log file
         SignalLogger.write_struct("DriveState/Pose", Pose2d, state.pose)
-        SignalLogger.write_struct("DriveState/Speeds", ChassisSpeeds, state.speeds)
-        SignalLogger.write_struct_array(
-            "DriveState/ModuleStates", SwerveModuleState, state.module_states
-        )
-        SignalLogger.write_struct_array(
-            "DriveState/ModuleTargets", SwerveModuleState, state.module_targets
-        )
+        SignalLogger.write_struct("DriveState/Velocity", ChassisVelocities, state.velocity)
         SignalLogger.write_struct_array(
             "DriveState/ModulePositions", SwerveModulePosition, state.module_positions
+        )
+        SignalLogger.write_struct_array(
+            "DriveState/ModuleVelocities", SwerveModuleVelocity, state.module_velocities
+        )
+        SignalLogger.write_struct_array(
+            "DriveState/ModuleTargets", SwerveModuleVelocity, state.module_targets
         )
         SignalLogger.write_double(
             "DriveState/OdometryPeriod", state.odometry_period, "seconds"
@@ -113,7 +113,7 @@ class Telemetry:
         self._field_pub.set(pose_array)
 
         # Telemeterize each module state to a Mechanism2d
-        for i, module_state in enumerate(state.module_states):
+        for i, module_state in enumerate(state.module_velocities):
             self._module_speeds[i].setAngle(module_state.angle.degrees())
             self._module_directions[i].setAngle(module_state.angle.degrees())
-            self._module_speeds[i].setLength(module_state.speed / (2 * self._max_speed))
+            self._module_speeds[i].setLength(module_state.velocity / (2 * self._max_speed))

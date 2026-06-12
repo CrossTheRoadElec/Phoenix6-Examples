@@ -2,12 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include <frc/smartdashboard/SmartDashboard.h>
-#include "Robot.h"
+#include "Robot.hpp"
+#include "wpi/smartdashboard/SmartDashboard.hpp"
 
 using namespace ctre::phoenix6;
-
-constexpr units::time::second_t print_period{500_ms};
 
 Robot::Robot() {
     /* Configure CANdle */
@@ -25,8 +23,8 @@ Robot::Robot() {
         m_candle.SetControl(controls::EmptyAnimation{i});
     }
     /* set the onboard LEDs to a solid color */
-    m_candle.SetControl(controls::SolidColor{0, 3}.WithColor(kGreen));
-    m_candle.SetControl(controls::SolidColor{4, 7}.WithColor(kWhite));
+    m_candle.SetControl(controls::SolidColor{0, 3}.WithColor(GREEN));
+    m_candle.SetControl(controls::SolidColor{4, 7}.WithColor(WHITE));
 
     /* add animations to chooser for slot 0 */
     m_anim0Chooser.SetDefaultOption("Color Flow", AnimationType::ColorFlow);
@@ -42,8 +40,8 @@ Robot::Robot() {
     m_anim1Chooser.AddOption("Strobe", AnimationType::Strobe);
     m_anim1Chooser.AddOption("Fire", AnimationType::Fire);
 
-    frc::SmartDashboard::PutData("Animation 0", &m_anim0Chooser);
-    frc::SmartDashboard::PutData("Animation 1", &m_anim1Chooser);
+    wpi::SmartDashboard::PutData("Animation 0", &m_anim0Chooser);
+    wpi::SmartDashboard::PutData("Animation 1", &m_anim1Chooser);
 }
 
 void Robot::RobotPeriodic() {
@@ -57,7 +55,7 @@ void Robot::RobotPeriodic() {
             case AnimationType::ColorFlow:
                 m_candle.SetControl(
                     controls::ColorFlowAnimation{kSlot0StartIdx, kSlot0EndIdx}.WithSlot(0)
-                        .WithColor(kViolet)
+                        .WithColor(VIOLET)
                 );
                 break;
             case AnimationType::Rainbow:
@@ -68,13 +66,13 @@ void Robot::RobotPeriodic() {
             case AnimationType::Twinkle:
                 m_candle.SetControl(
                     controls::TwinkleAnimation{kSlot0StartIdx, kSlot0EndIdx}.WithSlot(0)
-                        .WithColor(kViolet)
+                        .WithColor(VIOLET)
                 );
                 break;
             case AnimationType::TwinkleOff:
                 m_candle.SetControl(
                     controls::TwinkleOffAnimation{kSlot0StartIdx, kSlot0EndIdx}.WithSlot(0)
-                        .WithColor(kViolet)
+                        .WithColor(VIOLET)
                 );
                 break;
             case AnimationType::Fire:
@@ -95,7 +93,7 @@ void Robot::RobotPeriodic() {
             case AnimationType::Larson:
                 m_candle.SetControl(
                     controls::LarsonAnimation{kSlot1StartIdx, kSlot1EndIdx}.WithSlot(1)
-                        .WithColor(kRed)
+                        .WithColor(RED)
                 );
                 break;
             case AnimationType::RgbFade:
@@ -106,13 +104,13 @@ void Robot::RobotPeriodic() {
             case AnimationType::SingleFade:
                 m_candle.SetControl(
                     controls::SingleFadeAnimation{kSlot1StartIdx, kSlot1EndIdx}.WithSlot(1)
-                        .WithColor(kRed)
+                        .WithColor(RED)
                 );
                 break;
             case AnimationType::Strobe:
                 m_candle.SetControl(
                     controls::StrobeAnimation{kSlot1StartIdx, kSlot1EndIdx}.WithSlot(1)
-                        .WithColor(kRed)
+                        .WithColor(RED)
                 );
                 break;
             case AnimationType::Fire:
@@ -137,14 +135,14 @@ void Robot::TeleopPeriodic() {}
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::UtilityInit() {}
+void Robot::UtilityPeriodic() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
-#ifndef RUNNING_FRC_TESTS
+#ifndef RUNNING_WPILIB_TESTS
 int main() {
-    return frc::StartRobot<Robot>();
+    return wpi::StartRobot<Robot>();
 }
 #endif

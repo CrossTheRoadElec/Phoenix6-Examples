@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "Robot.h"
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/RobotController.h>
+#include "Robot.hpp"
+#include "wpi/smartdashboard/SmartDashboard.hpp"
+#include "wpi/system/RobotController.hpp"
 #include <iostream>
 
 using namespace ctre::phoenix6;
@@ -48,7 +48,7 @@ Robot::Robot()
       imu.GetYaw());
 
   /* Publish field pose data to read back from */
-  frc::SmartDashboard::PutData("Field", &m_field);
+  wpi::SmartDashboard::PutData("Field", &m_field);
 }
 
 void Robot::RobotPeriodic()
@@ -90,8 +90,8 @@ void Robot::TeleopPeriodic()
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::UtilityInit() {}
+void Robot::UtilityPeriodic() {}
 
 void Robot::SimulationInit()
 {
@@ -109,11 +109,11 @@ void Robot::SimulationInit()
 void Robot::SimulationPeriodic()
 {
   /* Pass the robot battery voltage to the simulated devices */
-  leftSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-  leftSensSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-  rightSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-  rightSensSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-  imuSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+  leftSim.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+  leftSensSim.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+  rightSim.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+  rightSensSim.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
+  imuSim.SetSupplyVoltage(wpi::RobotController::GetBatteryVoltage());
 
   /*
    * CTRE simulation is low-level, so SimState inputs
@@ -160,7 +160,7 @@ void Robot::SimulationPeriodic()
   rightSim.SetReverseLimit(joystick.GetRightTriggerAxis() > 0.5);
 }
 
-units::meter_t Robot::rotationsToMeters(units::turn_t rotations)
+wpi::units::meter_t Robot::rotationsToMeters(wpi::units::turn_t rotations)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -170,7 +170,7 @@ units::meter_t Robot::rotationsToMeters(units::turn_t rotations)
     return gearedRotations * wheelDistancePerRad;
 }
 
-units::turn_t Robot::metersToRotations(units::meter_t meters)
+wpi::units::turn_t Robot::metersToRotations(wpi::units::meter_t meters)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -180,7 +180,7 @@ units::turn_t Robot::metersToRotations(units::meter_t meters)
     return wheelRadians * kGearRatio;
 }
 
-units::meters_per_second_t Robot::rotationsToMetersVel(units::turns_per_second_t rotations)
+wpi::units::meters_per_second_t Robot::rotationsToMetersVel(wpi::units::turns_per_second_t rotations)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -190,7 +190,7 @@ units::meters_per_second_t Robot::rotationsToMetersVel(units::turns_per_second_t
     return gearedRotations * wheelDistancePerRad;
 }
 
-units::turns_per_second_t Robot::metersToRotationsVel(units::meters_per_second_t meters)
+wpi::units::turns_per_second_t Robot::metersToRotationsVel(wpi::units::meters_per_second_t meters)
 {
     /* Every radian of rotation, the wheel travels this many inches */
     constexpr auto wheelDistancePerRad = kWheelRadiusInches / 1_rad;
@@ -200,9 +200,9 @@ units::turns_per_second_t Robot::metersToRotationsVel(units::meters_per_second_t
     return wheelRadians * kGearRatio;
 }
 
-#ifndef RUNNING_FRC_TESTS
+#ifndef RUNNING_WPILIB_TESTS
 int main()
 {
-  return frc::StartRobot<Robot>();
+  return wpi::StartRobot<Robot>();
 }
 #endif

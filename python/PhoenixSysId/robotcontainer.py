@@ -1,5 +1,5 @@
 from commands2 import Command, cmd
-from commands2.button import CommandXboxController
+from commands2.button import CommandNiDsXboxController
 from commands2.sysid import SysIdRoutine
 
 from phoenix6 import SignalLogger
@@ -8,7 +8,7 @@ from subsystems.flywheel import FlywheelMechanism
 
 class RobotContainer:
     def __init__(self) -> None:
-        self.joystick = CommandXboxController(0)
+        self.joystick = CommandNiDsXboxController(0)
         self.mechanism = FlywheelMechanism()
 
         self.configureBindings()
@@ -17,7 +17,7 @@ class RobotContainer:
         """Use this method to define bindings between conditions and commands. These are useful for
         automating robot behaviors based on button and sensor input.
 
-        Should be called during :meth:`.Robot.robotInit`.
+        Should be called during :meth:`.Robot.__init__`.
 
         Event binding methods are available on the :class:`.Trigger` class.
         """

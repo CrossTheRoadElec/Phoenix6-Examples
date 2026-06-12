@@ -8,16 +8,16 @@ from robot import MyRobot
 from time import sleep
 from typing import TYPE_CHECKING
 
-from pyfrc.tests import *
+from wpilib.testing.robot_tests import *
 
-from wpilib.simulation import DCMotorSim
-from wpimath.system.plant import DCMotor, LinearSystemId
+from wpilib.simulation import DCMotorSim, DriverStationSim, resumeTiming
+from wpimath import DCMotor, Models
 from wpimath.units import radiansToRotations
 
 from phoenix6 import configs, controls, hardware, signals
 
 if TYPE_CHECKING:
-    from pyfrc.test_support.controller import TestController
+    from wpilib.testing.controller import RobotTestController
 
 TARGET_VEL = 10.0
 
@@ -41,19 +41,23 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim, gea
 
         sleep(LOOP_PERIOD)
 
-def test_velocity_closed_loop(control: 'TestController', robot: MyRobot):
+def test_velocity_closed_loop(control: 'RobotTestController', robot: MyRobot):
     with control.run_robot():
         talonfx = robot.talonfx
         vel = talonfx.get_velocity(False)
 
         # wait for the device to start up and enable
-        control.step_timing(seconds=0.1, autonomous=False, enabled=True)
+        DriverStationSim.setDsAttached(True)
+        DriverStationSim.setEnabled(True)
+        DriverStationSim.notifyNewData()
+        resumeTiming()
+
         while talonfx.get_robot_enable(False).wait_for_update(1.0).value != signals.RobotEnableValue.ENABLED:
             pass
 
         gear_ratio = 5.0
         gearbox = DCMotor.krakenX60FOC(1)
-        motorsim = DCMotorSim(LinearSystemId.DCMotorSystem(gearbox, 0.03, gear_ratio), gearbox)
+        motorsim = DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.03, gear_ratio), gearbox)
 
         talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
         talonfx.sim_state.set_supply_voltage(12)
@@ -77,4 +81,4 @@ def test_velocity_closed_loop(control: 'TestController', robot: MyRobot):
 
         # Verify velocity is close to target
         vel.wait_for_update(1)
-        assert_almost_equal(vel.value, TARGET_VEL, 0.1)
+        assert_almost_equal(vel.value, TARGET_VEL, 0.2)

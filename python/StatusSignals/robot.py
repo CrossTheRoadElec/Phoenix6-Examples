@@ -3,7 +3,9 @@
     This is a demo program for StatusSignal usage in Phoenix 6
 """
 import wpilib
-from wpilib import Timer, XboxController
+from wpilib import NiDsXboxController, RobotController, Timer, simulation as sim
+from wpimath import DCMotor, Models
+from wpimath.units import radiansToRotations
 from phoenix6 import BaseStatusSignal, CANBus, SignalLogger, controls, hardware
 
 
@@ -13,8 +15,9 @@ class MyRobot(wpilib.TimedRobot):
     in Phoenix 6 python
     """
 
-    def robotInit(self):
+    def __init__(self):
         """Robot initialization function"""
+        super().__init__()
 
         # Keep a reference to all the motor controllers used
         self.motor = hardware.TalonFX(1, CANBus("canivore"))
@@ -26,9 +29,13 @@ class MyRobot(wpilib.TimedRobot):
         self.timer = Timer()
         self.timer.start()
 
-        self.joystick = XboxController(0)
+        self.joystick = NiDsXboxController(0)
 
         self.motor.set_position(6)
+
+        # Create a DCMotorSim for physics sim
+        gearbox = DCMotor.krakenX60FOC(1)
+        self.motor_sim = sim.DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, 1.0), gearbox)
 
     def robotPeriodic(self) -> None:
         # Drive the motor so we have a changing position/velocity
@@ -53,6 +60,11 @@ class MyRobot(wpilib.TimedRobot):
             )
             print(f"Latency compensated position is {latency_compensated_pos}")
 
+    def simulationPeriodic(self):
+        talon_sim = self.motor.sim_state
 
-if __name__ == "__main__":
-    wpilib.run(MyRobot)
+        talon_sim.set_supply_voltage(RobotController.getBatteryVoltage())
+        self.motor_sim.setInputVoltage(talon_sim.motor_voltage)
+        self.motor_sim.update(0.020)
+        talon_sim.set_raw_rotor_position(radiansToRotations(self.motor_sim.getAngularPosition()))
+        talon_sim.set_rotor_velocity(radiansToRotations(self.motor_sim.getAngularVelocity()))

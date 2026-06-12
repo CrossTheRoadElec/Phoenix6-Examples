@@ -5,22 +5,23 @@
 * an issue tracker at https://github.com/CrossTheRoadElec/Phoenix-Releases
 */
 
-#include "PWMTalonFXS.h"
+#include "PWMTalonFXS.hpp"
 
-#include <hal/FRCUsageReporting.h>
+#include "wpi/driverstation/RobotState.hpp"
+#include "wpi/hal/UsageReporting.hpp"
 
-using namespace frc;
+using namespace wpi;
 
-void frc::PWMTalonFXS::Set(double speed) {
+void PWMTalonFXS::SetThrottle(double throttle) {
   /* timer is running means we are configuring */
   if (!_timer.IsRunning()) {
     /* timer not running, we are not configurating */
-    if (!DriverStation::IsEnabled() || _configs.empty()) {
+    if (!RobotState::IsEnabled() || _configs.empty()) {
       /* turn off timer */
       _timer.Stop();
 
       /* do what the base class normally does */
-      PWMMotorController::Set(speed);
+      PWMMotorController::SetThrottle(throttle);
     } else {
       /* start timer */
       _timer.Restart();
@@ -30,12 +31,12 @@ void frc::PWMTalonFXS::Set(double speed) {
     }
   } else {
     /* timer running, we are applying a config */
-    if (!DriverStation::IsEnabled()) {
+    if (!RobotState::IsEnabled()) {
       /* turn off timer, abandon the pulse*/
       _timer.Stop();
 
       /* do what the base class normally does */
-      PWMMotorController::Set(speed);
+      PWMMotorController::SetThrottle(throttle);
     } else if (!IsTmrExpired()) {
       /* Still waiting on config pulses to finish */
     } else {
@@ -50,7 +51,7 @@ void frc::PWMTalonFXS::Set(double speed) {
         _timer.Stop();
 
         /* do what the base class normally does */
-        PWMMotorController::Set(speed);
+        PWMMotorController::SetThrottle(throttle);
       } else {
         /* start timer */
         _timer.Restart();
@@ -62,41 +63,41 @@ void frc::PWMTalonFXS::Set(double speed) {
   }
 }
 
-bool frc::PWMTalonFXS::SetNeutralMode(bool bIsBrake)
+bool PWMTalonFXS::SetNeutralMode(bool bIsBrake)
 {
   if (_configs.size() > 10) {
     return false;
   }
-  _configs.push_back(bIsBrake ? units::microsecond_t{4000} : units::microsecond_t{3500});
+  _configs.push_back(bIsBrake ? 4000_us : 3500_us);
 
-  if (DriverStation::IsEnabled()) {
-    Set(0);
+  if (RobotState::IsEnabled()) {
+    SetThrottle(0);
   }
   return true;
 }
 
-bool frc::PWMTalonFXS::SetMotorArrangement(MotorArrangement motorArrangement)
+bool PWMTalonFXS::SetMotorArrangement(MotorArrangement motorArrangement)
 {
   if (_configs.size() > 10) {
     return false;
   }
 
-  auto microseconds = units::microsecond_t{0};
+  units::microsecond_t microseconds{};
   switch (motorArrangement) {
   case MotorArrangement::Minion_JST:
-    microseconds = units::microsecond_t{3000};
+    microseconds = 3000_us;
     break;
   case MotorArrangement::NEO_JST:
-    microseconds = units::microsecond_t{3100};
+    microseconds = 3100_us;
     break;
   case MotorArrangement::NEO550_JST:
-    microseconds = units::microsecond_t{3200};
+    microseconds = 3200_us;
     break;
   case MotorArrangement::VORTEX_JST:
-    microseconds = units::microsecond_t{3300};
+    microseconds = 3300_us;
     break;
   case MotorArrangement::Brushed_DC:
-    microseconds = units::microsecond_t{3700};
+    microseconds = 3700_us;
     break;
   default:
     return false;
@@ -104,23 +105,22 @@ bool frc::PWMTalonFXS::SetMotorArrangement(MotorArrangement motorArrangement)
 
   _configs.push_back(microseconds);
 
-  if (DriverStation::IsEnabled()) {
-    Set(0);
+  if (RobotState::IsEnabled()) {
+    SetThrottle(0);
   }
   return true;
 }
 
-bool frc::PWMTalonFXS::IsTmrExpired()
+bool PWMTalonFXS::IsTmrExpired()
 {
-    return _timer.Get() > 0.1_s;
+  return _timer.Get() > 0.1_s;
 }
 
 PWMTalonFXS::PWMTalonFXS(int channel) : PWMMotorController("PWMTalonFXS", channel)
 {
-    m_pwm.SetBounds(2.004_ms, 1.52_ms, 1.5_ms, 1.48_ms, 0.997_ms);
-    m_pwm.SetPeriodMultiplier(PWM::kPeriodMultiplier_1X);
-    m_pwm.SetSpeed(0.0);
-    m_pwm.SetZeroLatch();
+  SetBounds(2.004_ms, 1.52_ms, 1.5_ms, 1.48_ms, 0.997_ms);
+  m_pwm.SetOutputPeriod(5_ms);
+  PWMMotorController::SetThrottle(0.0);
 
-    HAL_Report(HALUsageReporting::kResourceType_CTRE_future12, GetChannel() + 1);
+  HAL_ReportUsage("IO", GetChannel(), "TalonFXS");
 }

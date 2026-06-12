@@ -3,6 +3,7 @@
     This is a demo program for CANdle usage in Phoenix 6
 """
 import wpilib
+import wpiutil
 from enum import Enum
 from phoenix6 import CANBus, configs, controls, hardware, signals
 
@@ -14,7 +15,7 @@ class MyRobot(wpilib.TimedRobot):
 
     # color can be constructed from RGBW, a WPILib Color/Color8Bit, HSV, or hex
     GREEN = signals.RGBWColor(0, 217, 0, 0)
-    WHITE = signals.RGBWColor(wpilib.Color.kWhite) * 0.5 # half brightness
+    WHITE = signals.RGBWColor(wpiutil.Color.WHITE) * 0.5 # half brightness
     VIOLET = signals.RGBWColor.from_hsv(270, 0.9, 0.8)
     RED = signals.RGBWColor.from_hex("#D9000000") or signals.RGBWColor()
 
@@ -39,11 +40,12 @@ class MyRobot(wpilib.TimedRobot):
         TWINKLE = 8
         TWINKLE_OFF = 9
 
-    def robotInit(self):
+    def __init__(self):
         """Robot initialization function"""
+        super().__init__()
 
         # Keep a reference to all the devices used
-        self.candle = hardware.CANdle(1, CANBus.roborio())
+        self.candle = hardware.CANdle(1, CANBus.systemcore(1))
 
         # Configure CANdle
         cfg = configs.CANdleConfiguration()
@@ -150,6 +152,3 @@ class MyRobot(wpilib.TimedRobot):
                         .with_cooling(0.4)
                         .with_sparking(0.5)
                     )
-
-if __name__ == "__main__":
-    wpilib.run(MyRobot)

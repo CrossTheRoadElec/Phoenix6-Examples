@@ -1,10 +1,13 @@
-#include "sim/TalonFXSimProfile.h"
-#include "frc/system/plant/LinearSystemId.h"
+#include "sim/TalonFXSimProfile.hpp"
+#include "wpi/math/system/Models.hpp"
 
 using namespace ctre::phoenix6;
 
-TalonFXSimProfile::TalonFXSimProfile(hardware::TalonFX& talonFX, units::kilogram_square_meter_t rotorInertia) :
-    _motorSim{frc::LinearSystemId::DCMotorSystem(frc::DCMotor::KrakenX60FOC(1), rotorInertia, 1), frc::DCMotor::KrakenX60FOC(1)},
+TalonFXSimProfile::TalonFXSimProfile(hardware::TalonFX &talonFX, wpi::units::kilogram_square_meter_t rotorInertia) :
+    _motorSim{
+        wpi::math::Models::SingleJointedArmFromPhysicalConstants(wpi::math::DCMotor::KrakenX60FOC(1), rotorInertia, 1),
+        wpi::math::DCMotor::KrakenX60FOC(1)
+    },
     _talonFXSim{talonFX.GetSimState()}
 {}
 

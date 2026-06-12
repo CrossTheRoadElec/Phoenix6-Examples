@@ -1,21 +1,22 @@
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.hardware.hal.HAL;
+import org.wpilib.simulation.DriverStationSim;
+import org.wpilib.system.Timer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -232,7 +233,7 @@ public class LimitTests {
     public void constructDevices() {
         assert HAL.initialize(500, 0);
 
-        talonfx = new TalonFX(0);
+        talonfx = new TalonFX(0, new CANBus());
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.Slot0.kP = 1; // Have some kP in slot 0 so we can drive with forward/reverse pos/vel
@@ -251,7 +252,7 @@ public class LimitTests {
 
     @Test
     public void robotIsEnabled() {
-        assertTrue(DriverStation.isEnabled());
+        assertTrue(RobotState.isEnabled());
     }
 
     @Test

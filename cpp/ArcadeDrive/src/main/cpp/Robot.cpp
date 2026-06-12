@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "Robot.h"
+#include "Robot.hpp"
 #include <iostream>
 
 using namespace ctre::phoenix6;
@@ -29,8 +29,8 @@ Robot::Robot() {
 void Robot::RobotPeriodic() {
   if (++printCount >= 10) {
     printCount = 0;
-    std::cout << "Left out: " << leftLeader.Get() << std::endl;
-    std::cout << "Right out: " << rightLeader.Get() << std::endl;
+    std::cout << "Left out: " << leftLeader.GetThrottle() << std::endl;
+    std::cout << "Right out: " << rightLeader.GetThrottle() << std::endl;
     std::cout << "Left Pos: " << leftLeader.GetPosition() << std::endl;
     std::cout << "Right Pos: " << rightLeader.GetPosition() << std::endl;
   }
@@ -42,12 +42,12 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   /* Get forward and rotational throttle from joystick */
-  /* invert the joystick Y because forward Y is negative */
+  /* invert the joystick X/Y because forward Y is negative and left X is negative */
   double fwd = -joystick.GetLeftY();
-  double rot = joystick.GetRightX();
+  double rot = -joystick.GetRightX();
   /* Set output to control frames */
-  leftOut.Output = fwd + rot;
-  rightOut.Output = fwd - rot;
+  leftOut.Output = fwd - rot;
+  rightOut.Output = fwd + rot;
   if (!joystick.GetAButton()) {
     /* And set them to the motors */
     leftLeader.SetControl(leftOut);
@@ -64,14 +64,14 @@ void Robot::DisabledPeriodic() {
   rightLeader.SetControl(rightOut);
 }
 
-void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::UtilityInit() {}
+void Robot::UtilityPeriodic() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
-#ifndef RUNNING_FRC_TESTS
+#ifndef RUNNING_WPILIB_TESTS
 int main() {
-  return frc::StartRobot<Robot>();
+  return wpi::StartRobot<Robot>();
 }
 #endif

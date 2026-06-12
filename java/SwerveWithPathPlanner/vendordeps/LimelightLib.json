@@ -1,0 +1,20 @@
+{
+    "fileName": "LimelightLib.json",
+    "name": "LimelightLib 2",
+    "version": "2.0.0-beta2",
+    "uuid": "708579ad-c4be-4335-af21-7c7d8496c499",
+    "wpilibYear": "2027_alpha5",
+    "mavenUrls": [
+        "https://limelightvision.github.io/limelightlib-public/maven/"
+    ],
+    "jsonUrl": "https://limelightvision.github.io/limelightlib-public/LimelightLib.json",
+    "javaDependencies": [
+        {
+            "groupId": "com.limelightvision",
+            "artifactId": "limelightlib-java",
+            "version": "2.0.0-beta2"
+        }
+    ],
+    "jniDependencies": [],
+    "cppDependencies": []
+}
