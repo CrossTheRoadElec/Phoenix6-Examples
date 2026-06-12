@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2025-22.04
+    container: wpilib/systemcore-cross-ubuntu:2027-24.04
 
     steps:
     - uses: actions/checkout@v5
@@ -141,7 +141,7 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install -U pip
-        pip install -r requirements.txt
+        pip install --pre -r requirements.txt
     - name: Test ${{ matrix.project-name }}
       run: |
         cd "python/${{ matrix.project-name }}" && python3 -Wall -m robotpy test

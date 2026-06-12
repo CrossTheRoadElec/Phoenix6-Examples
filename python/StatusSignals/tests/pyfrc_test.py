@@ -4,7 +4,7 @@
 '''
 
 from time import sleep
-from pyfrc.tests import *
+from wpilib.testing.robot_tests import *
 from phoenix6 import hardware, BaseStatusSignal, CANBus
 
 POS = 1.5

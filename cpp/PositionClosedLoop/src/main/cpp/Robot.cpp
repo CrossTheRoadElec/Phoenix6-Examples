@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "Robot.h"
+#include "Robot.hpp"
 #include <iostream>
 
 using namespace ctre::phoenix6;
@@ -44,7 +44,7 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   auto desiredRotations = m_joystick.GetLeftY() * 10_tr; // Go for plus/minus 10 rotations
-  if (units::math::abs(desiredRotations) <= 0.1_tr) { // joystick deadzone
+  if (wpi::units::math::abs(desiredRotations) <= 0.1_tr) { // joystick deadzone
     desiredRotations = 0_tr;
   }
 
@@ -63,14 +63,14 @@ void Robot::TeleopPeriodic() {
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::UtilityInit() {}
+void Robot::UtilityPeriodic() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
-#ifndef RUNNING_FRC_TESTS
+#ifndef RUNNING_WPILIB_TESTS
 int main() {
-  return frc::StartRobot<Robot>();
+  return wpi::StartRobot<Robot>();
 }
 #endif

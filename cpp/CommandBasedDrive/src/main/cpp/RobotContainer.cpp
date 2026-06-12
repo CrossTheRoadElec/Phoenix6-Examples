@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "RobotContainer.h"
-#include <frc2/command/button/Trigger.h>
-#include <frc2/command/Commands.h>
+#include "RobotContainer.hpp"
+#include "wpi/commands2/button/Trigger.hpp"
+#include "wpi/commands2/Commands.hpp"
 
 RobotContainer::RobotContainer()
 {
@@ -31,8 +31,8 @@ void RobotContainer::ConfigureButtonBindings()
   );
 }
 
-frc2::CommandPtr RobotContainer::GetAutonomousCommand()
+wpi::cmd::CommandPtr RobotContainer::GetAutonomousCommand()
 {
   // An example command will be run in autonomous
-  return frc2::cmd::Print("No autonomous command configured");
+  return wpi::cmd::Print("No autonomous command configured");
 }

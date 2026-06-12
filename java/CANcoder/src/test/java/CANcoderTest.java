@@ -1,11 +1,12 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.hardware.CANcoder;
-import edu.wpi.first.hal.HAL;
+import org.wpilib.hardware.hal.HAL;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public class CANcoderTest {
     public void constructDevices() {
         assert HAL.initialize(500, 0);
 
-        cancoder = new CANcoder(0);
+        cancoder = new CANcoder(0, new CANBus());
     }
 
     @Test

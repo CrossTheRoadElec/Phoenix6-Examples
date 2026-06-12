@@ -5,9 +5,7 @@
 # the WPILib BSD license file in the root directory of this project.
 #
 
-import wpilib
 import commands2
-
 from phoenix6 import HootAutoReplay
 
 from robotcontainer import RobotContainer
@@ -19,17 +17,18 @@ class MyRobot(commands2.TimedCommandRobot):
     has an implementation of robotPeriodic which runs the scheduler for you
     """
 
-    def robotInit(self) -> None:
+    def __init__(self) -> None:
         """
         This function is run when the robot is first started up and should be used for any
         initialization code.
         """
+        super().__init__()
 
-        self.autonomousCommand: commands2.Command | None = None
+        self._autonomousCommand: commands2.Command | None = None
 
         # Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         # autonomous chooser on the dashboard.
-        self.container = RobotContainer()
+        self._container = RobotContainer()
 
         # log and replay timestamp and joystick data
         self._time_and_joystick_replay = (
@@ -39,31 +38,28 @@ class MyRobot(commands2.TimedCommandRobot):
         )
 
     def robotPeriodic(self) -> None:
-        """This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-        that you want ran during disabled, autonomous, teleoperated and test.
-
-        This runs after the mode specific periodic functions, but before LiveWindow and
-        SmartDashboard integrated updating."""
-
         self._time_and_joystick_replay.update()
 
     def disabledInit(self) -> None:
-        """This function is called once each time the robot enters Disabled mode."""
         pass
 
     def disabledPeriodic(self) -> None:
-        """This function is called periodically when disabled"""
+        pass
+
+    def disabledExit(self) -> None:
         pass
 
     def autonomousInit(self) -> None:
-        """This autonomous runs the autonomous command selected by your RobotContainer class."""
-        self.autonomousCommand = self.container.getAutonomousCommand()
+        # This autonomous runs the autonomous command selected by your RobotContainer class.
+        self._autonomousCommand = self._container.getAutonomousCommand()
 
-        if self.autonomousCommand:
-            commands2.CommandScheduler.getInstance().schedule(self.autonomousCommand)
+        if self._autonomousCommand:
+            commands2.CommandScheduler.getInstance().schedule(self._autonomousCommand)
 
     def autonomousPeriodic(self) -> None:
-        """This function is called periodically during autonomous"""
+        pass
+
+    def autonomousExit(self) -> None:
         pass
 
     def teleopInit(self) -> None:
@@ -71,13 +67,21 @@ class MyRobot(commands2.TimedCommandRobot):
         # teleop starts running. If you want the autonomous to
         # continue until interrupted by another command, remove
         # this line or comment it out.
-        if self.autonomousCommand:
-            commands2.CommandScheduler.getInstance().cancel(self.autonomousCommand)
+        if self._autonomousCommand:
+            commands2.CommandScheduler.getInstance().cancel(self._autonomousCommand)
 
     def teleopPeriodic(self) -> None:
-        """This function is called periodically during operator control"""
         pass
 
-    def testInit(self) -> None:
+    def teleopExit(self) -> None:
+        pass
+
+    def utilityInit(self) -> None:
         # Cancels all running commands at the start of test mode
         commands2.CommandScheduler.getInstance().cancelAll()
+
+    def utilityPeriodic(self) -> None:
+        pass
+
+    def utilityExit(self) -> None:
+        pass

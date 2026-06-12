@@ -3,7 +3,9 @@
     This is a demo program for CANcoder usage in Phoenix 6
 """
 import wpilib
-from wpilib import Timer
+from wpilib import RobotController, Timer, simulation as sim
+from wpimath import DCMotor, Models
+from wpimath.units import radiansToRotations
 from phoenix6 import CANBus, hardware
 
 class MyRobot(wpilib.TimedRobot):
@@ -12,15 +14,19 @@ class MyRobot(wpilib.TimedRobot):
     in Phoenix 6 python
     """
 
-    def robotInit(self):
+    def __init__(self):
         """Robot initialization function"""
+        super().__init__()
 
         # Keep a reference to all the motor controllers used
         self.cancoder = hardware.CANcoder(1, CANBus("canivore"))
 
         self.timer = Timer()
         self.timer.start()
-        self.controller = wpilib.XboxController(0)
+        self.controller = wpilib.NiDsXboxController(0)
+
+        gearbox = DCMotor.krakenX60FOC(1)
+        self.motor_sim = sim.DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, 1.0), gearbox)
 
     def teleopPeriodic(self):
         """Every 100ms, print the status of the StatusSignal"""
@@ -41,5 +47,11 @@ class MyRobot(wpilib.TimedRobot):
 
             print("")
 
-if __name__ == "__main__":
-    wpilib.run(MyRobot)
+    def simulationPeriodic(self):
+        cancoder_sim = self.cancoder.sim_state
+
+        cancoder_sim.set_supply_voltage(RobotController.getBatteryVoltage())
+        self.motor_sim.setInputVoltage(self.controller.getLeftY() * 12)
+        self.motor_sim.update(0.020)
+        cancoder_sim.set_raw_position(radiansToRotations(self.motor_sim.getAngularPosition()))
+        cancoder_sim.set_velocity(radiansToRotations(self.motor_sim.getAngularVelocity()))

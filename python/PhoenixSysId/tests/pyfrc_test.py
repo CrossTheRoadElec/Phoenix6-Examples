@@ -5,11 +5,11 @@
 
 from typing import TYPE_CHECKING
 
-from pyfrc.tests import *
-from wpilib.simulation import XboxControllerSim
+from wpilib.testing.robot_tests import *
+from wpilib.simulation import NiDsXboxControllerSim
 
 if TYPE_CHECKING:
-    from pyfrc.test_support.controller import TestController
+    from wpilib.testing.controller import RobotTestController
 
 def assert_almost_equal(a: float, b: float, range_val: float):
     """
@@ -17,9 +17,9 @@ def assert_almost_equal(a: float, b: float, range_val: float):
     """
     assert a >= (b - range_val) and a <= (b + range_val)
 
-def test_sysid_quasistatic(control: 'TestController', robot):
+def test_sysid_quasistatic(control: 'RobotTestController', robot):
     with control.run_robot():
-        joysim = XboxControllerSim(robot.container.joystick.getHID())
+        joysim = NiDsXboxControllerSim(robot.container.joystick.getHID())
 
         joysim.setYButton(True)
         control.step_timing(seconds=0.1, autonomous=False, enabled=True)
@@ -28,9 +28,9 @@ def test_sysid_quasistatic(control: 'TestController', robot):
 
         joysim.setYButton(False)
 
-def test_sysid_dynamic(control: 'TestController', robot):
+def test_sysid_dynamic(control: 'RobotTestController', robot):
     with control.run_robot():
-        joysim = XboxControllerSim(robot.container.joystick.getHID())
+        joysim = NiDsXboxControllerSim(robot.container.joystick.getHID())
 
         joysim.setBButton(True)
         control.step_timing(seconds=0.1, autonomous=False, enabled=True)

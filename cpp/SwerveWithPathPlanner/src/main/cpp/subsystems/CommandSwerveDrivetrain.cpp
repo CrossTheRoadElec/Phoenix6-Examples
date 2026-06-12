@@ -1,7 +1,9 @@
-#include "subsystems/CommandSwerveDrivetrain.h"
-#include <frc/RobotController.h>
-#include <pathplanner/lib/auto/AutoBuilder.h>
-#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
+#include "subsystems/CommandSwerveDrivetrain.hpp"
+#include "pathplanner/lib/auto/AutoBuilder.h"
+#include "pathplanner/lib/controllers/PPHolonomicDriveController.h"
+#include "wpi/driverstation/MatchState.hpp"
+#include "wpi/driverstation/RobotState.hpp"
+#include "wpi/system/RobotController.hpp"
 
 using namespace subsystems;
 
@@ -12,13 +14,13 @@ void CommandSwerveDrivetrain::ConfigureAutoBuilder()
         // Supplier of current robot pose
         [this] { return GetState().Pose; },
         // Consumer for seeding pose against auto
-        [this](frc::Pose2d const &pose) { return ResetPose(pose); },
-        // Supplier of current robot speeds
-        [this] { return GetState().Speeds; },
-        // Consumer of ChassisSpeeds and feedforwards to drive the robot
-        [this](frc::ChassisSpeeds const &speeds, pathplanner::DriveFeedforwards const &feedforwards) {
+        [this](wpi::math::Pose2d const &pose) { return ResetPose(pose); },
+        // Supplier of current robot velocity
+        [this] { return GetState().Velocity; },
+        // Consumer of ChassisVelocities and feedforwards to drive the robot
+        [this](wpi::math::ChassisVelocities const &velocity, pathplanner::DriveFeedforwards const &feedforwards) {
             return SetControl(
-                m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds::Discretize(speeds, 20_ms))
+                pathApplyRobotVelocity.WithVelocity(velocity.Discretize(20_ms))
                     .WithWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX)
                     .WithWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY)
             );
@@ -32,8 +34,8 @@ void CommandSwerveDrivetrain::ConfigureAutoBuilder()
         std::move(config),
         // Assume the path needs to be flipped for Red vs Blue, this is normally the case
         [] {
-            auto const alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::Alliance::kBlue);
-            return alliance == frc::DriverStation::Alliance::kRed;
+            auto const alliance = wpi::MatchState::GetAlliance().value_or(wpi::Alliance::BLUE);
+            return alliance == wpi::Alliance::RED;
         },
         this // Subsystem for requirements
     );
@@ -48,31 +50,31 @@ void CommandSwerveDrivetrain::Periodic()
      * Otherwise, only check and apply the operator perspective if the DS is disabled.
      * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
      */
-    if (!m_hasAppliedOperatorPerspective || frc::DriverStation::IsDisabled()) {
-        auto const allianceColor = frc::DriverStation::GetAlliance();
+    if (!hasAppliedOperatorPerspective || wpi::RobotState::IsDisabled()) {
+        auto const allianceColor = wpi::MatchState::GetAlliance();
         if (allianceColor) {
             SetOperatorPerspectiveForward(
-                *allianceColor == frc::DriverStation::Alliance::kRed
+                *allianceColor == wpi::Alliance::RED
                     ? kRedAlliancePerspectiveRotation
                     : kBlueAlliancePerspectiveRotation
             );
-            m_hasAppliedOperatorPerspective = true;
+            hasAppliedOperatorPerspective = true;
         }
     }
 }
 
 void CommandSwerveDrivetrain::StartSimThread()
 {
-    m_lastSimTime = utils::GetCurrentTime();
+    lastSimTime = utils::GetCurrentTime();
 
     /* Run simulation at a faster rate so PID gains behave more reasonably */
-    m_simNotifier = std::make_unique<frc::Notifier>([this] {
-        units::second_t const currentTime = utils::GetCurrentTime();
-        auto const deltaTime = currentTime - m_lastSimTime;
-        m_lastSimTime = currentTime;
+    simNotifier = std::make_unique<wpi::Notifier>([this] {
+        wpi::units::second_t const currentTime = utils::GetCurrentTime();
+        auto const deltaTime = currentTime - lastSimTime;
+        lastSimTime = currentTime;
 
         /* use the measured time delta, get battery voltage from WPILib */
-        UpdateSimState(deltaTime, frc::RobotController::GetBatteryVoltage());
+        UpdateSimState(deltaTime, wpi::RobotController::GetBatteryVoltage());
     });
-    m_simNotifier->StartPeriodic(kSimLoopPeriod);
+    simNotifier->StartPeriodic(SIM_LOOP_PERIOD);
 }

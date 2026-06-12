@@ -1,13 +1,15 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.Timer;
+
+import org.wpilib.hardware.hal.HAL;
+import org.wpilib.system.Timer;
+import org.wpilib.units.measure.Angle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ public class Pigeon2Tests {
     public void constructDevices() {
         assert HAL.initialize(500, 0);
 
-        pidgey = new Pigeon2(0);
+        pidgey = new Pigeon2(0, new CANBus());
     }
 
     @Test

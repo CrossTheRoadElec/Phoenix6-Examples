@@ -1,9 +1,9 @@
-#include "sim/SimProfile.h"
-#include <ctre/phoenix6/Utils.hpp>
+#include "sim/SimProfile.hpp"
+#include "ctre/phoenix6/Utils.hpp"
 
 using namespace ctre::phoenix6;
 
-units::second_t SimProfile::GetPeriod() 
+wpi::units::second_t SimProfile::GetPeriod() 
 {
     // set the start time if not yet running
     if (!_running) {

@@ -3,7 +3,9 @@
     This is a demo program for CANrange usage in Phoenix 6
 """
 import wpilib
-from wpilib import Timer
+from wpilib import RobotController, Timer, simulation as sim
+from wpimath import DCMotor, Models
+from wpimath.units import inchesToMeters
 from phoenix6 import CANBus, configs, hardware, signals
 
 class MyRobot(wpilib.TimedRobot):
@@ -12,8 +14,9 @@ class MyRobot(wpilib.TimedRobot):
     in Phoenix 6 python
     """
 
-    def robotInit(self):
+    def __init__(self):
         """Robot initialization function"""
+        super().__init__()
 
         # Keep a reference to all the devices used
         self.canrange = hardware.CANrange(1, CANBus("canivore"))
@@ -32,7 +35,11 @@ class MyRobot(wpilib.TimedRobot):
 
         self.timer = Timer()
         self.timer.start()
-        self.controller = wpilib.XboxController(0)
+        self.controller = wpilib.NiDsXboxController(0)
+
+        # Create a DCMotorSim for physics sim
+        gearbox = DCMotor.krakenX60FOC(1)
+        self.motor_sim = sim.DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, 1.0), gearbox)
 
     def teleopPeriodic(self):
         """Every 100ms, print the status of the StatusSignal"""
@@ -54,5 +61,10 @@ class MyRobot(wpilib.TimedRobot):
 
             print("")
 
-if __name__ == "__main__":
-    wpilib.run(MyRobot)
+    def simulationPeriodic(self):
+        canrange_sim = self.canrange.sim_state
+
+        canrange_sim.set_supply_voltage(RobotController.getBatteryVoltage())
+        self.motor_sim.setInputVoltage(self.controller.getLeftY() * 12)
+        self.motor_sim.update(0.020)
+        canrange_sim.set_distance(self.motor_sim.getAngularPosition() * inchesToMeters(3))

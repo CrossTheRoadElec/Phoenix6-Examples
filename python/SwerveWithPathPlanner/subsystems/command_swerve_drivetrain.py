@@ -5,10 +5,9 @@ from pathplannerlib.auto import AutoBuilder, RobotConfig
 from pathplannerlib.controller import PIDConstants, PPHolonomicDriveController
 from phoenix6 import SignalLogger, swerve, units, utils
 from typing import Callable, overload
-from wpilib import DriverStation, Notifier, RobotController
+from wpilib import Alliance, MatchState, Notifier, RobotController, RobotState
 from wpilib.sysid import SysIdRoutineLog
-from wpimath.geometry import Pose2d, Rotation2d
-from wpimath.kinematics import ChassisSpeeds
+from wpimath import ChassisVelocities, Rotation2d
 
 from generated.tuner_constants import TunerSwerveDrivetrain
 
@@ -143,7 +142,7 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
         """Keep track if we've ever applied the operator perspective before or not"""
 
         # Swerve request to apply during path following
-        self._apply_robot_speeds = swerve.requests.ApplyRobotSpeeds()
+        self._path_apply_robot_velocity = swerve.requests.ApplyRobotVelocity()
 
         # Swerve requests to apply during SysId characterization
         self._translation_characterization = swerve.requests.SysIdSwerveTranslation()
@@ -235,13 +234,13 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
     def _configure_auto_builder(self):
         config = RobotConfig.fromGUISettings()
         AutoBuilder.configure(
-            lambda: self.get_state().pose,   # Supplier of current robot pose
-            self.reset_pose,                 # Consumer for seeding pose against auto
-            lambda: self.get_state().speeds, # Supplier of current robot speeds
-            # Consumer of ChassisSpeeds and feedforwards to drive the robot
-            lambda speeds, feedforwards: self.set_control(
-                self._apply_robot_speeds
-                .with_speeds(ChassisSpeeds.discretize(speeds, 0.020))
+            lambda: self.get_state().pose,     # Supplier of current robot pose
+            self.reset_pose,                   # Consumer for seeding pose against auto
+            lambda: self.get_state().velocity, # Supplier of current robot velocity
+            # Consumer of ChassisVelocities and feedforwards to drive the robot
+            lambda velocity, feedforwards: self.set_control(
+                self._path_apply_robot_velocity
+                .with_velocity(velocity.discretize(0.020))
                 .with_wheel_force_feedforwards_x(feedforwards.robotRelativeForcesXNewtons)
                 .with_wheel_force_feedforwards_y(feedforwards.robotRelativeForcesYNewtons)
             ),
@@ -253,7 +252,7 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
             ),
             config,
             # Assume the path needs to be flipped for Red vs Blue, this is normally the case
-            lambda: (DriverStation.getAlliance() or DriverStation.Alliance.kBlue) == DriverStation.Alliance.kRed,
+            lambda: (MatchState.getAlliance() or Alliance.BLUE) == Alliance.RED,
             self # Subsystem for requirements
         )
 
@@ -300,12 +299,12 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
         # This allows us to correct the perspective in case the robot code restarts mid-match.
         # Otherwise, only check and apply the operator perspective if the DS is disabled.
         # This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
-        if not self._has_applied_operator_perspective or DriverStation.isDisabled():
-            alliance_color = DriverStation.getAlliance()
+        if not self._has_applied_operator_perspective or RobotState.isDisabled():
+            alliance_color = MatchState.getAlliance()
             if alliance_color is not None:
                 self.set_operator_perspective_forward(
                     self._RED_ALLIANCE_PERSPECTIVE_ROTATION
-                    if alliance_color == DriverStation.Alliance.kRed
+                    if alliance_color == Alliance.RED
                     else self._BLUE_ALLIANCE_PERSPECTIVE_ROTATION
                 )
                 self._has_applied_operator_perspective = True
@@ -323,44 +322,3 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
         self._last_sim_time = utils.get_current_time_seconds()
         self._sim_notifier = Notifier(_sim_periodic)
         self._sim_notifier.startPeriodic(self._SIM_LOOP_PERIOD)
-
-    def add_vision_measurement(
-        self,
-        vision_robot_pose: Pose2d,
-        timestamp: units.second,
-        vision_measurement_std_devs: tuple[float, float, float] | None = None,
-    ):
-        """
-        Adds a vision measurement to the Kalman Filter. This will correct the
-        odometry pose estimate while still accounting for measurement noise.
-
-        Note that the vision measurement standard deviations passed into this method
-        will continue to apply to future measurements until a subsequent call to
-        set_vision_measurement_std_devs or this method.
-
-        :param vision_robot_pose:           The pose of the robot as measured by the vision camera.
-        :type vision_robot_pose:            Pose2d
-        :param timestamp:                   The timestamp of the vision measurement in seconds.
-        :type timestamp:                    second
-        :param vision_measurement_std_devs: Standard deviations of the vision pose measurement
-                                            in the form [x, y, theta]ᵀ, with units in meters
-                                            and radians.
-        :type vision_measurement_std_devs:  tuple[float, float, float] | None
-        """
-        TunerSwerveDrivetrain.add_vision_measurement(
-            self,
-            vision_robot_pose,
-            utils.fpga_to_current_time(timestamp),
-            vision_measurement_std_devs
-        )
-
-    def sample_pose_at(self, timestamp: units.second) -> Pose2d | None:
-        """
-        Return the pose at a given timestamp, if the buffer is not empty.
-
-        :param timestamp: The timestamp of the pose in seconds.
-        :type timestamp: second
-        :returns: The pose at the given timestamp (or None if the buffer is empty).
-        :rtype: Pose2d | None
-        """
-        return TunerSwerveDrivetrain.sample_pose_at(self, utils.fpga_to_current_time(timestamp))

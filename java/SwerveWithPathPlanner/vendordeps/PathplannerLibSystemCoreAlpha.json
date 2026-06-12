@@ -1,0 +1,37 @@
+{
+    "fileName": "PathplannerLibSystemCoreAlpha.json",
+    "name": "PathplannerLib",
+    "version": "2027.0.0-alpha-3",
+    "uuid": "1b42324f-17c6-4875-8e77-1c312bc8c786",
+    "wpilibYear": "2027_alpha5",
+    "mavenUrls": [
+        "https://3015rangerrobotics.github.io/pathplannerlib/repo"
+    ],
+    "jsonUrl": "https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLibSystemCoreAlpha.json",
+    "javaDependencies": [
+        {
+            "groupId": "com.pathplanner.lib",
+            "artifactId": "PathplannerLib-java",
+            "version": "2027.0.0-alpha-3"
+        }
+    ],
+    "jniDependencies": [],
+    "cppDependencies": [
+        {
+            "groupId": "com.pathplanner.lib",
+            "artifactId": "PathplannerLib-cpp",
+            "version": "2027.0.0-alpha-3",
+            "libName": "PathplannerLib",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxuniversal",
+                "linuxsystemcore",
+                "linuxarm64"
+            ]
+        }
+    ]
+}

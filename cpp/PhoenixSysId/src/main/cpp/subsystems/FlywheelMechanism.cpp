@@ -1,4 +1,4 @@
-#include "subsystems/FlywheelMechanism.h"
+#include "subsystems/FlywheelMechanism.hpp"
 
 using namespace ctre::phoenix6;
 
@@ -23,17 +23,17 @@ FlywheelMechanism::FlywheelMechanism()
     SignalLogger::Start();
 }
 
-frc2::CommandPtr FlywheelMechanism::JoystickDriveCommand(std::function<double()> output)
+wpi::cmd::CommandPtr FlywheelMechanism::JoystickDriveCommand(std::function<double()> output)
 {
     return Run([this, output] { m_motorToTest.SetControl(m_joystickControl.WithOutput(output())); });
 }
 
-frc2::CommandPtr FlywheelMechanism::SysIdQuasistatic(frc2::sysid::Direction direction)
+wpi::cmd::CommandPtr FlywheelMechanism::SysIdQuasistatic(wpi::cmd::sysid::Direction direction)
 {
     return m_sysIdRoutine.Quasistatic(direction);
 }
 
-frc2::CommandPtr FlywheelMechanism::SysIdDynamic(frc2::sysid::Direction direction)
+wpi::cmd::CommandPtr FlywheelMechanism::SysIdDynamic(wpi::cmd::sysid::Direction direction)
 {
     return m_sysIdRoutine.Dynamic(direction);
 }
