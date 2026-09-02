@@ -16,8 +16,9 @@ import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
 
 import org.wpilib.framework.TimedRobot;
-import org.wpilib.smartdashboard.SendableChooser;
-import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.tunable.Selectable;
+import org.wpilib.tunable.Tunables;
 import org.wpilib.util.Color;
 
 /**
@@ -44,7 +45,7 @@ public class Robot extends TimedRobot {
     private static final int kSlot1StartIdx = 38;
     private static final int kSlot1EndIdx = 67;
 
-    private final CANdle m_candle = new CANdle(1, CANBus.systemcore(1));
+    private final CANdle m_candle = new CANdle(1, new CANBus(CANPort.CAN_S2));
 
     private enum AnimationType {
         None,
@@ -62,8 +63,8 @@ public class Robot extends TimedRobot {
     private AnimationType m_anim0State = AnimationType.None;
     private AnimationType m_anim1State = AnimationType.None;
 
-    private final SendableChooser<AnimationType> m_anim0Chooser = new SendableChooser<AnimationType>();
-    private final SendableChooser<AnimationType> m_anim1Chooser = new SendableChooser<AnimationType>();
+    private final Selectable<AnimationType> m_anim0Chooser = new Selectable<AnimationType>();
+    private final Selectable<AnimationType> m_anim1Chooser = new Selectable<AnimationType>();
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -89,21 +90,21 @@ public class Robot extends TimedRobot {
         m_candle.setControl(new SolidColor(4, 7).withColor(WHITE));
 
         /* add animations to chooser for slot 0 */
-        m_anim0Chooser.setDefaultOption("Color Flow", AnimationType.ColorFlow);
-        m_anim0Chooser.addOption("Rainbow", AnimationType.Rainbow);
-        m_anim0Chooser.addOption("Twinkle", AnimationType.Twinkle);
-        m_anim0Chooser.addOption("Twinkle Off", AnimationType.TwinkleOff);
-        m_anim0Chooser.addOption("Fire", AnimationType.Fire);
+        m_anim0Chooser.addDefault("Color Flow", AnimationType.ColorFlow);
+        m_anim0Chooser.add("Rainbow", AnimationType.Rainbow);
+        m_anim0Chooser.add("Twinkle", AnimationType.Twinkle);
+        m_anim0Chooser.add("Twinkle Off", AnimationType.TwinkleOff);
+        m_anim0Chooser.add("Fire", AnimationType.Fire);
 
         /* add animations to chooser for slot 1 */
-        m_anim1Chooser.setDefaultOption("Larson", AnimationType.Larson);
-        m_anim1Chooser.addOption("RGB Fade", AnimationType.RgbFade);
-        m_anim1Chooser.addOption("Single Fade", AnimationType.SingleFade);
-        m_anim1Chooser.addOption("Strobe", AnimationType.Strobe);
-        m_anim1Chooser.addOption("Fire", AnimationType.Fire);
+        m_anim1Chooser.addDefault("Larson", AnimationType.Larson);
+        m_anim1Chooser.add("RGB Fade", AnimationType.RgbFade);
+        m_anim1Chooser.add("Single Fade", AnimationType.SingleFade);
+        m_anim1Chooser.add("Strobe", AnimationType.Strobe);
+        m_anim1Chooser.add("Fire", AnimationType.Fire);
 
-        SmartDashboard.putData("Animation 0", m_anim0Chooser);
-        SmartDashboard.putData("Animation 1", m_anim1Chooser);
+        Tunables.publish("Animation 0", m_anim0Chooser);
+        Tunables.publish("Animation 1", m_anim1Chooser);
     }
 
     @Override

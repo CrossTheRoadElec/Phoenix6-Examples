@@ -70,12 +70,10 @@ class TunerConstants {
     // Configs for the Pigeon 2; leave this nullopt to skip applying Pigeon 2 configs
     static constexpr std::optional<configs::Pigeon2Configuration> pigeonConfigs = std::nullopt;
 
-    static constexpr std::string_view kCANBusName = "canivore";
-
 public:
     // CAN bus that the devices are located on;
     // All swerve devices must share the same CAN bus
-    static inline const CANBus kCANBus{kCANBusName, "./logs/example.hoot"};
+    static constexpr CANBus kCANBus{"canivore"};
 
     // Measured robot speed (m/s) at 12 V applied output;
     // This is NOT the desired max robot speed - see MaxSpeed in RobotContainer instead;
@@ -105,7 +103,7 @@ private:
 
 public:
     static constexpr swerve::SwerveDrivetrainConstants DrivetrainConstants = swerve::SwerveDrivetrainConstants{}
-        .WithCANBusName(kCANBusName)
+        .WithNetwork(kCANBus)
         .WithPigeon2Id(kPigeonId)
         .WithPigeon2Configs(pigeonConfigs);
 

@@ -14,7 +14,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
 
   private final DutyCycleOut m_dutycycle = new DutyCycleOut(0);
 
-  private final NiDsXboxController m_joystick = new NiDsXboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
   private final StatusSignal<Angle> m_ccpos = m_cc.getPosition(false);
   private final StatusSignal<Angle> m_fxpos = m_fx.getPosition(false);

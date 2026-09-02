@@ -16,7 +16,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 import first.robot.sim.PhysicsSim;
 
@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   /* Keep a neutral out so we can disable the motor */
   private final NeutralOut m_brake = new NeutralOut();
 
-  private final NiDsXboxController m_joystick = new NiDsXboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
   private final Mechanisms m_mechanisms = new Mechanisms();
 

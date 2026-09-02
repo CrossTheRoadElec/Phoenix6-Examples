@@ -6,13 +6,13 @@
 
 #include "wpi/commands2/button/RobotModeTriggers.hpp"
 #include "wpi/commands2/Commands.hpp"
-#include "wpi/smartdashboard/SmartDashboard.hpp"
+#include "wpi/tunables/Tunable.hpp"
 #include "pathplanner/lib/auto/AutoBuilder.h"
 
 RobotContainer::RobotContainer()
 {
     autoChooser = pathplanner::AutoBuilder::buildAutoChooser("Tests");
-    wpi::SmartDashboard::PutData("Auto Mode", &autoChooser);
+    wpi::tunables::Publish("Auto Mode", autoChooser);
 
     ConfigureBindings();
 }
@@ -54,12 +54,12 @@ void RobotContainer::ConfigureBindings()
         })
     );
 
-    // Run SysId routines when holding back/start and X/Y.
+    // Run SysId routines when holding back (view)/start (menu) and X/Y.
     // Note that each routine should be run exactly once in a single log.
-    (joystick.Back() && joystick.Y()).WhileTrue(drivetrain.SysIdDynamic(wpi::cmd::sysid::Direction::kForward));
-    (joystick.Back() && joystick.X()).WhileTrue(drivetrain.SysIdDynamic(wpi::cmd::sysid::Direction::kReverse));
-    (joystick.Start() && joystick.Y()).WhileTrue(drivetrain.SysIdQuasistatic(wpi::cmd::sysid::Direction::kForward));
-    (joystick.Start() && joystick.X()).WhileTrue(drivetrain.SysIdQuasistatic(wpi::cmd::sysid::Direction::kReverse));
+    (joystick.View() && joystick.Y()).WhileTrue(drivetrain.SysIdDynamic(wpi::cmd::sysid::Direction::FORWARD));
+    (joystick.View() && joystick.X()).WhileTrue(drivetrain.SysIdDynamic(wpi::cmd::sysid::Direction::REVERSE));
+    (joystick.Menu() && joystick.Y()).WhileTrue(drivetrain.SysIdQuasistatic(wpi::cmd::sysid::Direction::FORWARD));
+    (joystick.Menu() && joystick.X()).WhileTrue(drivetrain.SysIdQuasistatic(wpi::cmd::sysid::Direction::REVERSE));
 
     // reset the field-centric heading on left bumper press
     joystick.LeftBumper().OnTrue(drivetrain.RunOnce([this] { drivetrain.SeedFieldCentric(); }));

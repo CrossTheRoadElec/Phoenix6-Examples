@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, overload
 from phoenix6 import CANBus, configs, hardware, signals, swerve, units
-from wpimath.units import inchesToMeters
+from wpimath.units import inches_to_meters
 
 if TYPE_CHECKING:
     from subsystems.command_swerve_drivetrain import CommandSwerveDrivetrain
@@ -81,7 +81,7 @@ class TunerConstants:
 
     # CAN bus that the devices are located on;
     # All swerve devices must share the same CAN bus
-    canbus = CANBus("canivore", "./logs/example.hoot")
+    canbus = CANBus("canivore")
 
     # Measured robot speed (m/s) at 12 V applied output;
     # This is NOT the desired max robot speed - see _max_speed in RobotContainer instead;
@@ -94,7 +94,7 @@ class TunerConstants:
 
     _drive_gear_ratio = 7.363636363636365
     _steer_gear_ratio = 15.42857142857143
-    _wheel_radius: units.meter = inchesToMeters(2.167)
+    _wheel_radius: units.meter = inches_to_meters(2.167)
 
     _invert_left_side = False
     _invert_right_side = True
@@ -110,7 +110,7 @@ class TunerConstants:
 
     drivetrain_constants = (
         swerve.SwerveDrivetrainConstants()
-        .with_can_bus_name(canbus.name)
+        .with_network(canbus)
         .with_pigeon2_id(_pigeon_id)
         .with_pigeon2_configs(_pigeon_configs)
     )
@@ -152,8 +152,8 @@ class TunerConstants:
     _front_left_steer_motor_inverted = True
     _front_left_encoder_inverted = False
 
-    _front_left_x_pos: units.meter = inchesToMeters(10)
-    _front_left_y_pos: units.meter = inchesToMeters(10)
+    _front_left_x_pos: units.meter = inches_to_meters(10)
+    _front_left_y_pos: units.meter = inches_to_meters(10)
 
     # Front Right
     _front_right_drive_motor_id = 1
@@ -163,8 +163,8 @@ class TunerConstants:
     _front_right_steer_motor_inverted = True
     _front_right_encoder_inverted = False
 
-    _front_right_x_pos: units.meter = inchesToMeters(10)
-    _front_right_y_pos: units.meter = inchesToMeters(-10)
+    _front_right_x_pos: units.meter = inches_to_meters(10)
+    _front_right_y_pos: units.meter = inches_to_meters(-10)
 
     # Back Left
     _back_left_drive_motor_id = 7
@@ -174,8 +174,8 @@ class TunerConstants:
     _back_left_steer_motor_inverted = True
     _back_left_encoder_inverted = False
 
-    _back_left_x_pos: units.meter = inchesToMeters(-10)
-    _back_left_y_pos: units.meter = inchesToMeters(10)
+    _back_left_x_pos: units.meter = inches_to_meters(-10)
+    _back_left_y_pos: units.meter = inches_to_meters(10)
 
     # Back Right
     _back_right_drive_motor_id = 5
@@ -185,8 +185,8 @@ class TunerConstants:
     _back_right_steer_motor_inverted = True
     _back_right_encoder_inverted = False
 
-    _back_right_x_pos: units.meter = inchesToMeters(-10)
-    _back_right_y_pos: units.meter = inchesToMeters(-10)
+    _back_right_x_pos: units.meter = inches_to_meters(-10)
+    _back_right_y_pos: units.meter = inches_to_meters(-10)
 
 
     front_left = _constants_creator.create_module_constants(

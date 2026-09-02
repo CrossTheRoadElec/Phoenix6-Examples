@@ -2,6 +2,7 @@
 """
     This is a demo program for CANdle usage in Phoenix 6
 """
+import tunables
 import wpilib
 import wpiutil
 from enum import Enum
@@ -45,7 +46,7 @@ class MyRobot(wpilib.TimedRobot):
         super().__init__()
 
         # Keep a reference to all the devices used
-        self.candle = hardware.CANdle(1, CANBus.systemcore(1))
+        self.candle = hardware.CANdle(1, CANBus(wpilib.CANPort.CAN_S2))
 
         # Configure CANdle
         cfg = configs.CANdleConfiguration()
@@ -68,30 +69,30 @@ class MyRobot(wpilib.TimedRobot):
         self.anim_1_state = self.AnimationType.NONE
 
         # add animations to chooser for slot 0
-        self.anim_0_chooser = wpilib.SendableChooser()
-        self.anim_0_chooser.setDefaultOption("Color Flow", self.AnimationType.COLOR_FLOW)
-        self.anim_0_chooser.addOption("Rainbow", self.AnimationType.RAINBOW)
-        self.anim_0_chooser.addOption("Twinkle", self.AnimationType.TWINKLE)
-        self.anim_0_chooser.addOption("Twinkle Off", self.AnimationType.TWINKLE_OFF)
-        self.anim_0_chooser.addOption("Fire", self.AnimationType.FIRE)
+        self.anim_0_chooser = tunables.Selectable[MyRobot.AnimationType]()
+        self.anim_0_chooser.add_default("Color Flow", self.AnimationType.COLOR_FLOW)
+        self.anim_0_chooser.add("Rainbow", self.AnimationType.RAINBOW)
+        self.anim_0_chooser.add("Twinkle", self.AnimationType.TWINKLE)
+        self.anim_0_chooser.add("Twinkle Off", self.AnimationType.TWINKLE_OFF)
+        self.anim_0_chooser.add("Fire", self.AnimationType.FIRE)
 
         # add animations to chooser for slot 1
-        self.anim_1_chooser = wpilib.SendableChooser()
-        self.anim_1_chooser.setDefaultOption("Larson", self.AnimationType.LARSON)
-        self.anim_1_chooser.addOption("RGB Fade", self.AnimationType.RGB_FADE)
-        self.anim_1_chooser.addOption("Single Fade", self.AnimationType.SINGLE_FADE)
-        self.anim_1_chooser.addOption("Strobe", self.AnimationType.STROBE)
-        self.anim_1_chooser.addOption("Fire", self.AnimationType.FIRE)
+        self.anim_1_chooser = tunables.Selectable[MyRobot.AnimationType]()
+        self.anim_1_chooser.add_default("Larson", self.AnimationType.LARSON)
+        self.anim_1_chooser.add("RGB Fade", self.AnimationType.RGB_FADE)
+        self.anim_1_chooser.add("Single Fade", self.AnimationType.SINGLE_FADE)
+        self.anim_1_chooser.add("Strobe", self.AnimationType.STROBE)
+        self.anim_1_chooser.add("Fire", self.AnimationType.FIRE)
 
-        wpilib.SmartDashboard.putData("Animation 0", self.anim_0_chooser)
-        wpilib.SmartDashboard.putData("Animation 1", self.anim_1_chooser)
+        tunables.publish("Animation 0", self.anim_0_chooser)
+        tunables.publish("Animation 1", self.anim_1_chooser)
 
-    def robotPeriodic(self):
+    def robot_periodic(self):
         """Robot periodic function"""
 
         # if the selection for slot 0 changes, change animations
-        anim_0_selection = self.anim_0_chooser.getSelected()
-        if self.anim_0_state != anim_0_selection:
+        anim_0_selection = self.anim_0_chooser.get_selected()
+        if anim_0_selection is not None and self.anim_0_state != anim_0_selection:
             self.anim_0_state = anim_0_selection
 
             match self.anim_0_state:
@@ -120,8 +121,8 @@ class MyRobot(wpilib.TimedRobot):
                     )
 
         # if the selection for slot 1 changes, change animations
-        anim_1_selection = self.anim_1_chooser.getSelected()
-        if self.anim_1_state != anim_1_selection:
+        anim_1_selection = self.anim_1_chooser.get_selected()
+        if anim_1_selection is not None and self.anim_1_state != anim_1_selection:
             self.anim_1_state = anim_1_selection
 
             match self.anim_1_state:

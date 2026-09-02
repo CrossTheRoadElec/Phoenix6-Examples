@@ -8,13 +8,13 @@ import com.ctre.phoenix6.SignalLogger;
 
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
-import org.wpilib.command2.button.CommandNiDsXboxController;
+import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.command2.sysid.SysIdRoutine;
 
 import first.robot.subsystems.FlywheelMechanism;
 
 public class RobotContainer {
-    private final CommandNiDsXboxController m_joystick = new CommandNiDsXboxController(0);
+    private final CommandXboxController m_joystick = new CommandXboxController(0);
     private final FlywheelMechanism m_mechanism = new FlywheelMechanism();
 
     public RobotContainer() {
@@ -37,10 +37,10 @@ public class RobotContainer {
          * Joystick B = dynamic forward
          * Joystick X = dyanmic reverse
          */
-        m_joystick.y().whileTrue(m_mechanism.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        m_joystick.a().whileTrue(m_mechanism.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        m_joystick.b().whileTrue(m_mechanism.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        m_joystick.x().whileTrue(m_mechanism.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        m_joystick.y().whileTrue(m_mechanism.sysIdQuasistatic(SysIdRoutine.Direction.FORWARD));
+        m_joystick.a().whileTrue(m_mechanism.sysIdQuasistatic(SysIdRoutine.Direction.REVERSE));
+        m_joystick.b().whileTrue(m_mechanism.sysIdDynamic(SysIdRoutine.Direction.FORWARD));
+        m_joystick.x().whileTrue(m_mechanism.sysIdDynamic(SysIdRoutine.Direction.REVERSE));
     }
 
     public Command getAutonomousCommand() {

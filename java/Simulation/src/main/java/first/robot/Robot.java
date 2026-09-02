@@ -23,14 +23,15 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import org.wpilib.drive.DifferentialDrive;
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.kinematics.DifferentialDriveOdometry;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.simulation.DifferentialDrivetrainSim;
 import org.wpilib.smartdashboard.Field2d;
-import org.wpilib.smartdashboard.SmartDashboard;
 import org.wpilib.system.RobotController;
+import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Distance;
@@ -46,9 +47,9 @@ import org.wpilib.units.measure.LinearVelocity;
  * project.
  */
 public class Robot extends TimedRobot {
-    private final NiDsXboxController joystick = new NiDsXboxController(0);
+    private final XboxController joystick = new XboxController(0);
 
-    private final CANBus CANBUS = CANBus.systemcore(1);
+    private final CANBus CANBUS = new CANBus(CANPort.CAN_S2);
     private final TalonFX leftFX = new TalonFX(1, CANBUS);
     private final TalonFX rightFX = new TalonFX(2, CANBUS);
     private final CANcoder leftSensor = new CANcoder(1, CANBUS);
@@ -142,9 +143,6 @@ public class Robot extends TimedRobot {
             leftFX.getPosition(),
             rightFX.getPosition(),
             imu.getYaw());
-
-        /* Publish field pose data to read back from */
-        SmartDashboard.putData("Field", m_field);
     }
 
     private int printCount = 0;
@@ -161,7 +159,9 @@ public class Robot extends TimedRobot {
             rotationsToMeters(leftSensor.getPosition().getValue()).in(Meters),
             rotationsToMeters(rightSensor.getPosition().getValue()).in(Meters)
         );
+
         m_field.setRobotPose(m_odometry.getPose());
+        Telemetry.log("Field", m_field);
 
         if (++printCount >= 50) {
             printCount = 0;
@@ -254,9 +254,9 @@ public class Robot extends TimedRobot {
          * if a trigger is pressed, trigger the reverse limit switch 
          */
         leftSim.setForwardLimit(joystick.getLeftBumperButton());
-        leftSim.setReverseLimit(joystick.getLeftTriggerAxis() > 0.5);
+        leftSim.setReverseLimit(joystick.getLeftTrigger() > 0.5);
         rightSim.setForwardLimit(joystick.getRightBumperButton());
-        rightSim.setReverseLimit(joystick.getRightTriggerAxis() > 0.5);
+        rightSim.setReverseLimit(joystick.getRightTrigger() > 0.5);
     }
 
     @Override

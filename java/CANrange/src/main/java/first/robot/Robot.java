@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.signals.UpdateModeValue;
 
 import org.wpilib.framework.TimedRobot;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.system.Timer;
 
 /**
@@ -21,7 +22,7 @@ import org.wpilib.system.Timer;
 public class Robot extends TimedRobot {
   private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final CANBus kCANBus = CANBus.systemcore(1);
+  private final CANBus kCANBus = new CANBus(CANPort.CAN_S2);
 
   /**
    * We recommend reading the Tuning CANrange devblog in our API documentation

@@ -15,7 +15,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 
 import first.robot.sim.PhysicsSim;
@@ -29,7 +29,7 @@ import first.robot.sim.PhysicsSim;
 public class Robot extends TimedRobot {
   private final TalonFX m_fx = new TalonFX(1, new CANBus("canivore"));
   private final MotionMagicExpoVoltage m_mmReq = new MotionMagicExpoVoltage(0);
-  private final NiDsXboxController m_joystick = new NiDsXboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
   private int m_printCount = 0;
 
@@ -118,11 +118,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    /* Deadband the joystick */
     double leftY = m_joystick.getLeftY();
-    if (Math.abs(leftY) < 0.1) leftY = 0;
-
     m_fx.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
+
     if (m_joystick.getBButton()) {
       m_fx.setPosition(Rotations.of(1));
     }

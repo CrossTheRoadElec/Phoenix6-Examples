@@ -30,10 +30,10 @@ void RobotContainer::ConfigureBindings()
      * Joystick B = dynamic forward
      * Joystick X = dyanmic reverse
      */
-    m_joystick.Y().WhileTrue(m_mechanism.SysIdQuasistatic(wpi::cmd::sysid::Direction::kForward));
-    m_joystick.A().WhileTrue(m_mechanism.SysIdQuasistatic(wpi::cmd::sysid::Direction::kReverse));
-    m_joystick.B().WhileTrue(m_mechanism.SysIdDynamic(wpi::cmd::sysid::Direction::kForward));
-    m_joystick.X().WhileTrue(m_mechanism.SysIdDynamic(wpi::cmd::sysid::Direction::kReverse));
+    m_joystick.Y().WhileTrue(m_mechanism.SysIdQuasistatic(wpi::cmd::sysid::Direction::FORWARD));
+    m_joystick.A().WhileTrue(m_mechanism.SysIdQuasistatic(wpi::cmd::sysid::Direction::REVERSE));
+    m_joystick.B().WhileTrue(m_mechanism.SysIdDynamic(wpi::cmd::sysid::Direction::FORWARD));
+    m_joystick.X().WhileTrue(m_mechanism.SysIdDynamic(wpi::cmd::sysid::Direction::REVERSE));
 }
 
 wpi::cmd::CommandPtr RobotContainer::GetAutonomousCommand()

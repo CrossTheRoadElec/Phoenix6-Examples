@@ -5,7 +5,7 @@
 import wpilib
 from wpilib import RobotController, Timer, simulation as sim
 from wpimath import DCMotor, Models
-from wpimath.units import radiansToRotations
+from wpimath.units import radians_to_rotations
 from phoenix6 import CANBus, configs, hardware, signals
 
 class MyRobot(wpilib.TimedRobot):
@@ -39,16 +39,16 @@ class MyRobot(wpilib.TimedRobot):
 
         self.timer = Timer()
         self.timer.start()
-        self.controller = wpilib.NiDsXboxController(0)
+        self.controller = wpilib.XboxController(0)
 
         # Create a DCMotorSim for physics sim
-        gearbox = DCMotor.krakenX60FOC(1)
-        self.motor_sim = sim.DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, 1.0), gearbox)
+        gearbox = DCMotor.kraken_x60_foc(1)
+        self.motor_sim = sim.DCMotorSim(Models.single_jointed_arm_from_physical_constants(gearbox, 0.01, 1.0), gearbox)
 
-    def teleopPeriodic(self):
+    def teleop_periodic(self):
         """Every 100ms, print the status of the StatusSignal"""
 
-        if self.timer.hasElapsed(0.1):
+        if self.timer.has_elapsed(0.1):
             self.timer.reset()
             # get_pwm1_position automatically calls refresh(), no need to manually refresh.
             #
@@ -64,11 +64,11 @@ class MyRobot(wpilib.TimedRobot):
 
             print("")
 
-    def simulationPeriodic(self):
+    def simulation_periodic(self):
         candi_sim = self.candi.sim_state
 
-        candi_sim.set_supply_voltage(RobotController.getBatteryVoltage())
-        self.motor_sim.setInputVoltage(self.controller.getLeftY() * 12)
+        candi_sim.set_supply_voltage(RobotController.get_battery_voltage())
+        self.motor_sim.set_input_voltage(self.controller.get_left_y() * 12)
         self.motor_sim.update(0.020)
-        candi_sim.set_pwm1_position(radiansToRotations(self.motor_sim.getAngularPosition()))
-        candi_sim.set_pwm1_velocity(radiansToRotations(self.motor_sim.getAngularVelocity()))
+        candi_sim.set_pwm1_position(radians_to_rotations(self.motor_sim.get_angular_position()))
+        candi_sim.set_pwm1_velocity(radians_to_rotations(self.motor_sim.get_angular_velocity()))

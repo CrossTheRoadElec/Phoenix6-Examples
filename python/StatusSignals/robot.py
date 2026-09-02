@@ -3,9 +3,9 @@
     This is a demo program for StatusSignal usage in Phoenix 6
 """
 import wpilib
-from wpilib import NiDsXboxController, RobotController, Timer, simulation as sim
+from wpilib import XboxController, RobotController, Timer, simulation as sim
 from wpimath import DCMotor, Models
-from wpimath.units import radiansToRotations
+from wpimath.units import radians_to_rotations
 from phoenix6 import BaseStatusSignal, CANBus, SignalLogger, controls, hardware
 
 
@@ -29,26 +29,26 @@ class MyRobot(wpilib.TimedRobot):
         self.timer = Timer()
         self.timer.start()
 
-        self.joystick = NiDsXboxController(0)
+        self.joystick = XboxController(0)
 
         self.motor.set_position(6)
 
         # Create a DCMotorSim for physics sim
-        gearbox = DCMotor.krakenX60FOC(1)
-        self.motor_sim = sim.DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, 1.0), gearbox)
+        gearbox = DCMotor.kraken_x60_foc(1)
+        self.motor_sim = sim.DCMotorSim(Models.single_jointed_arm_from_physical_constants(gearbox, 0.01, 1.0), gearbox)
 
-    def robotPeriodic(self) -> None:
+    def robot_periodic(self) -> None:
         # Drive the motor so we have a changing position/velocity
-        self.motor.set_control(self.request.with_output(self.joystick.getLeftY()))
+        self.motor.set_control(self.request.with_output(self.joystick.get_left_y()))
 
-    def teleopInit(self) -> None:
+    def teleop_init(self) -> None:
         """Start signal logger for logging purposes"""
         SignalLogger.start()
 
-    def teleopPeriodic(self):
+    def teleop_periodic(self):
         """Every 100ms, print the status of the StatusSignal"""
 
-        if self.timer.hasElapsed(0.1):
+        if self.timer.has_elapsed(0.1):
             self.timer.reset()
             BaseStatusSignal.refresh_all(self.pos, self.vel)
 
@@ -60,11 +60,11 @@ class MyRobot(wpilib.TimedRobot):
             )
             print(f"Latency compensated position is {latency_compensated_pos}")
 
-    def simulationPeriodic(self):
+    def simulation_periodic(self):
         talon_sim = self.motor.sim_state
 
-        talon_sim.set_supply_voltage(RobotController.getBatteryVoltage())
-        self.motor_sim.setInputVoltage(talon_sim.motor_voltage)
+        talon_sim.set_supply_voltage(RobotController.get_battery_voltage())
+        self.motor_sim.set_input_voltage(talon_sim.motor_voltage)
         self.motor_sim.update(0.020)
-        talon_sim.set_raw_rotor_position(radiansToRotations(self.motor_sim.getAngularPosition()))
-        talon_sim.set_rotor_velocity(radiansToRotations(self.motor_sim.getAngularVelocity()))
+        talon_sim.set_raw_rotor_position(radians_to_rotations(self.motor_sim.get_angular_position()))
+        talon_sim.set_rotor_velocity(radians_to_rotations(self.motor_sim.get_angular_velocity()))

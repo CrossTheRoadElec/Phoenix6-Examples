@@ -6,7 +6,7 @@
 
 #include "ctre/phoenix6/CANdle.hpp"
 #include "wpi/framework/TimedRobot.hpp"
-#include "wpi/smartdashboard/SendableChooser.hpp"
+#include "wpi/tunables/Selectable.hpp"
 
 class Robot : public wpi::TimedRobot {
 private:
@@ -29,7 +29,7 @@ private:
     static constexpr int kSlot1StartIdx = 38;
     static constexpr int kSlot1EndIdx = 67;
 
-    ctre::phoenix6::hardware::CANdle m_candle{1, ctre::phoenix6::CANBus::Systemcore(1)};
+    ctre::phoenix6::hardware::CANdle m_candle{1, wpi::CANPort::CAN_S2};
 
     enum class AnimationType {
         None,
@@ -47,8 +47,8 @@ private:
     AnimationType m_anim0State{AnimationType::None};
     AnimationType m_anim1State{AnimationType::None};
 
-    wpi::SendableChooser<AnimationType> m_anim0Chooser;
-    wpi::SendableChooser<AnimationType> m_anim1Chooser;
+    wpi::tunables::Selectable<AnimationType> m_anim0Chooser;
+    wpi::tunables::Selectable<AnimationType> m_anim1Chooser;
 
 public:
     Robot();

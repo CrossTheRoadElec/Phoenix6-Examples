@@ -1,5 +1,5 @@
 from phoenix6 import CANBus
 
 class Constants:
-    kCANbus = CANBus("canivore")
-    kTalonFxId = 18
+    CANBUS = CANBus("canivore")
+    TALON_FX_ID = 18

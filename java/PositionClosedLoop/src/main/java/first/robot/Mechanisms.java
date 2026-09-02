@@ -6,7 +6,7 @@ import com.ctre.phoenix6.StatusSignal;
 
 import org.wpilib.smartdashboard.Mechanism2d;
 import org.wpilib.smartdashboard.MechanismLigament2d;
-import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.util.Color;
 import org.wpilib.util.Color8Bit;
@@ -40,6 +40,6 @@ public class Mechanisms {
      */                            
     public void update(StatusSignal<Angle> position) {
         distanceBar.setLength(position.getValue().in(Rotations)/30); // Divide by 30 to scale motion to fit in the window 
-        SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+        Telemetry.log("mech2d", mech); // Creates mech2d in SmartDashboard
     }                             
 }

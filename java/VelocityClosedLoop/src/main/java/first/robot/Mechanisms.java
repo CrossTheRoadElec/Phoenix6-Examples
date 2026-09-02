@@ -6,7 +6,7 @@ import com.ctre.phoenix6.StatusSignal;
 
 import org.wpilib.smartdashboard.Mechanism2d;
 import org.wpilib.smartdashboard.MechanismLigament2d;
-import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.util.Color;
@@ -53,6 +53,6 @@ public class Mechanisms {
     public void update(StatusSignal<Angle> position, StatusSignal<AngularVelocity> velocity) {
         VelocityMech.setLength(velocity.getValue().in(RotationsPerSecond)/120);
         arm.setAngle(position.getValue().in(Rotations) * 360); // Divide by 120 to scale motion to fit in the window
-        SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+        Telemetry.log("mech2d", mech); // Creates mech2d in SmartDashboard
     }                             
 }

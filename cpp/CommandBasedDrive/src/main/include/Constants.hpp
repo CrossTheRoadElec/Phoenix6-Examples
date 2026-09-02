@@ -16,7 +16,7 @@
  * they are needed.
  */
 
-constexpr ctre::phoenix6::CANBus CANBUS = ctre::phoenix6::CANBus::Systemcore(1);
+constexpr ctre::phoenix6::CANBus CANBUS{wpi::CANPort::CAN_S2};
 
 /* Talon FX Device IDs */
 constexpr int LEFT_LEADER_ID{1};

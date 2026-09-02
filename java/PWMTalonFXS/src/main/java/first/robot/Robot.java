@@ -4,7 +4,7 @@
 
 package first.robot;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 
 import first.robot.PWMTalonFXS.MotorArrangement;
@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
   private PWMTalonFXS m_motor = new PWMTalonFXS(0);
 
   // Use the first xbox controller connected to the Driver Station
-  private NiDsXboxController m_joy = new NiDsXboxController(0);
+  private XboxController m_joy = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any

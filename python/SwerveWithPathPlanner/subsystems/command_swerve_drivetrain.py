@@ -3,11 +3,11 @@ from commands2.sysid import SysIdRoutine
 import math
 from pathplannerlib.auto import AutoBuilder, RobotConfig
 from pathplannerlib.controller import PIDConstants, PPHolonomicDriveController
-from phoenix6 import SignalLogger, swerve, units, utils
+from phoenix6 import AlertableCollection, SignalLogger, swerve, units, utils
 from typing import Callable, overload
 from wpilib import Alliance, MatchState, Notifier, RobotController, RobotState
 from wpilib.sysid import SysIdRoutineLog
-from wpimath import ChassisVelocities, Rotation2d
+from wpimath import Rotation2d
 
 from generated.tuner_constants import TunerSwerveDrivetrain
 
@@ -23,9 +23,9 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
 
     _SIM_LOOP_PERIOD: units.second = 0.004  # 4 ms
 
-    _BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(0)
+    _BLUE_ALLIANCE_FORWARD_DIRECTION = Rotation2d.from_degrees(0)
     """Blue alliance sees forward as 0 degrees (toward red alliance wall)"""
-    _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
+    _RED_ALLIANCE_FORWARD_DIRECTION = Rotation2d.from_degrees(180)
     """Red alliance sees forward as 180 degrees (toward blue alliance wall)"""
 
     @overload
@@ -138,11 +138,14 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
         self._sim_notifier: Notifier | None = None
         self._last_sim_time: units.second = 0.0
 
-        self._has_applied_operator_perspective = False
-        """Keep track if we've ever applied the operator perspective before or not"""
+        self._device_alerts = AlertableCollection("Swerve")
+        """Alerts for all the devices on the drivetrain"""
 
-        # Swerve request to apply during path following
+        self._has_applied_forward_direction = False
+        """Keep track if we've ever applied the operator forward direction"""
+
         self._path_apply_robot_velocity = swerve.requests.ApplyRobotVelocity()
+        """Swerve request to apply during path following"""
 
         # Swerve requests to apply during SysId characterization
         self._translation_characterization = swerve.requests.SysIdSwerveTranslation()
@@ -153,10 +156,10 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
             SysIdRoutine.Config(
                 # Use default ramp rate (1 V/s) and timeout (10 s)
                 # Reduce dynamic voltage to 4 V to prevent brownout
-                stepVoltage=4.0,
+                step_voltage=4.0,
                 # Log state with SignalLogger class
-                recordState=lambda state: SignalLogger.write_string(
-                    "SysIdTranslation_State", SysIdRoutineLog.stateEnumToString(state)
+                record_state=lambda state: SignalLogger.write_string(
+                    "SysIdTranslation_State", SysIdRoutineLog.state_enum_to_string(state)
                 )
                 and None,
             ),
@@ -174,10 +177,10 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
             SysIdRoutine.Config(
                 # Use default ramp rate (1 V/s) and timeout (10 s)
                 # Use dynamic voltage of 7 V
-                stepVoltage=7.0,
+                step_voltage=7.0,
                 # Log state with SignalLogger class
-                recordState=lambda state: SignalLogger.write_string(
-                    "SysIdSteer_State", SysIdRoutineLog.stateEnumToString(state)
+                record_state=lambda state: SignalLogger.write_string(
+                    "SysIdSteer_State", SysIdRoutineLog.state_enum_to_string(state)
                 )
                 and None,
             ),
@@ -194,13 +197,13 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
         self._sys_id_routine_rotation = SysIdRoutine(
             SysIdRoutine.Config(
                 # This is in radians per second², but SysId only supports "volts per second"
-                rampRate=math.pi / 6,
+                ramp_rate=math.pi / 6,
                 # Use dynamic voltage of 7 V
-                stepVoltage=7.0,
+                step_voltage=7.0,
                 # Use default timeout (10 s)
                 # Log state with SignalLogger class
-                recordState=lambda state: SignalLogger.write_string(
-                    "SysIdSteer_State", SysIdRoutineLog.stateEnumToString(state)
+                record_state=lambda state: SignalLogger.write_string(
+                    "SysIdSteer_State", SysIdRoutineLog.state_enum_to_string(state)
                 )
                 and None,
             ),
@@ -227,9 +230,23 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
         self._sys_id_routine_to_apply = self._sys_id_routine_translation
         """The SysId routine to test"""
 
+        self._register_alerts()
         if utils.is_simulation():
             self._start_sim_thread()
         self._configure_auto_builder()
+
+    def _close(self):
+        # destroy the sim notifier before closing the drivetrain
+        self._sim_notifier = None
+        super()._close()
+
+    def _register_alerts(self):
+        # register alerts for all the devices in the drivetrain
+        for module in self.modules:
+            self._device_alerts.with_alertable(module.drive_motor)
+            self._device_alerts.with_alertable(module.steer_motor)
+            self._device_alerts.with_alertable(module.encoder)
+        self._device_alerts.with_alertable(self.pigeon2)
 
     def _configure_auto_builder(self):
         config = RobotConfig.fromGUISettings()
@@ -252,7 +269,7 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
             ),
             config,
             # Assume the path needs to be flipped for Red vs Blue, this is normally the case
-            lambda: (MatchState.getAlliance() or Alliance.BLUE) == Alliance.RED,
+            lambda: (MatchState.get_alliance() or Alliance.BLUE) == Alliance.RED,
             self # Subsystem for requirements
         )
 
@@ -294,20 +311,24 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
         return self._sys_id_routine_to_apply.dynamic(direction)
 
     def periodic(self):
-        # Periodically try to apply the operator perspective.
-        # If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-        # This allows us to correct the perspective in case the robot code restarts mid-match.
-        # Otherwise, only check and apply the operator perspective if the DS is disabled.
+        # Periodically try to apply the operator forward direction for OperatorPerspective control.
+        # If we haven't applied the operator forward direction before, then we should apply it regardless of DS state.
+        # This allows us to correct the forward direction in case the robot code restarts mid-match.
+        # Otherwise, only check and apply the operator forward direction if the DS is disabled.
         # This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
-        if not self._has_applied_operator_perspective or RobotState.isDisabled():
-            alliance_color = MatchState.getAlliance()
+        #
+        # See the documentation of set_operator_forward_direction for more details.
+        if not self._has_applied_forward_direction or RobotState.is_disabled():
+            alliance_color = MatchState.get_alliance()
             if alliance_color is not None:
-                self.set_operator_perspective_forward(
-                    self._RED_ALLIANCE_PERSPECTIVE_ROTATION
+                self.set_operator_forward_direction(
+                    self._RED_ALLIANCE_FORWARD_DIRECTION
                     if alliance_color == Alliance.RED
-                    else self._BLUE_ALLIANCE_PERSPECTIVE_ROTATION
+                    else self._BLUE_ALLIANCE_FORWARD_DIRECTION
                 )
-                self._has_applied_operator_perspective = True
+                self._has_applied_forward_direction = True
+
+        self._device_alerts.report()
 
     def _start_sim_thread(self):
         def _sim_periodic():
@@ -316,9 +337,9 @@ class CommandSwerveDrivetrain(Subsystem, TunerSwerveDrivetrain):
             self._last_sim_time = current_time
 
             # use the measured time delta, get battery voltage from WPILib
-            self.update_sim_state(delta_time, RobotController.getBatteryVoltage())
+            self.update_sim_state(delta_time, RobotController.get_battery_voltage())
 
         # Run simulation at a faster rate so PID gains behave more reasonably
         self._last_sim_time = utils.get_current_time_seconds()
         self._sim_notifier = Notifier(_sim_periodic)
-        self._sim_notifier.startPeriodic(self._SIM_LOOP_PERIOD)
+        self._sim_notifier.start_periodic(self._SIM_LOOP_PERIOD)

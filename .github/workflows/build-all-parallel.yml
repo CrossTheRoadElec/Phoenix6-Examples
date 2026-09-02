@@ -1,7 +1,7 @@
 
 # This is a faster workflow that parallelizes the jobs in a matrix so
-# we can get faster results than waiting for the standard build_all_frc_projects
-# powershell script
+# we can get faster results than waiting for the standard test_all_projects
+# Python script
 
 name: Build all FRC Projects
 
@@ -109,10 +109,10 @@ jobs:
     runs-on: ubuntu-latest
 
     # This grabs the WPILib docker container
-    container: wpilib/systemcore-cross-ubuntu:2027-24.04
+    container: wpilib/systemcore-cross-debian:trixie
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -128,14 +128,14 @@ jobs:
       fail-fast: false
       matrix:
         python_version: ['3.12', '3.13', '3.14']
-        os: ['ubuntu-24.04', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-26.04', 'macos-latest', 'windows-latest']
         project-name: ['ArcadeDrive', 'CANcoder', 'CANdi', 'CANdle', 'CANrange', 'MotionMagic', 'PhoenixSysId', 'PositionClosedLoop', 'StatusSignals', 'SwerveWithPathPlanner', 'TalonFX', 'VelocityClosedLoop']
 
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python_version }}
     - name: Install python dependencies

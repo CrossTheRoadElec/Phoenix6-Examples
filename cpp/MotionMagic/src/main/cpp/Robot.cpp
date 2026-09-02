@@ -61,10 +61,7 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
-  /* Deadband the joystick */
   double leftY = m_joystick.GetLeftY();
-  if (fabs(leftY) < 0.1) leftY = 0;
-
   m_motor.SetControl(m_mmReq.WithPosition(leftY * 10_tr).WithSlot(0));
 }
 

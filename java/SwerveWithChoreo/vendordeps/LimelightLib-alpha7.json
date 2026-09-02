@@ -1,0 +1,33 @@
+{
+    "fileName": "LimelightLib-alpha7.json",
+    "name": "LimelightLib 2",
+    "version": "2.0.0-beta9-alpha7",
+    "uuid": "708579ad-c4be-4335-af21-7c7d8496c499",
+    "wpilibYear": "2027_alpha7",
+    "mavenUrls": [
+        "https://limelightvision.github.io/limelightlib-public/maven/"
+    ],
+    "jsonUrl": "https://limelightvision.github.io/limelightlib-public/LimelightLib-alpha7.json",
+    "javaDependencies": [
+        {
+            "groupId": "com.limelightvision",
+            "artifactId": "limelightlib-java",
+            "version": "2.0.0-beta9-alpha7"
+        }
+    ],
+    "jniDependencies": [],
+    "cppDependencies": [
+        {
+            "groupId": "com.limelightvision",
+            "artifactId": "limelightlib-cpp",
+            "version": "2.0.0-beta9-alpha7",
+            "libName": "limelightlib",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "linuxsystemcore"
+            ]
+        }
+    ]
+}

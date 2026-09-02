@@ -5,7 +5,7 @@
 #pragma once
 
 #include "wpi/commands2/CommandPtr.hpp"
-#include "wpi/commands2/button/CommandNiDsXboxController.hpp"
+#include "wpi/commands2/button/CommandXboxController.hpp"
 
 #include "subsystems/FlywheelMechanism.hpp"
 
@@ -16,7 +16,7 @@ public:
   wpi::cmd::CommandPtr GetAutonomousCommand();
 
 private:
-  wpi::cmd::CommandNiDsXboxController m_joystick{0};
+  wpi::cmd::CommandXboxController m_joystick{0};
   FlywheelMechanism m_mechanism{};
 
   void ConfigureBindings();

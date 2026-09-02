@@ -5,13 +5,13 @@
 #pragma once
 
 #include "ctre/phoenix6/TalonFX.hpp"
-#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/driverstation/XboxController.hpp"
 #include "wpi/framework/TimedRobot.hpp"
 
 class Robot : public wpi::TimedRobot {
   ctre::phoenix6::hardware::TalonFX m_motor{1, ctre::phoenix6::CANBus{"canivore"}};
   ctre::phoenix6::controls::MotionMagicVoltage m_mmReq{0_tr};
-  wpi::NiDsXboxController m_joystick{0};
+  wpi::XboxController m_joystick{0};
   int m_printCount = 0;
 
  public:

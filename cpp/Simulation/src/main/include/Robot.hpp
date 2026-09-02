@@ -8,7 +8,7 @@
 #include "ctre/phoenix6/CANcoder.hpp"
 #include "ctre/phoenix6/Pigeon2.hpp"
 #include "wpi/drive/DifferentialDrive.hpp"
-#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/driverstation/XboxController.hpp"
 #include "wpi/framework/TimedRobot.hpp"
 #include "wpi/math/kinematics/DifferentialDriveOdometry.hpp"
 #include "wpi/simulation/DifferentialDrivetrainSim.hpp"
@@ -16,7 +16,7 @@
 #include "wpi/units/velocity.hpp"
 
 class Robot : public wpi::TimedRobot {
-  static constexpr ctre::phoenix6::CANBus CANBUS{ctre::phoenix6::CANBus::Systemcore(1)};
+  static constexpr ctre::phoenix6::CANBus CANBUS{wpi::CANPort::CAN_S2};
 
   ctre::phoenix6::hardware::TalonFX leftFX{0, CANBUS};
   ctre::phoenix6::hardware::TalonFX rightFX{1, CANBUS};
@@ -35,7 +35,7 @@ class Robot : public wpi::TimedRobot {
     [this](double output) { rightFX.SetThrottle(output); }
   };
 
-  wpi::NiDsXboxController joystick{0};
+  wpi::XboxController joystick{0};
 
   /*
     * These numbers are an example AndyMark Drivetrain with some additional weight.

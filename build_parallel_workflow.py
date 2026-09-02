@@ -2,8 +2,8 @@ import os
 
 WORKFLOW_TEMPLATE = """
 # This is a faster workflow that parallelizes the jobs in a matrix so
-# we can get faster results than waiting for the standard build_all_frc_projects
-# powershell script
+# we can get faster results than waiting for the standard test_all_projects
+# Python script
 
 name: Build all FRC Projects
 
@@ -12,6 +12,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -28,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
 
     # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2025-22.04
+    container: wpilib/systemcore-cross-debian:trixie
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -47,14 +48,14 @@ jobs:
       fail-fast: false
       matrix:
         python_version: ['3.12', '3.13', '3.14']
-        os: ['ubuntu-24.04', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-26.04', 'macos-latest', 'windows-latest']
         project-name: [{python_projects}]
 
     runs-on: ${{{{ matrix.os }}}}
 
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{{{ matrix.python_version }}}}
     - name: Install python dependencies
