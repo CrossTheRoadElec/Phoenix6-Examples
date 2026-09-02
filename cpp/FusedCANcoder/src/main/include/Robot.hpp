@@ -6,7 +6,7 @@
 
 #include "ctre/phoenix6/CANcoder.hpp"
 #include "ctre/phoenix6/TalonFX.hpp"
-#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/driverstation/XboxController.hpp"
 #include "wpi/framework/TimedRobot.hpp"
 
 class Robot : public wpi::TimedRobot {
@@ -24,7 +24,7 @@ class Robot : public wpi::TimedRobot {
 
   ctre::phoenix6::controls::DutyCycleOut m_dutyCycleControl{0};
 
-  wpi::NiDsXboxController m_joystick{0};
+  wpi::XboxController m_joystick{0};
 
   int printCount = 0;
 

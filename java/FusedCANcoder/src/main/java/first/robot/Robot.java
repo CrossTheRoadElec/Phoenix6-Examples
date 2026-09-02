@@ -17,7 +17,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 import org.wpilib.units.measure.*;
 
@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
 
   private final DutyCycleOut m_dutyCycleControl = new DutyCycleOut(0);
 
-  private final NiDsXboxController m_joystick = new NiDsXboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
   private int printCount = 0;
 

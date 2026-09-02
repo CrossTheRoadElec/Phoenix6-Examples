@@ -12,7 +12,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 
 /**
@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
 
   private final CurrentLimitsConfigs m_currentLimits = new CurrentLimitsConfigs();
 
-  private final NiDsXboxController m_joystick = new NiDsXboxController(0);
+  private final XboxController m_joystick = new XboxController(0);
 
   int printCount = 0;
 

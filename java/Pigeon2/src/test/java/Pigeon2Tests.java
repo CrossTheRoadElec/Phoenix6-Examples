@@ -25,7 +25,7 @@ public class Pigeon2Tests {
 
     @BeforeEach
     public void constructDevices() {
-        assert HAL.initialize(500, 0);
+        assert HAL.initialize();
 
         pidgey = new Pigeon2(0, new CANBus());
     }

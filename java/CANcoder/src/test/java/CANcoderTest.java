@@ -22,7 +22,7 @@ public class CANcoderTest {
 
     @BeforeEach
     public void constructDevices() {
-        assert HAL.initialize(500, 0);
+        assert HAL.initialize();
 
         cancoder = new CANcoder(0, new CANBus());
     }

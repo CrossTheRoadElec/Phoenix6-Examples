@@ -6,9 +6,9 @@
 [tool.robotpy]
 
 # Version of robotpy this project depends on
-robotpy_version = "2027.0.0a6.post1"
+robotpy_version = "2027.0.0a7"
 
-# Which core WPILib components should be installed
+# Which optional robotpy components should be installed?
 # -> equivalent to `pip install robotpy[extra1, ...]
 components = [
     # "all",
@@ -16,17 +16,18 @@ components = [
     "commands2",
     # "cscore",
     # "romi",
-    # "sim",
+    "sim",
     # "xrp",
 ]
 
 # Other pip packages to install (including vendor packages)
 requires = [
-    "phoenix6~=26.50a1",
+    "phoenix6~=26.70a2",
     # "photonlibpy",
     # "robotpy-ctre",  # Phoenix 5
     # "robotpy-navx",
     # "robotpy-pathplannerlib",
     # "robotpy-playingwithfusion",
     # "robotpy-rev",
+    # "sleipnirgroup-choreolib",
 ]

@@ -4,8 +4,23 @@ import static org.wpilib.units.Units.*;
 
 import java.util.function.Supplier;
 
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Subsystem;
+import org.wpilib.command2.sysid.SysIdRoutine;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.DriverStationErrors;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.system.Notifier;
+import org.wpilib.system.RobotController;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.alerts.AlertableCollection;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -14,20 +29,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Subsystem;
-import org.wpilib.command2.sysid.SysIdRoutine;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.math.linalg.Matrix;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.numbers.N1;
-import org.wpilib.math.numbers.N3;
-import org.wpilib.system.Notifier;
-import org.wpilib.system.RobotController;
 
 import first.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
@@ -43,12 +44,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier simNotifier = null;
     private double lastSimTime;
 
-    /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
-    /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-    private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
-    /* Keep track if we've ever applied the operator perspective before or not */
-    private boolean hasAppliedOperatorPerspective = false;
+    /** Alerts for all the devices on the drivetrain */
+    private final AlertableCollection deviceAlerts = new AlertableCollection("Swerve");
+
+    /** Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+    private static final Rotation2d BLUE_ALLIANCE_FORWARD_DIRECTION = Rotation2d.ZERO;
+    /** Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+    private static final Rotation2d RED_ALLIANCE_FORWARD_DIRECTION = Rotation2d.k180deg;
+    /** Keep track if we've ever applied the operator forward direction */
+    private boolean hasAppliedForwardDirection = false;
 
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotVelocity pathApplyRobotVelocity = new SwerveRequest.ApplyRobotVelocity();
@@ -58,7 +62,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
+    /** SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
             null,        // Use default ramp rate (1 V/s)
@@ -74,7 +78,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         )
     );
 
-    /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
+    /** SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     private final SysIdRoutine sysIdRoutineSteer = new SysIdRoutine(
         new SysIdRoutine.Config(
             null,        // Use default ramp rate (1 V/s)
@@ -90,7 +94,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         )
     );
 
-    /*
+    /**
      * SysId routine for characterizing rotation.
      * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
      * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to SysId.
@@ -117,7 +121,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         )
     );
 
-    /* The SysId routine to test */
+    /** The SysId routine to test */
     private SysIdRoutine sysIdRoutineToApply = sysIdRoutineTranslation;
 
     /**
@@ -135,6 +139,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, modules);
+        registerAlerts();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -160,6 +165,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
+        registerAlerts();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -193,10 +199,31 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
+        registerAlerts();
         if (Utils.isSimulation()) {
             startSimThread();
         }
         configureAutoBuilder();
+    }
+
+    @Override
+    public void close() {
+        /* close the sim notifier before closing the drivetrain */
+        if (simNotifier != null) {
+            simNotifier.close();
+            simNotifier = null;
+        }
+        super.close();
+    }
+
+    private void registerAlerts() {
+        /* register alerts for all the devices in the drivetrain */
+        for (final var module : getModules()) {
+            deviceAlerts.withAlertable(module.getDriveMotor())
+                .withAlertable(module.getSteerMotor())
+                .withAlertable(module.getEncoder());
+        }
+        deviceAlerts.withAlertable(getPigeon2());
     }
 
     private void configureAutoBuilder() {
@@ -263,22 +290,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void periodic() {
         /*
-         * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is disabled.
+         * Periodically try to apply the operator forward direction for OperatorPerspective control.
+         * If we haven't applied the operator forward direction before, then we should apply it regardless of DS state.
+         * This allows us to correct the forward direction in case the robot code restarts mid-match.
+         * Otherwise, only check and apply the operator forward direction if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+         *
+         * See the documentation of setOperatorForwardDirection for more details.
          */
-        if (!hasAppliedOperatorPerspective || RobotState.isDisabled()) {
+        if (!hasAppliedForwardDirection || RobotState.isDisabled()) {
             MatchState.getAlliance().ifPresent(allianceColor -> {
-                setOperatorPerspectiveForward(
+                setOperatorForwardDirection(
                     allianceColor == Alliance.RED
-                        ? kRedAlliancePerspectiveRotation
-                        : kBlueAlliancePerspectiveRotation
+                        ? RED_ALLIANCE_FORWARD_DIRECTION
+                        : BLUE_ALLIANCE_FORWARD_DIRECTION
                 );
-                hasAppliedOperatorPerspective = true;
+                hasAppliedForwardDirection = true;
             });
         }
+
+        deviceAlerts.report();
     }
 
     private void startSimThread() {

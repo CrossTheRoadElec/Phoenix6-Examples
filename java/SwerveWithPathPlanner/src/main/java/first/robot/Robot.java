@@ -4,35 +4,39 @@
 
 package first.robot;
 
-import com.ctre.phoenix6.HootAutoReplay;
-
-import com.limelightvision.Limelight;
-import com.limelightvision.Limelight.PoseEstimateType;
-
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.framework.TimedRobot;
 import org.wpilib.math.util.Units;
 
+import com.ctre.phoenix6.HootAutoReplay;
+import com.ctre.phoenix6.HootReplay;
+
+import com.limelightvision.Limelight;
+import com.limelightvision.PoseEstimateType;
+
 public class Robot extends TimedRobot {
+    @SuppressWarnings("unused")
+    private final HootReplay replay = new HootReplay("./logs/example.hoot");
+
     private Command autonomousCommand;
+    private final RobotContainer container;
 
-    private final RobotContainer robotContainer;
-
-    /* log and replay timestamp and joystick data */
-    private final HootAutoReplay timeAndJoystickReplay = new HootAutoReplay()
+    /* log and replay timestamp and Driver Station data */
+    private final HootAutoReplay timeAndDSReplay = new HootAutoReplay()
         .withTimestampReplay()
+        .withDriverStationReplay()
         .withJoystickReplay();
 
     private final Limelight limelight = null; // new Limelight("limelight")
 
     public Robot() {
-        robotContainer = new RobotContainer();
+        container = new RobotContainer();
+        addPeriodic(timeAndDSReplay::update, DEFAULT_PERIOD, -0.001);
     }
 
     @Override
     public void robotPeriodic() {
-        timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
 
         /*
@@ -44,14 +48,14 @@ public class Robot extends TimedRobot {
          * of how to use vision should be tuned per-robot and to the team's specification.
          */
         if (limelight != null) {
-            final var driveState = robotContainer.drivetrain.getState();
+            final var driveState = container.drivetrain.getState();
             final double headingDeg = driveState.Pose.getRotation().getDegrees();
             final double omegaRps = Units.radiansToRotations(driveState.Velocity.omega);
 
-            limelight.setRobotOrientation(headingDeg, Units.rotationsToDegrees(omegaRps), 0, 0, 0, 0);
+            limelight.setRobotOrientation(headingDeg, Units.rotationsToDegrees(omegaRps), 0, 0, 0, 0, true);
             final var llMeasurement = limelight.getPoseEstimate(PoseEstimateType.MT2_WPIBLUE);
             if (llMeasurement.isValid() && Math.abs(omegaRps) < 2.0) {
-                robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+                container.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
             }
         }
     }
@@ -67,7 +71,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        autonomousCommand = robotContainer.getAutonomousCommand();
+        autonomousCommand = container.getAutonomousCommand();
 
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(autonomousCommand);
@@ -103,6 +107,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void utilityExit() {}
+
+    @Override
+    public void simulationInit() {}
 
     @Override
     public void simulationPeriodic() {}

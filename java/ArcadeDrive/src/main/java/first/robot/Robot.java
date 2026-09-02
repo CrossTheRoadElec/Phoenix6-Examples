@@ -12,7 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 
 /**
@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   private final DutyCycleOut leftOut = new DutyCycleOut(0);
   private final DutyCycleOut rightOut = new DutyCycleOut(0);
 
-  private final NiDsXboxController joystick = new NiDsXboxController(0);
+  private final XboxController joystick = new XboxController(0);
 
   private int printCount = 0;
 

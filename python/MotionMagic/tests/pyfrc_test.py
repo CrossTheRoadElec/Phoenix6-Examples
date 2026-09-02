@@ -10,9 +10,9 @@ from typing import TYPE_CHECKING
 
 from wpilib.testing.robot_tests import *
 
-from wpilib.simulation import DCMotorSim, DriverStationSim, resumeTiming
+from wpilib.simulation import DCMotorSim, DriverStationSim, resume_timing
 from wpimath import DCMotor, Models
-from wpimath.units import radiansToRotations
+from wpimath.units import radians_to_rotations
 
 from phoenix6 import configs, controls, hardware, signals
 
@@ -35,10 +35,10 @@ def wait_with_sim(time: float, fx: hardware.TalonFX, dcmotorsim: DCMotorSim, gea
     while start_time < time:
         start_time += LOOP_PERIOD
 
-        dcmotorsim.setInputVoltage(fx.sim_state.motor_voltage)
+        dcmotorsim.set_input_voltage(fx.sim_state.motor_voltage)
         dcmotorsim.update(LOOP_PERIOD)
-        fx.sim_state.set_raw_rotor_position(gear_ratio * radiansToRotations(dcmotorsim.getAngularPosition()))
-        fx.sim_state.set_rotor_velocity(gear_ratio * radiansToRotations(dcmotorsim.getAngularVelocity()))
+        fx.sim_state.set_raw_rotor_position(gear_ratio * radians_to_rotations(dcmotorsim.get_angular_position()))
+        fx.sim_state.set_rotor_velocity(gear_ratio * radians_to_rotations(dcmotorsim.get_angular_velocity()))
 
         sleep(LOOP_PERIOD)
 
@@ -48,19 +48,19 @@ def test_motion_magic(control: 'RobotTestController', robot: MyRobot):
         pos = talonfx.get_position(False)
 
         # wait for the device to start up and enable
-        DriverStationSim.setDsAttached(True)
-        DriverStationSim.setEnabled(True)
-        DriverStationSim.notifyNewData()
-        resumeTiming()
+        DriverStationSim.set_ds_attached(True)
+        DriverStationSim.set_enabled(True)
+        DriverStationSim.notify_new_data()
+        resume_timing()
 
         while talonfx.get_robot_enable(False).wait_for_update(1.0).value != signals.RobotEnableValue.ENABLED:
             pass
 
         gear_ratio = 12.8
-        gearbox = DCMotor.krakenX60FOC(1)
-        motorsim = DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, gear_ratio), gearbox)
+        gearbox = DCMotor.kraken_x60_foc(1)
+        motorsim = DCMotorSim(Models.single_jointed_arm_from_physical_constants(gearbox, 0.01, gear_ratio), gearbox)
 
-        talonfx.sim_state.set_raw_rotor_position(radiansToRotations(motorsim.getAngularPosition()))
+        talonfx.sim_state.set_raw_rotor_position(radians_to_rotations(motorsim.get_angular_position()))
         talonfx.sim_state.set_supply_voltage(12)
 
         cfg = configs.TalonFXConfiguration()

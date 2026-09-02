@@ -7,7 +7,7 @@ import com.ctre.phoenix6.StatusSignal;
 
 import org.wpilib.smartdashboard.Mechanism2d;
 import org.wpilib.smartdashboard.MechanismLigament2d;
-import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.util.Color;
 import org.wpilib.util.Color8Bit;
@@ -70,6 +70,6 @@ public class Mechanisms {
     rotorArm.setAngle(fxRotorPosition.getValue().in(Rotations) * 360);
     mechanismArm.setAngle(fxPosition.getValue().in(Rotations) * 360);
     ccArm.setAngle(cancoderPosition.getValue().in(Rotations) * 360);
-    SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
+    Telemetry.log("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 }

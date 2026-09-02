@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/driverstation/XboxController.hpp"
 #include "wpi/framework/TimedRobot.hpp"
 #include "PWMTalonFXS.hpp"
 
@@ -33,5 +33,5 @@ class Robot : public wpi::TimedRobot {
   wpi::PWMTalonFXS m_motor{0};
 
   // Use the first xbox controller connected to the Driver Station
-  wpi::NiDsXboxController m_joy{0};
+  wpi::XboxController m_joy{0};
 };

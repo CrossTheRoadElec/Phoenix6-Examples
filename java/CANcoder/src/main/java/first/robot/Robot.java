@@ -13,8 +13,9 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.system.Timer;
 
 import first.robot.sim.PhysicsSim;
@@ -28,13 +29,13 @@ import first.robot.sim.PhysicsSim;
 public class Robot extends TimedRobot {
   private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
-  private final CANBus CANBUS = CANBus.systemcore(1);
+  private final CANBus CANBUS = new CANBus(CANPort.CAN_S2);
 
   private final TalonFX talonFX = new TalonFX(2, CANBUS);
   private final CANcoder cancoder = new CANcoder(1, CANBUS);
 
   private final DutyCycleOut fwdOut = new DutyCycleOut(0);
-  private final NiDsXboxController controller = new NiDsXboxController(0);
+  private final XboxController controller = new XboxController(0);
 
   private double currentTime = Timer.getTimestamp();
 

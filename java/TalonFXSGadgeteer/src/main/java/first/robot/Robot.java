@@ -14,7 +14,7 @@ import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 
 import org.wpilib.framework.TimedRobot;
-import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 
@@ -95,14 +95,14 @@ public class Robot extends TimedRobot {
     var pwmVelocity = m_pwmVelSignal.refresh().getValueAsDouble();
 
     // Publish these signals to SmartDashboard
-    SmartDashboard.putNumber("Position", position);
-    SmartDashboard.putNumber("Velocity", velocity);
-    SmartDashboard.putNumber("Rotor Position", rotorPosition);
-    SmartDashboard.putNumber("Rotor Velocity", rotorVelocity);
-    SmartDashboard.putNumber("Quadrature Position", quadPosition);
-    SmartDashboard.putNumber("Quadrature Velocity", quadVelocity);
-    SmartDashboard.putNumber("Pulse-width Position", pwmPosition);
-    SmartDashboard.putNumber("Pulse-width Velocity", pwmVelocity);
+    Telemetry.log("Position", position);
+    Telemetry.log("Velocity", velocity);
+    Telemetry.log("Rotor Position", rotorPosition);
+    Telemetry.log("Rotor Velocity", rotorVelocity);
+    Telemetry.log("Quadrature Position", quadPosition);
+    Telemetry.log("Quadrature Velocity", quadVelocity);
+    Telemetry.log("Pulse-width Position", pwmPosition);
+    Telemetry.log("Pulse-width Velocity", pwmVelocity);
   }
 
   @Override

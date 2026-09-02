@@ -5,7 +5,6 @@
 #include "subsystems/DriveSubsystem.hpp"
 
 #include "ctre/phoenix6/Utils.hpp"
-#include "wpi/smartdashboard/SmartDashboard.hpp"
 #include "wpi/system/RobotController.hpp"
 
 using namespace ctre::phoenix6;
@@ -44,9 +43,6 @@ DriveSubsystem::DriveSubsystem()
     /* right TalonFXs are CW+ */
     m_rightSimState.Orientation = sim::ChassisReference::Clockwise_Positive;
     m_rightFollowerSimState.Orientation = sim::ChassisReference::Clockwise_Positive;
-
-    /* Publish field pose data to read back from */
-    wpi::SmartDashboard::PutData("Field", &m_field);
 }
 
 void DriveSubsystem::ArcadeDrive(double fwd, double rot)
@@ -105,7 +101,9 @@ void DriveSubsystem::Periodic()
         rotationsToMeters(m_leftLeader.GetPosition().GetValue()),
         rotationsToMeters(m_rightLeader.GetPosition().GetValue())
     );
+
     m_field.SetRobotPose(m_odometry.GetPose());
+    m_telem.Log("Field", m_field);
 }
 
 void DriveSubsystem::SimulationPeriodic()

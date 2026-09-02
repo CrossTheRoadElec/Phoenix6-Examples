@@ -6,6 +6,8 @@ package first.robot;
 
 import com.ctre.phoenix6.CANBus;
 
+import org.wpilib.hardware.bus.CANPort;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -15,7 +17,7 @@ import com.ctre.phoenix6.CANBus;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static CANBus ROBOT_CANBUS = CANBus.systemcore(1);
+    public static CANBus ROBOT_CANBUS = new CANBus(CANPort.CAN_S2);
 
     /* Talon FX Device IDs */
     public static final int LEFT_LEADER_ID = 1;

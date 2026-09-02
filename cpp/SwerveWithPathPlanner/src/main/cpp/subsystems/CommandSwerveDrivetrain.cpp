@@ -7,6 +7,17 @@
 
 using namespace subsystems;
 
+void CommandSwerveDrivetrain::RegisterAlerts()
+{
+    /* register alerts for all the devices in the drivetrain */
+    for (auto const &module : GetModules()) {
+        deviceAlerts.WithAlertable(module->GetDriveMotor())
+            .WithAlertable(module->GetSteerMotor())
+            .WithAlertable(module->GetEncoder());
+    }
+    deviceAlerts.WithAlertable(GetPigeon2());
+}
+
 void CommandSwerveDrivetrain::ConfigureAutoBuilder()
 {
     auto config = pathplanner::RobotConfig::fromGUISettings();
@@ -44,23 +55,27 @@ void CommandSwerveDrivetrain::ConfigureAutoBuilder()
 void CommandSwerveDrivetrain::Periodic()
 {
     /*
-     * Periodically try to apply the operator perspective.
-     * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-     * This allows us to correct the perspective in case the robot code restarts mid-match.
-     * Otherwise, only check and apply the operator perspective if the DS is disabled.
+     * Periodically try to apply the operator forward direction for OperatorPerspective control.
+     * If we haven't applied the operator forward direction before, then we should apply it regardless of DS state.
+     * This allows us to correct the forward direction in case the robot code restarts mid-match.
+     * Otherwise, only check and apply the operator forward direction if the DS is disabled.
      * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+     *
+     * See the documentation of SetOperatorForwardDirection for more details.
      */
-    if (!hasAppliedOperatorPerspective || wpi::RobotState::IsDisabled()) {
+    if (!hasAppliedForwardDirection || wpi::RobotState::IsDisabled()) {
         auto const allianceColor = wpi::MatchState::GetAlliance();
         if (allianceColor) {
-            SetOperatorPerspectiveForward(
+            SetOperatorForwardDirection(
                 *allianceColor == wpi::Alliance::RED
-                    ? kRedAlliancePerspectiveRotation
-                    : kBlueAlliancePerspectiveRotation
+                    ? RED_ALLIANCE_FORWARD_DIRECTION
+                    : BLUE_ALLIANCE_FORWARD_DIRECTION
             );
-            hasAppliedOperatorPerspective = true;
+            hasAppliedForwardDirection = true;
         }
     }
+
+    deviceAlerts.Report();
 }
 
 void CommandSwerveDrivetrain::StartSimThread()

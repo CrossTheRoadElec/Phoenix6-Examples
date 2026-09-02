@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "wpi/commands2/button/CommandNiDsXboxController.hpp"
+#include "wpi/commands2/button/CommandXboxController.hpp"
 #include "wpi/commands2/Command.hpp"
 #include "wpi/commands2/RunCommand.hpp"
 
@@ -21,7 +21,7 @@
 class RobotContainer {
 private:
   // The robot's subsystems and joysticks are defined here...
-  wpi::cmd::CommandNiDsXboxController m_joystick{0};
+  wpi::cmd::CommandXboxController m_joystick{0};
 
 public:
   DriveSubsystem m_driveSubsystem{};

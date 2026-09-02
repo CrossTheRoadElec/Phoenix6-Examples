@@ -28,14 +28,14 @@ public:
     void UtilityExit() override;
 
 private:
-    static constexpr bool USE_LIMELIGHT = false;
+    ctre::phoenix6::HootReplay replay{"./logs/example.hoot"};
 
     wpi::cmd::Command *autonomousCommand;
-
     RobotContainer container;
 
-    /* log and replay timestamp and joystick data */
-    ctre::phoenix6::HootAutoReplay timeAndJoystickReplay = ctre::phoenix6::HootAutoReplay{}
+    /* log and replay timestamp and Driver Station data */
+    ctre::phoenix6::HootAutoReplay timeAndDSReplay = ctre::phoenix6::HootAutoReplay{}
         .WithTimestampReplay()
+        .WithDriverStationReplay()
         .WithJoystickReplay();
 };

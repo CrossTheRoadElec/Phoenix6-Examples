@@ -11,8 +11,9 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 
@@ -28,7 +29,7 @@ public class Robot extends TimedRobot {
   private final Pigeon2 m_pigdey = new Pigeon2(1, kCANivore); // Pick the first CANivore bus also
   private final TalonFX m_transcientMotor = new TalonFX(20, kCANivore); // This motor may or may not be on the bus, 
                                                                   // selectively power it to completely test this example 
-  private final TalonFX m_motor2 = new TalonFX(0, CANBus.systemcore(1)); // Pick a Systemcore bus to force a failure we can detect
+  private final TalonFX m_motor2 = new TalonFX(0, new CANBus(CANPort.CAN_S2)); // Pick a Systemcore bus to force a failure we can detect
 
   private final StatusSignal<Angle> m_canbus1signal1 = m_motor1.getPosition(false);
   private final StatusSignal<AngularVelocity> m_canbus1signal2 = m_motor1.getVelocity(false);
@@ -60,7 +61,7 @@ public class Robot extends TimedRobot {
     m_canbus1transcient2
   };
 
-  private final NiDsXboxController m_joystick = new NiDsXboxController(0); // Allow us to see the different errors
+  private final XboxController m_joystick = new XboxController(0); // Allow us to see the different errors
 
   private double m_waitForAllTimeout = 0.1;
   /**

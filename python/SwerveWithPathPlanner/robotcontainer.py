@@ -5,16 +5,17 @@
 #
 
 import commands2
-from commands2.button import CommandNiDsXboxController, Trigger
+import tunables
+from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 from pathplannerlib.auto import AutoBuilder
 from phoenix6 import swerve
-from wpilib import RobotState, SmartDashboard
+from wpilib import RobotState
 from wpimath import Rotation2d
-from wpimath.units import rotationsToRadians
+from wpimath.units import rotations_to_radians
 
 from generated.tuner_constants import TunerConstants
-from telemetry import Telemetry
+from swerve_telemetry import SwerveTelemetry
 
 
 class RobotContainer:
@@ -29,17 +30,13 @@ class RobotContainer:
         self._max_speed = (
             1.0 * TunerConstants.speed_at_12_volts
         )  # speed_at_12_volts desired top speed
-        self._max_angular_rate = rotationsToRadians(
+        self._max_angular_rate = rotations_to_radians(
             0.75
         )  # 3/4 of a rotation per second max angular velocity
 
         # Setting up bindings for necessary control of the swerve drive platform
         self._drive = (
             swerve.requests.FieldCentric()
-            .with_deadband(self._max_speed * 0.1)
-            .with_rotational_deadband(
-                self._max_angular_rate * 0.1
-            )  # Add a 10% deadband
             .with_drive_request_type(
                 swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE
             )  # Use open-loop control for drive motors
@@ -53,20 +50,20 @@ class RobotContainer:
             )
         )
 
-        self._logger = Telemetry(self._max_speed)
+        self._logger = SwerveTelemetry(self._max_speed)
 
-        self._joystick = CommandNiDsXboxController(0)
+        self._joystick = CommandXboxController(0)
 
         self.drivetrain = TunerConstants.create_drivetrain()
 
         # Path follower
         self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
-        SmartDashboard.putData("Auto Mode", self._auto_chooser)
+        tunables.publish("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
-        self.configureButtonBindings()
+        self.configure_button_bindings()
 
-    def configureButtonBindings(self) -> None:
+    def configure_button_bindings(self) -> None:
         """
         Use this method to define your button->command mappings. Buttons can be created by
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
@@ -75,18 +72,18 @@ class RobotContainer:
 
         # Note that X is defined as forward according to WPILib convention,
         # and Y is defined as to the left according to WPILib convention.
-        self.drivetrain.setDefaultCommand(
+        self.drivetrain.set_default_command(
             # Drivetrain will execute this command periodically
             self.drivetrain.apply_request(
                 lambda: (
                     self._drive.with_velocity_x(
-                        -self._joystick.getLeftY() * self._max_speed
+                        -self._joystick.get_left_y() * self._max_speed
                     )  # Drive forward with negative Y (forward)
                     .with_velocity_y(
-                        -self._joystick.getLeftX() * self._max_speed
+                        -self._joystick.get_left_x() * self._max_speed
                     )  # Drive left with negative X (left)
                     .with_rotational_rate(
-                        -self._joystick.getRightX() * self._max_angular_rate
+                        -self._joystick.get_right_x() * self._max_angular_rate
                     )  # Drive counterclockwise with negative X (left)
                 )
             )
@@ -95,58 +92,58 @@ class RobotContainer:
         # Idle while the robot is disabled. This ensures the configured
         # neutral mode is applied to the drive motors while disabled.
         idle = swerve.requests.Idle()
-        Trigger(RobotState.isDisabled).whileTrue(
-            self.drivetrain.apply_request(lambda: idle).ignoringDisable(True)
+        Trigger(RobotState.is_disabled).while_true(
+            self.drivetrain.apply_request(lambda: idle).ignoring_disable(True)
         )
 
-        self._joystick.a().whileTrue(self.drivetrain.apply_request(lambda: self._brake))
-        self._joystick.b().whileTrue(
+        self._joystick.a().while_true(self.drivetrain.apply_request(lambda: self._brake))
+        self._joystick.b().while_true(
             self.drivetrain.apply_request(
                 lambda: self._point.with_module_direction(
-                    Rotation2d(-self._joystick.getLeftY(), -self._joystick.getLeftX())
+                    Rotation2d(-self._joystick.get_left_y(), -self._joystick.get_left_x())
                 )
             )
         )
 
-        self._joystick.povUp().whileTrue(
+        self._joystick.dpad_up().while_true(
             self.drivetrain.apply_request(
                 lambda: self._forward_straight.with_velocity_x(0.5).with_velocity_y(0)
             )
         )
-        self._joystick.povDown().whileTrue(
+        self._joystick.dpad_down().while_true(
             self.drivetrain.apply_request(
                 lambda: self._forward_straight.with_velocity_x(-0.5).with_velocity_y(0)
             )
         )
 
-        # Run SysId routines when holding back/start and X/Y.
+        # Run SysId routines when holding back (view)/start (menu) and X/Y.
         # Note that each routine should be run exactly once in a single log.
-        (self._joystick.back() & self._joystick.y()).whileTrue(
-            self.drivetrain.sys_id_dynamic(SysIdRoutine.Direction.kForward)
+        (self._joystick.view() & self._joystick.y()).while_true(
+            self.drivetrain.sys_id_dynamic(SysIdRoutine.Direction.FORWARD)
         )
-        (self._joystick.back() & self._joystick.x()).whileTrue(
-            self.drivetrain.sys_id_dynamic(SysIdRoutine.Direction.kReverse)
+        (self._joystick.view() & self._joystick.x()).while_true(
+            self.drivetrain.sys_id_dynamic(SysIdRoutine.Direction.REVERSE)
         )
-        (self._joystick.start() & self._joystick.y()).whileTrue(
-            self.drivetrain.sys_id_quasistatic(SysIdRoutine.Direction.kForward)
+        (self._joystick.menu() & self._joystick.y()).while_true(
+            self.drivetrain.sys_id_quasistatic(SysIdRoutine.Direction.FORWARD)
         )
-        (self._joystick.start() & self._joystick.x()).whileTrue(
-            self.drivetrain.sys_id_quasistatic(SysIdRoutine.Direction.kReverse)
+        (self._joystick.menu() & self._joystick.x()).while_true(
+            self.drivetrain.sys_id_quasistatic(SysIdRoutine.Direction.REVERSE)
         )
 
         # reset the field-centric heading on left bumper press
-        self._joystick.leftBumper().onTrue(
-            self.drivetrain.runOnce(self.drivetrain.seed_field_centric)
+        self._joystick.left_bumper().on_true(
+            self.drivetrain.run_once(self.drivetrain.seed_field_centric)
         )
 
         self.drivetrain.register_telemetry(
             lambda state: self._logger.telemeterize(state)
         )
 
-    def getAutonomousCommand(self) -> commands2.Command:
+    def get_autonomous_command(self) -> commands2.Command:
         """
         Use this to pass the autonomous command to the main {@link Robot} class.
 
         :returns: the command to run in autonomous
         """
-        return self._auto_chooser.getSelected()
+        return self._auto_chooser.get_selected()

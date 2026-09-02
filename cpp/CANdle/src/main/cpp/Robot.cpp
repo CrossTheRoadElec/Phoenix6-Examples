@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.hpp"
-#include "wpi/smartdashboard/SmartDashboard.hpp"
+#include "wpi/tunables/Tunables.hpp"
 
 using namespace ctre::phoenix6;
 
@@ -27,21 +27,21 @@ Robot::Robot() {
     m_candle.SetControl(controls::SolidColor{4, 7}.WithColor(WHITE));
 
     /* add animations to chooser for slot 0 */
-    m_anim0Chooser.SetDefaultOption("Color Flow", AnimationType::ColorFlow);
-    m_anim0Chooser.AddOption("Rainbow", AnimationType::Rainbow);
-    m_anim0Chooser.AddOption("Twinkle", AnimationType::Twinkle);
-    m_anim0Chooser.AddOption("Twinkle Off", AnimationType::TwinkleOff);
-    m_anim0Chooser.AddOption("Fire", AnimationType::Fire);
+    m_anim0Chooser.AddDefault("Color Flow", AnimationType::ColorFlow);
+    m_anim0Chooser.Add("Rainbow", AnimationType::Rainbow);
+    m_anim0Chooser.Add("Twinkle", AnimationType::Twinkle);
+    m_anim0Chooser.Add("Twinkle Off", AnimationType::TwinkleOff);
+    m_anim0Chooser.Add("Fire", AnimationType::Fire);
 
     /* add animations to chooser for slot 1 */
-    m_anim1Chooser.SetDefaultOption("Larson", AnimationType::Larson);
-    m_anim1Chooser.AddOption("RGB Fade", AnimationType::RgbFade);
-    m_anim1Chooser.AddOption("Single Fade", AnimationType::SingleFade);
-    m_anim1Chooser.AddOption("Strobe", AnimationType::Strobe);
-    m_anim1Chooser.AddOption("Fire", AnimationType::Fire);
+    m_anim1Chooser.AddDefault("Larson", AnimationType::Larson);
+    m_anim1Chooser.Add("RGB Fade", AnimationType::RgbFade);
+    m_anim1Chooser.Add("Single Fade", AnimationType::SingleFade);
+    m_anim1Chooser.Add("Strobe", AnimationType::Strobe);
+    m_anim1Chooser.Add("Fire", AnimationType::Fire);
 
-    wpi::SmartDashboard::PutData("Animation 0", &m_anim0Chooser);
-    wpi::SmartDashboard::PutData("Animation 1", &m_anim1Chooser);
+    wpi::tunables::Publish("Animation 0", m_anim0Chooser);
+    wpi::tunables::Publish("Animation 1", m_anim1Chooser);
 }
 
 void Robot::RobotPeriodic() {

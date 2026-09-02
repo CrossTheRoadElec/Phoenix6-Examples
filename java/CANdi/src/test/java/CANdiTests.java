@@ -49,7 +49,7 @@ public class CANdiTests {
 
     @BeforeEach
     public void constructDevices() {
-        assert HAL.initialize(500, 0);
+        assert HAL.initialize();
 
         candi = new CANdi(0, new CANBus());
     }
