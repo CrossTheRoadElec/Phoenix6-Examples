@@ -3,6 +3,7 @@
     This is a demo program for arcade drive in Python with Phoenix 6
 """
 import math
+import telemetry
 import wpilib
 from wpilib.simulation import DifferentialDrivetrainSim
 from wpimath import DCMotor, DifferentialDriveKinematics, DifferentialDriveOdometry, units
@@ -47,15 +48,15 @@ class MyRobot(wpilib.TimedRobot):
         self.right_out = controls.DutyCycleOut(0)
 
         # Keep a reference to an Xbox Controller for teleop control
-        self.joy = wpilib.NiDsXboxController(0)
+        self.joy = wpilib.XboxController(0)
 
         # Simulation
-        self.wheel_radius = units.inchesToMeters(3)
+        self.wheel_radius = units.inches_to_meters(3)
         self.gear_ratio = 10.71
         track_width = 0.546
 
         self.drivetrain = DifferentialDrivetrainSim(
-            DCMotor.krakenX60FOC(2),            # 2 Kraken X60 on each side of the drivetrain
+            DCMotor.kraken_x60_foc(2),          # 2 Kraken X60 on each side of the drivetrain
             self.gear_ratio,                    # drivetrain gear ratio
             2.1,                                # MOI of 2.1 kg m^2 (from CAD model)
             26.5,                               # Mass of the robot is 26.5 kg
@@ -64,30 +65,31 @@ class MyRobot(wpilib.TimedRobot):
         )
 
         self.kinematics = DifferentialDriveKinematics(track_width)
-        self.odometry = DifferentialDriveOdometry(self.pigeon.getRotation2d(), 0, 0)
+        self.odometry = DifferentialDriveOdometry(self.pigeon.get_rotation2d(), 0, 0)
 
         self.field = wpilib.Field2d()
-        wpilib.SmartDashboard.putData("Field", self.field)
 
-    def robotPeriodic(self):
+    def robot_periodic(self):
         self.odometry.update(
-            self.pigeon.getRotation2d(),
+            self.pigeon.get_rotation2d(),
             self.rotations_to_meters(self.front_left_motor.get_position().value),
             self.rotations_to_meters(self.front_right_motor.get_position().value),
         )
-        self.field.setRobotPose(self.odometry.getPose())
 
-    def teleopPeriodic(self):
+        self.field.set_robot_pose(self.odometry.get_pose())
+        telemetry.log("Field", self.field)
+
+    def teleop_periodic(self):
         """Runs the motors with arcade drive"""
         # Get throttle and wheel values for arcade drive
-        throttle = self.joy.getLeftY() * -1
-        wheel = self.joy.getRightX() * 1
+        throttle = -self.joy.get_left_y()
+        wheel = -self.joy.get_right_x()
 
         # And set the DutyCycleOut to the motor controllers
-        self.front_left_motor.set_control(self.left_out.with_output(throttle + wheel))
-        self.front_right_motor.set_control(self.right_out.with_output(throttle - wheel))
+        self.front_left_motor.set_control(self.left_out.with_output(throttle - wheel))
+        self.front_right_motor.set_control(self.right_out.with_output(throttle + wheel))
 
-    def simulationInit(self):
+    def simulation_init(self):
         # Set the orientation of the simulated devices relative to the robot chassis.
         # WPILib expects +V to be forward. Specify orientations to match that behavior.
 
@@ -96,12 +98,12 @@ class MyRobot(wpilib.TimedRobot):
         # right devices are CW+
         self.front_right_motor.sim_state.orientation = sim.ChassisReference.CLOCKWISE_POSITIVE
 
-    def simulationPeriodic(self):
+    def simulation_periodic(self):
         left_talon_sim = self.front_left_motor.sim_state
         right_talon_sim = self.front_right_motor.sim_state
         pigeon_sim = self.pigeon.sim_state
 
-        battery_v = wpilib.RobotController.getBatteryVoltage()
+        battery_v = wpilib.RobotController.get_battery_voltage()
         left_talon_sim.set_supply_voltage(battery_v)
         right_talon_sim.set_supply_voltage(battery_v)
 
@@ -113,16 +115,16 @@ class MyRobot(wpilib.TimedRobot):
         #
         # WPILib expects +V to be forward. We have already configured
         # our orientations to match this behavior.
-        self.drivetrain.setInputs(left_talon_sim.motor_voltage, right_talon_sim.motor_voltage)
+        self.drivetrain.set_inputs(left_talon_sim.motor_voltage, right_talon_sim.motor_voltage)
 
         # Advance the model by 0.020 seconds
         self.drivetrain.update(0.020)
 
-        left_talon_sim.set_raw_rotor_position(self.meters_to_rotations(self.drivetrain.getLeftPosition()))
-        left_talon_sim.set_rotor_velocity(self.meters_to_rotations(self.drivetrain.getLeftVelocity()))
-        right_talon_sim.set_raw_rotor_position(self.meters_to_rotations(self.drivetrain.getRightPosition()))
-        right_talon_sim.set_rotor_velocity(self.meters_to_rotations(self.drivetrain.getRightVelocity()))
-        pigeon_sim.set_raw_yaw(self.drivetrain.getHeading().degrees())
+        left_talon_sim.set_raw_rotor_position(self.meters_to_rotations(self.drivetrain.get_left_position()))
+        left_talon_sim.set_rotor_velocity(self.meters_to_rotations(self.drivetrain.get_left_velocity()))
+        right_talon_sim.set_raw_rotor_position(self.meters_to_rotations(self.drivetrain.get_right_position()))
+        right_talon_sim.set_rotor_velocity(self.meters_to_rotations(self.drivetrain.get_right_velocity()))
+        pigeon_sim.set_raw_yaw(self.drivetrain.get_heading().degrees())
 
     def meters_to_rotations(self, dist: float) -> float:
         circumference = self.wheel_radius * 2.0 * math.tau

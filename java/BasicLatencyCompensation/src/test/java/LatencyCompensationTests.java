@@ -29,7 +29,7 @@ public class LatencyCompensationTests {
 
     @BeforeEach
     public void constructDevices() {
-        assert HAL.initialize(500, 0);
+        assert HAL.initialize();
 
         talonfx = new TalonFX(0, new CANBus());
         cancoder = new CANcoder(0, new CANBus());

@@ -13,8 +13,9 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.system.Timer;
 import first.robot.sim.PhysicsSim;
 
@@ -28,12 +29,12 @@ public class Robot extends TimedRobot {
   private static final double PRINT_PERIOD = 0.5; // Update every 500 ms
 
   /* Keep a reference for a TalonFX around so we can drive the thing the Pigeon is on */
-  private final CANBus CANBUS = CANBus.systemcore(1);
+  private final CANBus CANBUS = new CANBus(CANPort.CAN_S2);
   private final TalonFX talonfx = new TalonFX(0, CANBUS);
   private final Pigeon2 pidgey = new Pigeon2(1, CANBUS);
   private double currentTime = Timer.getTimestamp();
 
-  private final NiDsXboxController joystick = new NiDsXboxController(0);
+  private final XboxController joystick = new XboxController(0);
   private final DutyCycleOut control = new DutyCycleOut(0);
 
   private final Mechanisms mechanisms = new Mechanisms();

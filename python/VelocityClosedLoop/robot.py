@@ -3,9 +3,9 @@
     This is a demo program for TalonFX Velocity PID usage in Phoenix 6
 """
 import wpilib
-from wpilib import NiDsXboxController, RobotController, simulation as sim
+from wpilib import XboxController, RobotController, simulation as sim
 from wpimath import DCMotor, Models
-from wpimath.units import radiansToRotations
+from wpimath.units import radians_to_rotations
 from phoenix6 import CANBus, StatusCode, configs, controls, hardware, signals
 
 class MyRobot(wpilib.TimedRobot):
@@ -32,7 +32,7 @@ class MyRobot(wpilib.TimedRobot):
         # Keep a neutral out so we can disable the motor
         self.brake = controls.NeutralOut()
 
-        self.joystick = NiDsXboxController(0)
+        self.joystick = XboxController(0)
 
         cfg = configs.TalonFXConfiguration()
         
@@ -67,35 +67,35 @@ class MyRobot(wpilib.TimedRobot):
         self.talonfx_follower.set_control(controls.Follower(self.talonfx.device_id, signals.MotorAlignmentValue.ALIGNED))
 
         # Create a DCMotorSim for physics sim
-        gearbox = DCMotor.krakenX60FOC(1)
-        self.motor_sim = sim.DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, 1.0), gearbox)
+        gearbox = DCMotor.kraken_x60_foc(1)
+        self.motor_sim = sim.DCMotorSim(Models.single_jointed_arm_from_physical_constants(gearbox, 0.01, 1.0), gearbox)
 
-    def teleopInit(self):
+    def teleop_init(self):
         pass
 
-    def teleopPeriodic(self):
-        joy_value = self.joystick.getLeftY()
+    def teleop_periodic(self):
+        joy_value = self.joystick.get_left_y()
         if abs(joy_value) < 0.1:
             joy_value = 0
 
         # Go for plus/minus 50 rotations per second
         desired_rotations_per_second = joy_value * 50
 
-        if self.joystick.getLeftBumperButton():
+        if self.joystick.get_left_bumper_button():
             # Use velocity voltage
             self.talonfx.set_control(self.velocity_voltage.with_velocity(desired_rotations_per_second))
-        elif self.joystick.getRightBumperButton():
+        elif self.joystick.get_right_bumper_button():
             # Use velocity torque
             self.talonfx.set_control(self.velocity_torque.with_velocity(desired_rotations_per_second))
         else:
             # Disable the motor instead
             self.talonfx.set_control(self.brake)
 
-    def simulationPeriodic(self):
+    def simulation_periodic(self):
         talon_sim = self.talonfx.sim_state
 
-        talon_sim.set_supply_voltage(RobotController.getBatteryVoltage())
-        self.motor_sim.setInputVoltage(talon_sim.motor_voltage)
+        talon_sim.set_supply_voltage(RobotController.get_battery_voltage())
+        self.motor_sim.set_input_voltage(talon_sim.motor_voltage)
         self.motor_sim.update(0.020)
-        talon_sim.set_raw_rotor_position(radiansToRotations(self.motor_sim.getAngularPosition()))
-        talon_sim.set_rotor_velocity(radiansToRotations(self.motor_sim.getAngularVelocity()))
+        talon_sim.set_raw_rotor_position(radians_to_rotations(self.motor_sim.get_angular_position()))
+        talon_sim.set_rotor_velocity(radians_to_rotations(self.motor_sim.get_angular_velocity()))

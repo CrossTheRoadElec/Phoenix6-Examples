@@ -3,8 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.hpp"
-#include "wpi/smartdashboard/SmartDashboard.hpp"
 #include "wpi/system/RobotController.hpp"
+#include "wpi/telemetry/Telemetry.hpp"
 #include <iostream>
 
 using namespace ctre::phoenix6;
@@ -46,9 +46,6 @@ Robot::Robot()
       leftFX.GetPosition(),
       rightFX.GetPosition(),
       imu.GetYaw());
-
-  /* Publish field pose data to read back from */
-  wpi::SmartDashboard::PutData("Field", &m_field);
 }
 
 void Robot::RobotPeriodic()
@@ -61,7 +58,9 @@ void Robot::RobotPeriodic()
   m_odometry.Update(imu.GetRotation2d(),
                     rotationsToMeters(leftSensor.GetPosition().GetValue()),
                     rotationsToMeters(rightSensor.GetPosition().GetValue()));
+
   m_field.SetRobotPose(m_odometry.GetPose());
+  wpi::telemetry::Log("Field", m_field);
 
   if (++printCount >= 50) {
     printCount = 0;
@@ -155,9 +154,9 @@ void Robot::SimulationPeriodic()
    * if a trigger is pressed, trigger the reverse limit switch
    */
   leftSim.SetForwardLimit(joystick.GetLeftBumperButton());
-  leftSim.SetReverseLimit(joystick.GetLeftTriggerAxis() > 0.5);
+  leftSim.SetReverseLimit(joystick.GetLeftTrigger() > 0.5);
   rightSim.SetForwardLimit(joystick.GetRightBumperButton());
-  rightSim.SetReverseLimit(joystick.GetRightTriggerAxis() > 0.5);
+  rightSim.SetReverseLimit(joystick.GetRightTrigger() > 0.5);
 }
 
 wpi::units::meter_t Robot::rotationsToMeters(wpi::units::turn_t rotations)

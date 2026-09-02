@@ -23,8 +23,8 @@ import org.wpilib.math.kinematics.DifferentialDriveOdometry;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.simulation.DifferentialDrivetrainSim;
 import org.wpilib.smartdashboard.Field2d;
-import org.wpilib.smartdashboard.SmartDashboard;
 import org.wpilib.system.RobotController;
+import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Distance;
@@ -131,9 +131,6 @@ public class DriveSubsystem extends SubsystemBase {
         /* right TalonFXs are CW+ */
         m_rightSimState.Orientation = ChassisReference.Clockwise_Positive;
         m_rightFollowerSimState.Orientation = ChassisReference.Clockwise_Positive;
-
-        /* Publish field pose data to read back from */
-        SmartDashboard.putData("Field", m_field);
     }
 
     /**
@@ -164,7 +161,9 @@ public class DriveSubsystem extends SubsystemBase {
         m_odometry.update(m_pigeon2.getRotation2d(),
                 rotationsToMeters(m_leftLeader.getPosition().getValue()).in(Meters),
                 rotationsToMeters(m_rightLeader.getPosition().getValue()).in(Meters));
+
         m_field.setRobotPose(m_odometry.getPose());
+        Telemetry.log("Field", m_field);
     }
 
     @Override

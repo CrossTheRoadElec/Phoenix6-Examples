@@ -5,12 +5,12 @@
 #pragma once
 
 #include "ctre/phoenix6/TalonFX.hpp"
-#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/driverstation/XboxController.hpp"
 #include "wpi/framework/TimedRobot.hpp"
 
 class Robot : public wpi::TimedRobot {
  private:
-  static constexpr ctre::phoenix6::CANBus CANBUS = ctre::phoenix6::CANBus::Systemcore(1);
+  static constexpr ctre::phoenix6::CANBus CANBUS{wpi::CANPort::CAN_S2};
 
   ctre::phoenix6::hardware::TalonFX leftLeader{1, CANBUS};
   ctre::phoenix6::hardware::TalonFX leftFollower{2, CANBUS};
@@ -20,7 +20,7 @@ class Robot : public wpi::TimedRobot {
   ctre::phoenix6::controls::DutyCycleOut leftOut{0}; // Initialize output to 0%
   ctre::phoenix6::controls::DutyCycleOut rightOut{0}; // Initialize output to 0%
 
-  wpi::NiDsXboxController joystick{0};
+  wpi::XboxController joystick{0};
 
   int printCount{};
 

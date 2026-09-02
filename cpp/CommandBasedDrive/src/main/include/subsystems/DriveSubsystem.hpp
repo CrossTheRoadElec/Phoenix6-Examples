@@ -10,6 +10,7 @@
 #include "wpi/math/kinematics/DifferentialDriveOdometry.hpp"
 #include "wpi/simulation/DifferentialDrivetrainSim.hpp"
 #include "wpi/smartdashboard/Field2d.hpp"
+#include "wpi/telemetry/Telemetry.hpp"
 
 #include "Constants.hpp"
 
@@ -51,6 +52,7 @@ private:
         0.546_m,     // Distance between wheels is _ meters.
     };
 
+    wpi::telemetry::TelemetryTable &m_telem = wpi::telemetry::GetTable("Drive");
     wpi::Field2d m_field{};
 
     wpi::math::DifferentialDriveOdometry m_odometry{

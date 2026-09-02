@@ -5,7 +5,7 @@
 package first.robot;
 
 import org.wpilib.command2.Command;
-import org.wpilib.command2.button.CommandNiDsXboxController;
+import org.wpilib.command2.button.CommandXboxController;
 import org.wpilib.driverstation.GenericHID;
 
 import first.robot.commands.DriveStraightCommand;
@@ -24,7 +24,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
-  private final CommandNiDsXboxController m_joystick = new CommandNiDsXboxController(0);
+  private final CommandXboxController m_joystick = new CommandXboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

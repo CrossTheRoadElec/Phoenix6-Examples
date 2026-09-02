@@ -6,7 +6,7 @@
 
 #include "ctre/phoenix6/Pigeon2.hpp"
 #include "ctre/phoenix6/TalonFX.hpp"
-#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/driverstation/XboxController.hpp"
 #include "wpi/framework/TimedRobot.hpp"
 
 class Robot : public wpi::TimedRobot {
@@ -35,7 +35,7 @@ private:
   ctre::phoenix6::hardware::Pigeon2 m_pigdey{1, CANIVORE}; // Pick the first CANivore bus also
   ctre::phoenix6::hardware::TalonFX m_transcientMotor{20, CANIVORE}; // This motor may or may not be on the bus, 
                                                                       // selectively power it to completely test this example 
-  ctre::phoenix6::hardware::TalonFX m_motor2{0, ctre::phoenix6::CANBus::Systemcore(1)}; // Pick a Systemcore bus to force a failure we can detect
+  ctre::phoenix6::hardware::TalonFX m_motor2{0, wpi::CANPort::CAN_S2}; // Pick a Systemcore bus to force a failure we can detect
   
   ctre::phoenix6::StatusSignal<wpi::units::turn_t> m_canbus1signal1 = m_motor1.GetPosition(false);
   ctre::phoenix6::StatusSignal<wpi::units::turns_per_second_t> m_canbus1signal2 = m_motor1.GetVelocity(false);
@@ -66,7 +66,7 @@ private:
     &m_canbus1transcient2
   };
 
-  wpi::NiDsXboxController m_joystick{0}; // Allow us to see the different errors
+  wpi::XboxController m_joystick{0}; // Allow us to see the different errors
   
   wpi::units::second_t m_waitForAllTimeout{0.1_s};
 };

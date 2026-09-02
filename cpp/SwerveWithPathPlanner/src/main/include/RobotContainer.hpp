@@ -5,10 +5,10 @@
 #pragma once
 
 #include "wpi/commands2/CommandPtr.hpp"
-#include "wpi/commands2/button/CommandNiDsXboxController.hpp"
-#include "wpi/smartdashboard/SendableChooser.hpp"
+#include "wpi/commands2/button/CommandXboxController.hpp"
+#include "wpi/tunables/Selectable.hpp"
 #include "subsystems/CommandSwerveDrivetrain.hpp"
-#include "Telemetry.hpp"
+#include "SwerveTelemetry.hpp"
 
 class RobotContainer {
 private:
@@ -17,7 +17,6 @@ private:
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     swerve::requests::FieldCentric drive = swerve::requests::FieldCentric{}
-        .WithDeadband(MaxSpeed * 0.1).WithRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
         .WithDriveRequestType(swerve::DriveRequestType::OpenLoopVoltage); // Use open-loop control for drive motors
     swerve::requests::SwerveDriveBrake brake{};
     swerve::requests::PointWheelsAt point{};
@@ -26,16 +25,16 @@ private:
 
     /* Note: This must be constructed before the drivetrain, otherwise we need to
      *       define a destructor to un-register the telemetry from the drivetrain */
-    Telemetry logger{MaxSpeed};
+    SwerveTelemetry logger{MaxSpeed};
 
-    wpi::cmd::CommandNiDsXboxController joystick{0};
+    wpi::cmd::CommandXboxController joystick{0};
 
 public:
     subsystems::CommandSwerveDrivetrain drivetrain{TunerConstants::CreateDrivetrain()};
 
 private:
     /* Path follower */
-    wpi::SendableChooser<wpi::cmd::Command *> autoChooser;
+    wpi::tunables::Selectable<wpi::cmd::Command *> autoChooser;
 
 public:
     RobotContainer();

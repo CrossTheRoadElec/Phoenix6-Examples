@@ -5,7 +5,7 @@
 import wpilib
 from wpilib import RobotController, Timer, simulation as sim
 from wpimath import DCMotor, Models
-from wpimath.units import inchesToMeters
+from wpimath.units import inches_to_meters
 from phoenix6 import CANBus, configs, hardware, signals
 
 class MyRobot(wpilib.TimedRobot):
@@ -26,7 +26,7 @@ class MyRobot(wpilib.TimedRobot):
 
         # If CANrange has a signal strength of at least 2000, it is a valid measurement.
         cfg.proximity_params.min_signal_strength_for_valid_measurement = 2000
-        # If CANrange detects an object within 0.1 meters, it will trigger the "isDetected" signal.
+        # If CANrange detects an object within 0.1 meters, it will trigger the "is_detected" signal.
         cfg.proximity_params.proximity_threshold = 0.1
         # Make the CANrange update as fast as possible at 100 Hz. This requires short-range mode.
         cfg.to_f_params.update_mode = signals.UpdateModeValue.SHORT_RANGE100_HZ
@@ -35,16 +35,16 @@ class MyRobot(wpilib.TimedRobot):
 
         self.timer = Timer()
         self.timer.start()
-        self.controller = wpilib.NiDsXboxController(0)
+        self.controller = wpilib.XboxController(0)
 
         # Create a DCMotorSim for physics sim
-        gearbox = DCMotor.krakenX60FOC(1)
-        self.motor_sim = sim.DCMotorSim(Models.singleJointedArmFromPhysicalConstants(gearbox, 0.01, 1.0), gearbox)
+        gearbox = DCMotor.kraken_x60_foc(1)
+        self.motor_sim = sim.DCMotorSim(Models.single_jointed_arm_from_physical_constants(gearbox, 0.01, 1.0), gearbox)
 
-    def teleopPeriodic(self):
+    def teleop_periodic(self):
         """Every 100ms, print the status of the StatusSignal"""
 
-        if self.timer.hasElapsed(0.1):
+        if self.timer.has_elapsed(0.1):
             self.timer.reset()
             # get_distance automatically calls refresh(), no need to manually refresh.
             #
@@ -61,10 +61,10 @@ class MyRobot(wpilib.TimedRobot):
 
             print("")
 
-    def simulationPeriodic(self):
+    def simulation_periodic(self):
         canrange_sim = self.canrange.sim_state
 
-        canrange_sim.set_supply_voltage(RobotController.getBatteryVoltage())
-        self.motor_sim.setInputVoltage(self.controller.getLeftY() * 12)
+        canrange_sim.set_supply_voltage(RobotController.get_battery_voltage())
+        self.motor_sim.set_input_voltage(self.controller.get_left_y() * 12)
         self.motor_sim.update(0.020)
-        canrange_sim.set_distance(self.motor_sim.getAngularPosition() * inchesToMeters(3))
+        canrange_sim.set_distance(self.motor_sim.get_angular_position() * inches_to_meters(3))

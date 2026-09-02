@@ -10,7 +10,7 @@
 
 class Robot : public wpi::TimedRobot {
  private:
-  ctre::phoenix6::hardware::CANcoder cancoder{1, ctre::phoenix6::CANBus::Systemcore(1)};
+  ctre::phoenix6::hardware::CANcoder cancoder{1, wpi::CANPort::CAN_S2};
   wpi::units::time::second_t currentTime{wpi::Timer::GetTimestamp()};
 
  public:

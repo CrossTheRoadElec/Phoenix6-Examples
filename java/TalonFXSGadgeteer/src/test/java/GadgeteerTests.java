@@ -41,7 +41,7 @@ public class GadgeteerTests implements AutoCloseable {
 
     @BeforeEach
     public void constructDevices() {
-        assert HAL.initialize(500, 0);
+        assert HAL.initialize();
 
         talon = new TalonFXS(0, new CANBus());
 

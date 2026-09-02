@@ -42,6 +42,17 @@ class PWMTalonFXS : public PWMMotorController {
     Brushed_DC
   };
 
+  /**
+   * Constructor for a Talon FXS connected via PWM.
+   *
+   * @param channel The PWM channel that the Talon FX is attached to. 0-9 are
+   *                on-board, 10-19 are on the MXP port
+   */
+  explicit PWMTalonFXS(int channel);
+
+  PWMTalonFXS(PWMTalonFXS&&) = default;
+  PWMTalonFXS& operator=(PWMTalonFXS&&) = default;
+
   void SetThrottle(double throttle) override;
 
   /**
@@ -59,17 +70,6 @@ class PWMTalonFXS : public PWMMotorController {
    * @return true if request has been buffered successfully.
    */
   bool SetMotorArrangement(MotorArrangement motorArrangement);
-
-  /**
-   * Constructor for a Talon FXS connected via PWM.
-   *
-   * @param channel The PWM channel that the Talon FX is attached to. 0-9 are
-   *                on-board, 10-19 are on the MXP port
-   */
-  explicit PWMTalonFXS(int channel);
-
-  PWMTalonFXS(PWMTalonFXS&&) = default;
-  PWMTalonFXS& operator=(PWMTalonFXS&&) = default;
 
  private:
   Timer _timer;

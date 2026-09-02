@@ -5,7 +5,7 @@
 #pragma once
 
 #include "ctre/phoenix6/TalonFX.hpp"
-#include "wpi/driverstation/NiDsXboxController.hpp"
+#include "wpi/driverstation/XboxController.hpp"
 #include "wpi/framework/TimedRobot.hpp"
 
 class Robot : public wpi::TimedRobot {
@@ -24,7 +24,7 @@ class Robot : public wpi::TimedRobot {
   /* Keep a neutral out so we can disable the motor */
   ctre::phoenix6::controls::NeutralOut m_brake{};
 
-  wpi::NiDsXboxController m_joystick{0};
+  wpi::XboxController m_joystick{0};
 
  public:
   Robot();

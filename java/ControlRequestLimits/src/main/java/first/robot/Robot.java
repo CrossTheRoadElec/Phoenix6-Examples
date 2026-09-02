@@ -15,7 +15,7 @@ import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MagnetHealthValue;
 
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.framework.TimedRobot;
 
 /**
@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
 
     private final DutyCycleOut m_out = new DutyCycleOut(0);
 
-    private final NiDsXboxController m_joystick = new NiDsXboxController(0);
+    private final XboxController m_joystick = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any

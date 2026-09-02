@@ -11,7 +11,7 @@ from typing import Callable
 
 class FlywheelMechanism(Subsystem):
     def __init__(self) -> None:
-        self.motor_to_test = hardware.TalonFX(Constants.kTalonFxId, Constants.kCANbus)
+        self.motor_to_test = hardware.TalonFX(Constants.TALON_FX_ID, Constants.CANBUS)
         self.joystick_control = controls.DutyCycleOut(0)
         self.sys_id_control = controls.VoltageOut(0)
 
@@ -19,10 +19,10 @@ class FlywheelMechanism(Subsystem):
             SysIdRoutine.Config(
                 # Use default ramp rate (1 V/s) and timeout (10 s)
                 # Reduce dynamic voltage to 4 to prevent brownout
-                stepVoltage = 4.0,
+                step_voltage=4.0,
                 # Log state with Phoenix SignalLogger class
-                recordState = lambda state: SignalLogger.write_string(
-                    "state", SysIdRoutineLog.stateEnumToString(state)
+                record_state=lambda state: SignalLogger.write_string(
+                    "state", SysIdRoutineLog.state_enum_to_string(state)
                 )
                 and None,
             ),
@@ -36,7 +36,7 @@ class FlywheelMechanism(Subsystem):
             ),
         )
 
-        self.setName("Flywheel")
+        self.set_name("Flywheel")
 
         cfg = configs.TalonFXConfiguration()
         # Set any necessary configs in the Feedback group here

@@ -30,7 +30,7 @@ public class FusedCANcoderTests {
 
     @BeforeEach
     public void constructDevices() {
-        assert HAL.initialize(500, 0);
+        assert HAL.initialize();
 
         talon = new TalonFX(0, new CANBus());
         cancoder = new CANcoder(0, new CANBus());

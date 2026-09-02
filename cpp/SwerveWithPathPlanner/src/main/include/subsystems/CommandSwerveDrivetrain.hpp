@@ -25,12 +25,15 @@ class CommandSwerveDrivetrain : public wpi::cmd::SubsystemBase, public TunerSwer
     std::unique_ptr<wpi::Notifier> simNotifier;
     wpi::units::second_t lastSimTime;
 
-    /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-    static constexpr wpi::math::Rotation2d kBlueAlliancePerspectiveRotation{0_deg};
-    /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-    static constexpr wpi::math::Rotation2d kRedAlliancePerspectiveRotation{180_deg};
-    /* Keep track if we've ever applied the operator perspective before or not */
-    bool hasAppliedOperatorPerspective = false;
+    /** Alerts for all the devices on the drivetrain */
+    AlertableCollection deviceAlerts{"Swerve"};
+
+    /** Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+    static constexpr wpi::math::Rotation2d BLUE_ALLIANCE_FORWARD_DIRECTION{0_deg};
+    /** Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+    static constexpr wpi::math::Rotation2d RED_ALLIANCE_FORWARD_DIRECTION{180_deg};
+    /** Keep track if we've ever applied the operator forward direction */
+    bool hasAppliedForwardDirection = false;
 
     /** Swerve request to apply during robot-centric path following */
     swerve::requests::ApplyRobotVelocity pathApplyRobotVelocity;
@@ -40,7 +43,7 @@ class CommandSwerveDrivetrain : public wpi::cmd::SubsystemBase, public TunerSwer
     swerve::requests::SysIdSwerveSteerGains steerCharacterization;
     swerve::requests::SysIdSwerveRotation rotationCharacterization;
 
-    /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
+    /** SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     wpi::cmd::sysid::SysIdRoutine sysIdRoutineTranslation{
         wpi::cmd::sysid::Config{
             std::nullopt, // Use default ramp rate (1 V/s)
@@ -59,7 +62,7 @@ class CommandSwerveDrivetrain : public wpi::cmd::SubsystemBase, public TunerSwer
         }
     };
 
-    /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
+    /** SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     wpi::cmd::sysid::SysIdRoutine sysIdRoutineSteer{
         wpi::cmd::sysid::Config{
             std::nullopt, // Use default ramp rate (1 V/s)
@@ -78,7 +81,7 @@ class CommandSwerveDrivetrain : public wpi::cmd::SubsystemBase, public TunerSwer
         }
     };
 
-    /*
+    /**
      * SysId routine for characterizing rotation.
      * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
      * See the documentation of swerve::requests::SysIdSwerveRotation for info on importing the log to SysId.
@@ -109,7 +112,7 @@ class CommandSwerveDrivetrain : public wpi::cmd::SubsystemBase, public TunerSwer
         }
     };
 
-    /* The SysId routine to test */
+    /** The SysId routine to test */
     wpi::cmd::sysid::SysIdRoutine *sysIdRoutineToApply = &sysIdRoutineTranslation;
 
 public:
@@ -127,6 +130,7 @@ public:
     CommandSwerveDrivetrain(swerve::SwerveDrivetrainConstants const &driveTrainConstants, ModuleConstants const &... modules) :
         TunerSwerveDrivetrain{driveTrainConstants, modules...}
     {
+        RegisterAlerts();
         if (utils::IsSimulation()) {
             StartSimThread();
         }
@@ -154,6 +158,7 @@ public:
     ) :
         TunerSwerveDrivetrain{driveTrainConstants, odometryUpdateFrequency, modules...}
     {
+        RegisterAlerts();
         if (utils::IsSimulation()) {
             StartSimThread();
         }
@@ -188,6 +193,7 @@ public:
             odometryStandardDeviation, visionStandardDeviation, modules...
         }
     {
+        RegisterAlerts();
         if (utils::IsSimulation()) {
             StartSimThread();
         }
@@ -257,6 +263,7 @@ public:
     }
 
 private:
+    void RegisterAlerts();
     void ConfigureAutoBuilder();
     void StartSimThread();
 };

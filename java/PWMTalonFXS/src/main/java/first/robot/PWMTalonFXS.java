@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.wpilib.driverstation.RobotState;
-import org.wpilib.hardware.hal.HAL;
 import org.wpilib.hardware.motor.PWMMotorController;
 import org.wpilib.system.Timer;
+import org.wpilib.util.UsageReporting;
 
 /**
  * PWM class for Talon FXS.
@@ -22,7 +22,6 @@ import org.wpilib.system.Timer;
  * is enabled.
  */
 public class PWMTalonFXS extends PWMMotorController {
-
     /**
      * Supported motor arrangements.
      */
@@ -45,13 +44,13 @@ public class PWMTalonFXS extends PWMMotorController {
     private List<Integer> _configs = new ArrayList<>();
 
     public PWMTalonFXS(final int channel) {
-        super("PWMTalonFXS", channel);
+        super(channel);
 
         setBoundsMicroseconds(2004, 1520, 1500, 1480, 997);
         m_pwm.setOutputPeriod(5);
         setThrottle(0.0);
 
-        HAL.reportUsage("IO", channel, "TalonFXS");
+        UsageReporting.reportUsage("IO", channel, "TalonFXS");
     }
     /**
      * Sets the mode of operation when output is neutral or disabled.
